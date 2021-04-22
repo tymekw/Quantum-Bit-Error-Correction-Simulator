@@ -1,5 +1,6 @@
 import TPM
 import numpy as np
+
 N = 8
 K = 6
 L = 2
@@ -19,7 +20,7 @@ while alice.tau != bob.tau:
     X_bob = np.random.randint(-L, L + 1, size=(K, N))
     alice.calculate_tau(X)
     bob.calculate_tau(X)
-    print('s')
+    print("new X vector")
 
 s= 0
 while not np.array_equal(alice.W, bob.W):
@@ -33,6 +34,7 @@ while not np.array_equal(alice.W, bob.W):
         X = np.random.randint(-L, L + 1, size=(K, N))
         alice.calculate_tau(X)
         bob.calculate_tau(X)
+        print("new X vector")
 
 
     s+=1

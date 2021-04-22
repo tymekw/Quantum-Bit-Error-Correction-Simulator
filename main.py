@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import hashlib
 N = 8
 K = 6
 L = 2
@@ -81,6 +82,9 @@ def theta(sigma, tau):
 # print(W)
 
 
+def sha256(numpy_array):
+    return hashlib.sha256(numpy_array.tobytes()).digest()
+
 def update_weights(W, X, sigma, tau):
     w_new = np.empty([K,N])
     for (k,n), _ in np.ndenumerate(X):
@@ -94,8 +98,11 @@ def update_weights(W, X, sigma, tau):
     return w_new
 
 # print(w_new)
+
+tmp = sha256(W)
+tmp1 = sha256(W1)
 s = 0
-while not np.array_equal(W, W1):
+while tmp != tmp1:
     print(s)
     W = update_weights(W,X,sigma,tau)
     W1 = update_weights(W1,X1,sigma1,tau1)
@@ -126,7 +133,8 @@ while not np.array_equal(W, W1):
         tau = np.prod(sigma)
         tau1 = np.prod(sigma1)
 
-
+    tmp = sha256(W)
+    tmp1 = sha256(W1)
 
     s += 1
 
