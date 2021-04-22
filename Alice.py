@@ -11,21 +11,8 @@ W_bob = np.random.randint(-L, L+1, size=(K,N))
 alice = TPM.Tpm(N, K, L, W)
 bob = TPM.Tpm(N, K, L, W_bob)
 
-X = np.random.randint(-L, L + 1, size=(K, N))
-alice.calculate_tau(X)
-bob.calculate_tau(X)
-
-while alice.tau != bob.tau:
-    X = np.random.randint(-L, L + 1, size=(K, N))
-    X_bob = np.random.randint(-L, L + 1, size=(K, N))
-    alice.calculate_tau(X)
-    bob.calculate_tau(X)
-    print("new X vector")
-
-s= 0
+s = 0
 while not np.array_equal(alice.W, bob.W):
-    alice.update_weights(X)
-    bob.update_weights(X)
 
     X = np.random.randint(-L, L + 1, size=(K, N))
     alice.calculate_tau(X)
@@ -36,6 +23,8 @@ while not np.array_equal(alice.W, bob.W):
         bob.calculate_tau(X)
         print("new X vector")
 
+    alice.update_weights(X)
+    bob.update_weights(X)
 
     s+=1
     print(s)
