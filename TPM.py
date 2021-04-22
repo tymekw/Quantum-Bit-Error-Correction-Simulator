@@ -1,8 +1,13 @@
 import numpy as np
+import hashlib
 
 
 def calculate_theta(sigma_k, tau):
     return 0 if sigma_k != tau else 1
+
+
+def sha256(numpy_array):
+    return hashlib.sha256(numpy_array.tobytes()).digest()
 
 
 class Tpm:
