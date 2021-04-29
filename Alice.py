@@ -1,9 +1,9 @@
 import TPM
 import numpy as np
 
-N = 8
-K = 6
-L = 2
+N = 80
+K = 60
+L = 10
 
 W = np.random.randint(-L, L + 1, size=(K, N))
 W_bob = np.random.randint(-L, L + 1, size=(K, N))
