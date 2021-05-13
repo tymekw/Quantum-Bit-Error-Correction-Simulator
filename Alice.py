@@ -1,8 +1,8 @@
 import TPM
 import numpy as np
 
-N = 80
-K = 60
+N = 10
+K = 10
 L = 10
 
 W = np.random.randint(-L, L + 1, size=(K, N))
