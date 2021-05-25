@@ -13,9 +13,7 @@ max_val = 2*L+1 + L//2
 s = len(bin(max_val))-2
 
 BER = 0.03
-random.seed(10)
-b = random.getrandbits(1000)
-b = bin(b)
+
 
 random.seed(10)
 b_bob = random.getrandbits(1000)
@@ -33,19 +31,19 @@ for _ in range(int(len(b_bob)*BER)):
 
 b_bob = "".join(b_bob)
 
-bits_bob = [b_bob[i:i + s] for i in range(0, len(b), s)]
-
-print(bits_bob)
+bits_bob = [b_bob[i:i + s] for i in range(0, len(b_bob), s)]
 
 
-
-
-
-#
-# s = 3
-
+random.seed(10)
+b_alice = random.getrandbits(1000)
+b_alice = bin(b_alice)[2:]
 # b = bin(b)[2:]
-# bits = [b[i:i + s] for i in range(0, len(b), s)]
+bits_alice = [b_alice[i:i + s] for i in range(0, len(b_alice), s)]
+
+
+
+
+
 
 def get_possible_N_K(bits_len):
     factors = get_factors_list(bits_len)
@@ -74,56 +72,57 @@ def check_N_K(N, K, bits_len):
 
 
 
-best_pair = get_possible_N_K(len(bits))
+best_pair = get_possible_N_K(len(bits_alice))
 print(best_pair)
 
 
-
-print(check_N_K(25, 20, len(bits)))
-print(len(bits))
-
-
+N = 20
+K = 15
+print(check_N_K(N, K, len(bits_alice)))
 
 
 
 
-nums = [int("0b" + str(bit), 2)-max_val//2 for bit in bits]
-print(nums)
-# nums_bob = [int("0b" + str(bit), 2)-3 for bit in bits_bob]
-# # print(len(nums))
-# nums = nums[:N*K]
-# nums_bob = nums_bob[:N*K]
-#
-# arr = np.array(nums)
-# arr = np.reshape(arr, (K, N))
-# arr_bob = np.array(nums_bob)
-# arr_bob = np.reshape(arr_bob, (K, N))
-# # arr = np.squeeze(arr)
-# # print(arr)
-# # print(int("0b" + str(bits_b), 2))
-# # #
-#
-# # W = np.random.randint(-L*10, L*10 + 1, size=(K, N))
-# # W_bob = np.random.randint(-L*10, L*10 + 1, size=(K, N))
-# W = arr
-# W_bob = arr_bob
-#
-# alice = TPM.Tpm(N, K, L, W)
-# bob = TPM.Tpm(N, K, L, W_bob)
-#
-# s = 0
-# while not np.array_equal(alice.W, bob.W):
-#     X = np.random.randint(-1, 2, size=(K, N))
-#     alice.calculate_tau(X)
-#     bob.calculate_tau(X)
-#     while alice.tau != bob.tau:
-#         X = np.random.randint(-1,  2, size=(K, N))
-#         alice.calculate_tau(X)
-#         bob.calculate_tau(X)
-#         print("new X vector")
-#
-#     alice.update_weights(X)
-#     bob.update_weights(X)
-#
-#     s += 1
-#     print(s)
+
+
+
+nums_alice = [int("0b" + str(bit), 2)-max_val//2 for bit in bits_alice]
+print(nums_alice)
+nums_bob = [int("0b" + str(bit), 2)-3 for bit in bits_bob]
+print(nums_bob)
+nums_alice = nums_alice[:N*K]
+nums_bob = nums_bob[:N*K]
+
+arr = np.array(nums_alice)
+arr = np.reshape(arr, (K, N))
+arr_bob = np.array(nums_bob)
+arr_bob = np.reshape(arr_bob, (K, N))
+# arr = np.squeeze(arr)
+# print(arr)
+# print(int("0b" + str(bits_b), 2))
+# #
+
+# W = np.random.randint(-L*10, L*10 + 1, size=(K, N))
+# W_bob = np.random.randint(-L*10, L*10 + 1, size=(K, N))
+W = arr
+W_bob = arr_bob
+
+alice = TPM.Tpm(N, K, L, W)
+bob = TPM.Tpm(N, K, L, W_bob)
+
+s = 0
+while not np.array_equal(alice.W, bob.W):
+    X = np.random.randint(-1, 2, size=(K, N))
+    alice.calculate_tau(X)
+    bob.calculate_tau(X)
+    while alice.tau != bob.tau:
+        X = np.random.randint(-1,  2, size=(K, N))
+        alice.calculate_tau(X)
+        bob.calculate_tau(X)
+        print("new X vector")
+
+    alice.update_weights(X)
+    bob.update_weights(X)
+
+    s += 1
+    print(s)
