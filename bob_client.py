@@ -46,6 +46,7 @@ for i in range(0, 150):
 data = pickle.dumps(bob.W)
 s.sendall(data)
 
+print(bob.W)
 print("done")
 
 

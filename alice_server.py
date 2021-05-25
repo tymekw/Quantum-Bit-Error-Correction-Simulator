@@ -26,9 +26,9 @@ import TPM
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
-N = 10
-K = 10
-L = 10
+N = int(input("N: "))
+K = int(input("K: "))
+L = int(input("L: "))
 machine_conf = [N, K, L]
 W = np.random.randint(-L, L + 1, size=(K, N))
 alice = TPM.Tpm(N, K, L, W)
@@ -81,3 +81,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print('dziala')
 
     print("done")
+
+print(alice.W)
