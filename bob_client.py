@@ -2,10 +2,9 @@ import pickle
 import socket
 import numpy as np
 import TPM
+
 HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65432        # The port used by the server
-
-
+PORT = 65432  # The port used by the server
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
@@ -48,6 +47,3 @@ s.sendall(data)
 
 print(bob.W)
 print("done")
-
-
-

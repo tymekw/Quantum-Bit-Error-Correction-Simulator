@@ -1,30 +1,10 @@
-# ALICE                               BOB
-# NKL                         >       NKL
-# a=create_TPM                >       b=create_TPM
-# W = sha(a)
-# W_b = Null
-# while W != W_b:
-#     UPDATE_W=True           >       UPDATE_W
-#                                     While UPDATE_W:
-#     X = nrand()             >           X
-#     a_tau
-#     B_tau                   <           b_tau
-#                                         UPDATE_X = true
-#     while a_tau!=b_tau                  while UPDATE_X:
-#         X                   >               X
-#         a_tau
-#         b_tau               <               b_tau
-#     UPDATE_X = False        >           UPDATE_X = false
-#     a_update_W                          w=b_update_w
-#     W_b                     <           sha(w)
-
 import socket
 import pickle
 import numpy as np
 import TPM
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 N = int(input("N: "))
 K = int(input("K: "))
@@ -72,7 +52,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 print("X not chosen")
         print(i)
         alice.update_weights(X)
-
 
     print("outside loop")
     bob_w = conn.recv(1000000)
