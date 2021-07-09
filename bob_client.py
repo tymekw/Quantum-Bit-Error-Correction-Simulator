@@ -3,14 +3,19 @@ import socket
 import numpy as np
 import TPM
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65432  # The port used by the server
+# def run():
+HOST = '127.0.0.1'
+PORT = 65432
+
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 # s.sendall(b'Hello, world')
+
 data = s.recv(1024)
 N, K, L = pickle.loads(data)
+
 W_bob = np.random.randint(-L, L + 1, size=(K, N))
 bob = TPM.Tpm(N, K, L, W_bob)
 
@@ -24,7 +29,7 @@ for i in range(0, 150):
             s.close()
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((HOST, PORT))
-        except:
+        except socket.error:
             print("still works")
         x = s.recv(1000000)
         print("x reciv")
