@@ -19,7 +19,7 @@ N, K, L = pickle.loads(data)
 W_bob = np.random.randint(-L, L + 1, size=(K, N))
 bob = TPM.Tpm(N, K, L, W_bob)
 
-for i in range(0, 150):
+for i in range(0, 1500):
 
     print("inside loop")
     common_X = False

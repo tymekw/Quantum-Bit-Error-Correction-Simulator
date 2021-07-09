@@ -1,5 +1,11 @@
-import kivy
+import time
 
+from kivy.clock import Clock
+
+from kivy import clock
+
+import kivy
+import multiprocessing
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.slider import Slider
@@ -15,6 +21,7 @@ import alice_server
 class SampleLayout(GridLayout):
 
     def __init__(self, **kwargs):
+        self.al = None
         self.slider_n = 0
         self.slider_k = 0
         self.slider_l = 0
@@ -27,7 +34,7 @@ class SampleLayout(GridLayout):
         l = Slider(min=0, max=100, value=25)
         l.bind(value=self.on_slider_val_l)
 
-        self.n_label = Label(text="0")
+        self.n_label = Label(text=str(3))
         self.k_label = Label(text="0")
         self.l_label = Label(text="0")
         self.add_widget(Label(text="N"))
@@ -40,12 +47,24 @@ class SampleLayout(GridLayout):
         self.add_widget(l)
         self.add_widget(self.l_label)
 
-        run = Button(text="run")
-        run.bind(on_press=self.run)
-        self.add_widget(run)
+        self.run_b = Button(text="run")
+        self.run_b.bind(on_press=self.run)
+        self.add_widget(self.run_b)
         run_cl = Button(text="run")
         run_cl.bind(on_press=self.run_cl)
         self.add_widget(run_cl)
+
+
+
+    def do_the_loop(self):
+        self.event = Clock.schedule_interval(self.to_be_called, 0.5)
+
+    def to_be_called(self, dt):
+        self.n_label.text = str(self.al.num)
+        if self.al.num > 200:
+            Clock.unschedule(self.event)
+            self.run_b.disabled = False
+
 
     def on_slider_val_n(self, instance, val):
         self.n_label.text = str(val)
@@ -60,7 +79,12 @@ class SampleLayout(GridLayout):
         self.slider_l = int(val)
 
     def run(self, instance):
-        t = threading.Thread(alice_server.run(self.slider_n, self.slider_k, self.slider_l))
+        instance.disabled = True
+        self.al = alice_server.AliceServer()
+        self.do_the_loop()
+        t = threading.Thread(target=self.al.run, args=(self.slider_n, self.slider_k, self.slider_l,))
+        t.daemon = True
+        t.start()
 
     def run_cl(self, instance):
         # t1 = threading.Thread(bob_client.run()).start()
@@ -74,5 +98,5 @@ class MyApp(App):
 
 
 if __name__ == '__main__':
-    threading.Thread(MyApp().run())
+    MyApp().run()
 
