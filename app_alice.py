@@ -1,17 +1,9 @@
-import time
-
 from kivy.clock import Clock
 
-from kivy import clock
-
-import kivy
-import multiprocessing
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.slider import Slider
 import threading
-import subprocess
-kivy.require('2.0.0')  # replace with your current kivy version !
 
 from kivy.app import App
 from kivy.uix.label import Label
@@ -81,20 +73,22 @@ class SampleLayout(GridLayout):
     def run(self, instance):
         instance.disabled = True
         self.al = alice_server.AliceServer()
-        self.do_the_loop()
-        t = threading.Thread(target=self.al.run, args=(self.slider_n, self.slider_k, self.slider_l,))
+        self.al.L = self.slider_l
+        self.al.K = self.slider_k
+        self.al.N = self.slider_n
+        # self.do_the_loop()
+        t = threading.Thread(target=self.al.run)
         t.daemon = True
         t.start()
 
     def run_cl(self, instance):
-        # t1 = threading.Thread(bob_client.run()).start()
         pass
 
 class MyApp(App):
 
     def build(self):
         return SampleLayout()
-    # label = Label(text='Hello world')
+
 
 
 if __name__ == '__main__':

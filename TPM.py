@@ -25,7 +25,6 @@ class Tpm:
         tau = np.prod(sigma)
         self.tau = tau
         self.sigma = sigma
-        # return tau
 
     def update_weights(self, X):
         self.calculate_tau(X)

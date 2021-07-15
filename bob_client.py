@@ -24,18 +24,15 @@ class BobClient:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((self.HOST, self.PORT))
 
-
     def receive_machine_config(self):
         data = self.s.recv(1024)
         self.N, self.K, self.L, self.seed = pickle.loads(data)
-
 
     def create_random_bits(self):
         self.bits.generate_bits(self.seed, 1000)
         self.bits.create_BER(3, 'random')
         self.W_bob = self.bits.bits_to_arr(self.K, self.N)
         print(self.W_bob)
-
 
     def create_machine(self):
         self.bob = TPM.Tpm(self.N, self.K, self.L, self.W_bob)

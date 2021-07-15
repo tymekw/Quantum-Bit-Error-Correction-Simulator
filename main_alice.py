@@ -1,6 +1,6 @@
 import alice_server
 import time
-import threading
+
 
 alice = alice_server.AliceServer()
 

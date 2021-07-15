@@ -20,7 +20,15 @@ class AliceServer:
         self.alice = None
         self.X = None
         self.bits = bits.Bits(2)
-        self.seed = 10
+        self.seed = 1
+
+    def choose_seed(self, seed):
+        self.seed = seed
+
+    def choose_machine_details(self, N, K, L):
+        self.N = N
+        self.K = K
+        self.L = L
 
     def bind(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -86,67 +94,3 @@ class AliceServer:
         print("done")
 
         print(self.alice.W)
-
-
-    # def start(self):
-    #     HOST = '127.0.0.1'
-    #     PORT = 65432
-    #
-    #     print("runs")
-    #     machine_conf = [self.n, self.k, self.l]
-    #     W = np.random.randint(-self.l, self.l + 1, size=(self.k, self.n))
-    #     alice = TPM.Tpm(self.n, self.k, self.l, W)
-    #     print("goes")
-    #     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.s:
-    #         print("before bind")
-    #         # subprocess.Popen("start /wait python bob_client.py", shell=True)
-    #         self.s.bind((HOST, PORT))
-    #         print("bind")
-    #
-    #         self.s.listen()
-    #         conn, addr = self.s.accept()
-    #         # with conn:
-    #         data = pickle.dumps(machine_conf)
-    #         conn.sendall(data)
-    #         print("waits")
-    #         for i in range(0, 1500):
-    #             self.num = i
-    #             print("inside loop")
-    #             bob_tau = None
-    #             alice.tau = 1
-    #             while alice.tau != bob_tau:
-    #                 print("choose X")
-    #                 try:
-    #                     self.s.listen()
-    #                     conn, addr = self.s.accept()
-    #                 except:
-    #                     print("still ok")
-    #                 self.X = np.random.randint(-self.l, self.l + 1, size=(self.k, self.n))
-    #                 alice.calculate_tau(self.X)
-    #                 print("sending X")
-    #                 data = pickle.dumps(self.X)
-    #                 self.conn.sendall(data)
-    #                 print("X send")
-    #                 rec_tau = self.conn.recv(1000000)
-    #                 bob_tau = pickle.loads(rec_tau)
-    #
-    #                 if alice.tau == bob_tau:
-    #                     data = pickle.dumps(1)
-    #                     conn.sendall(data)
-    #                     print("X chosen")
-    #                 else:
-    #                     data = pickle.dumps(0)
-    #                     conn.sendall(data)
-    #                     print("X not chosen")
-    #             print(i)
-    #             alice.update_weights(X)
-    #
-    #         print("outside loop")
-    #         bob_w = conn.recv(1000000)
-    #         bob_wei = pickle.loads(bob_w)
-    #         if np.array_equal(alice.W, bob_wei):
-    #             print('dziala')
-    #
-    #         print("done")
-    #
-    #     print(alice.W)
