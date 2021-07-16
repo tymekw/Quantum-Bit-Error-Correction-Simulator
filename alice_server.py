@@ -1,5 +1,7 @@
 import socket
 import pickle
+import threading
+
 import bits
 import numpy as np
 import TPM
@@ -21,9 +23,22 @@ class AliceServer:
         self.X = None
         self.bits = bits.Bits(2)
         self.seed = 1
+        self.bits_length = 1000
 
-    def choose_seed(self, seed):
+    def set_bits_length(self, length):
+        self.bits_length = length
+
+    def set_seed(self, seed):
         self.seed = seed
+
+    def set_N(self, N):
+        self.N = N
+
+    def set_K(self, K):
+        self.K = K
+
+    def set_L(self, L):
+        self.L = L
 
     def choose_machine_details(self, N, K, L):
         self.N = N
@@ -38,22 +53,27 @@ class AliceServer:
 
         self.s.listen()
         self.conn, self.addr = self.s.accept()
+        print("binded")
+        return True
+
+    def generate_bits(self):
+        self.bits.generate_bits(self.seed, self.bits_length)
 
     def create_machine(self):
-        self.machine_conf = [self.N, self.K, self.L, self.seed]
-        self.bits.generate_bits(self.seed, 1000)
         self.W = self.bits.bits_to_arr(self.K, self.N)
-        print(self.W)
         self.alice = TPM.Tpm(self.N, self.K, self.L, self.W)
 
     def send_machine_config(self):
+        self.machine_conf = [self.N, self.K, self.L, self.seed, self.bits_length]
         data = pickle.dumps(self.machine_conf)
         self.conn.sendall(data)
+        rec = self.conn.recv(1024)
+        if pickle.loads(rec) == 'OK':
+            return True
 
     def run_machine(self):
-
         print("waits")
-        for i in range(0, 1500):
+        for i in range(0, 150):
             print("inside loop")
             bob_tau = None
             self.alice.tau = 1
@@ -94,3 +114,4 @@ class AliceServer:
         print("done")
 
         print(self.alice.W)
+        self.bits.bits = self.bits.arr_to_bits(self.W, self.bits.max_val)

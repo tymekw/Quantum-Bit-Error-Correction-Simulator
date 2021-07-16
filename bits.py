@@ -16,7 +16,7 @@ class Bits:
 
     def generate_bits(self, seed, length):
         random.seed(seed)
-        b = random.getrandbits(1000)
+        b = random.getrandbits(length)
         b = bin(b)
         b = b[2:]
         self.bits = b
@@ -49,14 +49,14 @@ class Bits:
         return np.reshape(arr, (K, N))
 
 
-def arr_to_bits(arr, max_val):
-    al = []
-    for row in arr:
-        for el in row:
-            al.append(el + max_val // 2)
+    def arr_to_bits(self, arr, max_val):
+        al = []
+        for row in arr:
+            for el in row:
+                al.append(el + max_val // 2)
 
-    result_bits = [bin(int(i))[2:] for i in al]
-    max_len = len(max(result_bits, key=len))
-    b = ['0' * (max_len - len(bit)) + bit for bit in result_bits]
-    b = ''.join(b)
-    return b
+        result_bits = [bin(int(i))[2:] for i in al]
+        max_len = len(max(result_bits, key=len))
+        b = ['0' * (max_len - len(bit)) + bit for bit in result_bits]
+        b = ''.join(b)
+        return b

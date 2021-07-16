@@ -47,8 +47,8 @@ bob_b.create_BER(0.05, 'block')
 # print(check_N_K(N, K, len(bits_alice)))
 
 
-K = 15
-N = 20
+K = 10
+N = 10
 W_bob = bob_b.bits_to_arr(K, N)
 W = alice_b.bits_to_arr(K, N)
 
@@ -72,5 +72,6 @@ while not np.array_equal(alice.W, bob.W):
     s += 1
     print(s)
 
-print(bits.arr_to_bits(alice.W, alice_b.max_val))
-print(bits.arr_to_bits(bob.W, bob_b.max_val))
+b = bits.Bits(2)
+print(len(b.arr_to_bits(alice.W, alice_b.max_val)))
+print(b.arr_to_bits(bob.W, bob_b.max_val))

@@ -10,7 +10,7 @@ print("alice bind")
 alice.bind()
 time.sleep(1)
 print("bob bind")
-
+alice.generate_bits()
 time.sleep(1)
 print("alice create machine")
 alice.create_machine()

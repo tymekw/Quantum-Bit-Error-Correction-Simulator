@@ -18,6 +18,7 @@ class BobClient:
         self.HOST = '127.0.0.1'
         self.PORT = 65432
         self.bits = bits.Bits(2)
+        self.bits_length = None
 
     def bind(self):
         print("BIIIIIIIIIIIIIND")
@@ -26,10 +27,11 @@ class BobClient:
 
     def receive_machine_config(self):
         data = self.s.recv(1024)
-        self.N, self.K, self.L, self.seed = pickle.loads(data)
+        self.N, self.K, self.L, self.seed, self.bits_length = pickle.loads(data)
+        self.s.sendall(pickle.dumps("OK"))
 
     def create_random_bits(self):
-        self.bits.generate_bits(self.seed, 1000)
+        self.bits.generate_bits(self.seed, self.bits_length)
         self.bits.create_BER(3, 'random')
         self.W_bob = self.bits.bits_to_arr(self.K, self.N)
         print(self.W_bob)
@@ -38,7 +40,7 @@ class BobClient:
         self.bob = TPM.Tpm(self.N, self.K, self.L, self.W_bob)
 
     def run_TPM_machine(self):
-        for i in range(0, 1500):
+        for i in range(0, 150):
 
             print("inside loop")
             common_X = False
