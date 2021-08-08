@@ -124,7 +124,7 @@ class ServerLayout(GridLayout):
 
     def on_create_bits(self, instance):
         self.alice.set_seed(self.seed_text_field.text)
-        self.alice.bits.generate_bits(self.alice.seed, self.alice.bits_length)
+        self.alice.generate_bits()
         self.bits_label_all.text = str(self.alice.bits.bits)
 
     def on_send_config(self, instance):

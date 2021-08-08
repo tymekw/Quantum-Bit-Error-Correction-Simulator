@@ -30,13 +30,15 @@ class BobClient:
         self.N, self.K, self.L, self.seed, self.bits_length = pickle.loads(data)
         self.s.sendall(pickle.dumps("OK"))
 
+    def generate_bits(self):
+        self.bits.generate_bits(self.seed, self.bits_length)
+
     def create_random_bits(self):
         self.bits.generate_bits(self.seed, self.bits_length)
-        self.bits.create_BER(3, 'random')
-        self.W_bob = self.bits.bits_to_arr(self.K, self.N)
-        print(self.W_bob)
+        self.bits.create_BER()
 
     def create_machine(self):
+        self.W_bob = self.bits.bits_to_arr(self.K, self.N)
         self.bob = TPM.Tpm(self.N, self.K, self.L, self.W_bob)
 
     def run_TPM_machine(self):
