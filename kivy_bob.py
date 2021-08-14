@@ -50,8 +50,9 @@ class ClientLayout(GridLayout):
         self.buttons_layout.add_widget(self.create_bits_button)
         self.create_bits_button.bind(on_press=self.on_create_bits)
         self.buttons_layout.add_widget(self.import_bits_button)
-        # ToDo
+        # ToDo import bits
         self.buttons_layout.add_widget(self.run_machine_button)
+        self.run_machine_button.bind(on_press=self.on_run_machine)
 
         self.add_widget(self.buttons_layout)
 
@@ -76,7 +77,7 @@ class ClientLayout(GridLayout):
         self.add_widget(self.bits_editor_layout)
 
         self.bits_layout = GridLayout(cols=1)
-        self.bits_label_all = TextInput(text='111', disabled=True, cursor=(0, 0))
+        self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0, 0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
 
@@ -133,6 +134,28 @@ class ClientLayout(GridLayout):
     def on_create_bits(self, instance):
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
+
+    def on_run_machine(self, instance):
+        self.bob.create_machine()
+        self.show_run_popup() # ToDo
+        self.run_thread = threading.Thread(target=self.bob.run_TPM_machine)
+        self.run_thread.daemon = True
+        self.run_thread.start()
+        close_popup_thread = threading.Thread(target=self.close_run_popup)  # ToDo
+        close_popup_thread.daemon = True
+        close_popup_thread.start()
+
+    def close_run_popup(self):
+        while True:
+            if not self.run_thread.is_alive():
+                self.popup_window.dismiss()
+                self.bits_label_all.text = str(self.bob.bits.bits)
+                return True
+
+    def show_run_popup(self):
+        self.popup_window = Popup(title="running machine", size_hint=(None, None), size=(400, 400),
+                                  auto_dismiss=False)
+        self.popup_window.open()
 
 class ClientApp(App):
     def build(self):

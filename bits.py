@@ -6,9 +6,12 @@ class Bits:
         self.bits = None
         self.BER = None
         self.type = 'random'
-        self.L = 2
+        self.L = L
         self.max_val = 2*self.L+1 + self.L//2
         self.s = len(bin(self.max_val))-2
+        # needed_bits_len = len(bin(2*self.L))
+        # self.max_val = int('0b' + str('1'*needed_bits_len))
+        # self.s = len
 
     def change_L(self, L):
         self.L = L
@@ -46,6 +49,15 @@ class Bits:
         bits_list = [self.bits[i:i + self.s] for i in range(0, len(self.bits), self.s)]
         nums = [int("0b" + str(bit), 2) - self.max_val // 2 for bit in bits_list]
         nums = nums[:N * K]
+        print(self.L)
+        print(nums)
+        for i, element in enumerate(nums):
+
+            if element > self.L:
+                nums[i] = self.L
+            elif element < -self.L:
+                nums[i] = -self.L
+
         arr = np.array(nums)
         return np.reshape(arr, (K, N))
 
@@ -56,7 +68,10 @@ class Bits:
             for el in row:
                 al.append(el + max_val // 2)
 
+        print(al)
+
         result_bits = [bin(int(i))[2:] for i in al]
+        print(result_bits)
         max_len = len(max(result_bits, key=len))
         b = ['0' * (max_len - len(bit)) + bit for bit in result_bits]
         b = ''.join(b)

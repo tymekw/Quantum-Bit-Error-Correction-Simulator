@@ -17,7 +17,7 @@ class BobClient:
         self.seed = None
         self.HOST = '127.0.0.1'
         self.PORT = 65432
-        self.bits = bits.Bits(2)
+        self.bits = None
         self.bits_length = None
 
     def bind(self):
@@ -28,6 +28,7 @@ class BobClient:
     def receive_machine_config(self):
         data = self.s.recv(1024)
         self.N, self.K, self.L, self.seed, self.bits_length = pickle.loads(data)
+        self.bits = bits.Bits(self.L)
         self.s.sendall(pickle.dumps("OK"))
 
     def generate_bits(self):
@@ -42,6 +43,8 @@ class BobClient:
         self.bob = TPM.Tpm(self.N, self.K, self.L, self.W_bob)
 
     def run_TPM_machine(self):
+        print(self.W_bob)
+        print(self.bob.W)
         for i in range(0, 150):
 
             print("inside loop")
@@ -74,3 +77,4 @@ class BobClient:
 
         print(self.bob.W)
         print("done")
+        self.bits.bits = self.bits.arr_to_bits(self.bob.W, self.bits.max_val)

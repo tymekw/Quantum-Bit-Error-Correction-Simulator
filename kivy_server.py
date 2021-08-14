@@ -44,7 +44,7 @@ class ServerLayout(GridLayout):
         self.n_slider.bind(value=self.on_slider_n)
         self.k_slider = Slider(min=1, max=100, value=10)
         self.k_slider.bind(value=self.on_slider_k)
-        self.l_slider = Slider(min=1, max=100, value=10)
+        self.l_slider = Slider(min=1, max=100, value=2)
         self.l_slider.bind(value=self.on_slider_l)
         self.bits_slider = Slider(min=1, max=10000, value=1000)
         self.bits_slider.bind(value=self.on_slider_bits)

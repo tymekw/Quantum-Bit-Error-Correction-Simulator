@@ -11,7 +11,7 @@ class AliceServer:
     def __init__(self):
         self.N = 10
         self.K = 5
-        self.L = 5
+        self.L = 2
         self.HOST = '127.0.0.1'
         self.PORT = 65432
         self.s = None
@@ -21,7 +21,7 @@ class AliceServer:
         self.W = None
         self.alice = None
         self.X = None
-        self.bits = bits.Bits(2)
+        self.bits = bits.Bits(self.L)
         self.seed = 1
         self.bits_length = 1000
 
@@ -73,6 +73,8 @@ class AliceServer:
 
     def run_machine(self):
         print("waits")
+        print(self.W)
+        print(self.alice.W)
         for i in range(0, 150):
             print("inside loop")
             bob_tau = None
@@ -114,4 +116,4 @@ class AliceServer:
         print("done")
 
         print(self.alice.W)
-        self.bits.bits = self.bits.arr_to_bits(self.W, self.bits.max_val)
+        self.bits.bits = self.bits.arr_to_bits(self.alice.W, self.bits.max_val)
