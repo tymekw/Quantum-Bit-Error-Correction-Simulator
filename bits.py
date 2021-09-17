@@ -34,8 +34,9 @@ class Bits:
                     b_list[random.randint(0, len(b_list) - 1)] = "1"
 
         elif self.type == 'block':
-            start_idx = random.randint(0, len(b_list)*(1-self.BER) - 1)
-            for i in range(int(len(b_list) * 0.01*self.BER)):
+            how_many_to_change = int(len(b_list) * 0.01*self.BER)
+            start_idx = random.randint(0, len(b_list)- 1 - how_many_to_change)
+            for i in range(how_many_to_change):
                 if b_list[start_idx+i] == "1":
                     b_list[start_idx + i] = "0"
                 else:
@@ -46,6 +47,8 @@ class Bits:
     def bits_to_arr(self, K, N):
         min_req_bits = math.ceil(math.log2(self.max_val + 1))
         bits_list = [self.bits[i:i + min_req_bits] for i in range(0, len(self.bits), min_req_bits)]
+        if len(bits_list[-1]) < min_req_bits:
+            bits_list[-1] = '0'*( min_req_bits - len(bits_list[-1]))  +bits_list[-1]
         nums = [int("0b" + str(bit), 2) - self.max_val // 2 for bit in bits_list]
         nums = nums[:N * K]
         self.first_bin = None
@@ -69,17 +72,13 @@ class Bits:
                 nums[i] = element
         return nums
 
-    def arr_to_bits(self, arr, max_val):
+    def arr_to_bits(self, arr, length):
         al = []
         for row in arr:
             for el in row:
-                al.append(el + max_val // 2)
-
-        print(al)
-
+                al.append(el + self.max_val // 2)
         result_bits = [bin(int(i))[2:] for i in al]
-        print(result_bits)
         max_len = len(max(result_bits, key=len))
         b = ['0' * (max_len - len(bit)) + bit for bit in result_bits]
         b = ''.join(b)
-        return b
+        return b[:length]

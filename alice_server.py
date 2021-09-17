@@ -116,4 +116,4 @@ class AliceServer:
         print("done")
 
         print(self.alice.W)
-        self.bits.bits = self.bits.arr_to_bits(self.alice.W, self.bits.max_val)
+        self.bits.bits = self.bits.arr_to_bits(self.alice.W, self.bits_length)

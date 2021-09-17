@@ -77,4 +77,4 @@ class BobClient:
 
         print(self.bob.W)
         print("done")
-        self.bits.bits = self.bits.arr_to_bits(self.bob.W, self.bits.max_val)
+        self.bits.bits = self.bits.arr_to_bits(self.bob.W, self.bits_length)
