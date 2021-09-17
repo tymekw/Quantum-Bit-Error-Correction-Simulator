@@ -38,10 +38,10 @@ class ClientLayout(GridLayout):
 
         self.buttons_layout = GridLayout(cols=2)
         self.bind_button = Button(text="Bind with server")
-        self.read_config_button = Button(text="Read machine config")
-        self.create_bits_button = Button(text="Create random bits")
+        self.read_config_button = Button(text="Read machine config", disabled=True)
+        self.create_bits_button = Button(text="Create random bits", disabled=True)
         self.import_bits_button = Button(text="Import bits", disabled=True)
-        self.run_machine_button = Button(text="Run machine")
+        self.run_machine_button = Button(text="Run machine", disabled=True)
 
         self.buttons_layout.add_widget(self.bind_button)
         self.bind_button.bind(on_press=self.on_bind)
@@ -60,12 +60,12 @@ class ClientLayout(GridLayout):
 
         self.ber_label = Label(text="BER")
         self.ber_value = Label(text="0")
-        self.ber_slider = Slider(min=0, max=10, value=0)
+        self.ber_slider = Slider(min=0, max=10, value=0, disabled=True)
         self.ber_slider.bind(value=self.on_ber_slider)
 
         self.choose_label = Label(text="Choose BER version")
-        self.random_button = Button(text="RANDOM")
-        self.block_button = Button(text="BLOCK")
+        self.random_button = Button(text="RANDOM", disabled=True)
+        self.block_button = Button(text="BLOCK", disabled=True)
 
         self.bits_editor_layout.add_widget(self.ber_label)
         self.bits_editor_layout.add_widget(self.ber_value)
@@ -87,6 +87,7 @@ class ClientLayout(GridLayout):
 
     def on_bind(self, instance):
         instance.disabled = True
+        self.read_config_button.disabled = False
         self.show_bind_popup()
         self.bind_thread = threading.Thread(target=self.bob.bind)
         self.bind_thread.daemon = True
@@ -108,6 +109,10 @@ class ClientLayout(GridLayout):
 
     def on_read_config(self, instance):
         instance.disabled = True
+        self.create_bits_button.disabled = False
+        self.ber_slider.disabled = False
+        self.random_button.disabled = False
+        self.block_button.disabled = False
         self.show_read_popup()
         self.read_config_thread = threading.Thread(target=self.bob.receive_machine_config)
         self.read_config_thread.deamon = True
@@ -132,6 +137,8 @@ class ClientLayout(GridLayout):
         self.popup_window.open()
 
     def on_create_bits(self, instance):
+        self.create_bits_button.disabled = True
+        self.run_machine_button.disabled = False
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
 

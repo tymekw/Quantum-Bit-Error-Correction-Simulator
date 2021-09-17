@@ -67,9 +67,9 @@ class ServerLayout(GridLayout):
         self.import_bits_button = Button(text="Import bits", disabled=True)
         # self.import_bits_button.bind(on_press=self.function)
 
-        self.send_machine_config_button = Button(text="Send machine config")
+        self.send_machine_config_button = Button(text="Send machine config", disabled=True)
         self.send_machine_config_button.bind(on_press=self.on_send_config)
-        self.run_machine_button = Button(text="Run machine")
+        self.run_machine_button = Button(text="Run machine", disabled=True)
         self.run_machine_button.bind(on_press=self.on_run_machine)
 
         self.buttons_layout.add_widget(self.bind_button)
@@ -81,7 +81,7 @@ class ServerLayout(GridLayout):
         self.add_widget(self.buttons_layout)
 
         self.bits_layout = GridLayout(cols=1)
-        self.bits_label_all = TextInput(text='111', disabled=True, cursor=(0,0))
+        self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0,0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
 
@@ -103,6 +103,7 @@ class ServerLayout(GridLayout):
 
     def on_bind(self, instance):
         instance.disabled = True
+        self.send_machine_config_button.disabled = False
         self.show_bind_popup()
         self.bind_thread = threading.Thread(target=self.alice.bind)
         self.bind_thread.daemon = True
@@ -133,8 +134,9 @@ class ServerLayout(GridLayout):
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
         self.seed_text_field.disabled = True
-        self.create_bits_button.disabled = True
+        # self.create_bits_button.disabled = True
         instance.disabled = True
+        self.run_machine_button.disabled = False
         self.show_send_popup()
         self.send_config_thread = threading.Thread(target=self.alice.send_machine_config)
         self.send_config_thread.daemon = True

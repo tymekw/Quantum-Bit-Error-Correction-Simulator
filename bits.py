@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import math
 
 class Bits:
     def __init__(self, L):
@@ -7,22 +8,20 @@ class Bits:
         self.BER = None
         self.type = 'random'
         self.L = L
-        self.max_val = 2*self.L+1 + self.L//2
-        self.s = len(bin(self.max_val))-2
-        # needed_bits_len = len(bin(2*self.L))
-        # self.max_val = int('0b' + str('1'*needed_bits_len))
-        # self.s = len
+        self.max_val = 2*self.L
 
     def change_L(self, L):
         self.L = L
         self.max_val = 2 * self.L + 1 + self.L // 2
-        self.s = len(bin(self.max_val)) - 2
 
     def generate_bits(self, seed, length):
         random.seed(seed)
         b = random.getrandbits(length)
+        b = b
         b = bin(b)
         b = b[2:]
+        if len(b) != length:
+            b = '0' * (length - len(b)) + b
         self.bits = b
 
     def create_BER(self):
@@ -44,23 +43,31 @@ class Bits:
 
         self.bits = "".join(b_list)
 
-
     def bits_to_arr(self, K, N):
-        bits_list = [self.bits[i:i + self.s] for i in range(0, len(self.bits), self.s)]
+        min_req_bits = math.ceil(math.log2(self.max_val + 1))
+        bits_list = [self.bits[i:i + min_req_bits] for i in range(0, len(self.bits), min_req_bits)]
         nums = [int("0b" + str(bit), 2) - self.max_val // 2 for bit in bits_list]
         nums = nums[:N * K]
-        print(self.L)
-        print(nums)
-        for i, element in enumerate(nums):
-
-            if element > self.L:
-                nums[i] = self.L
-            elif element < -self.L:
-                nums[i] = -self.L
-
+        self.first_bin = None
+        self.next_new = None
+        nums = self.handle_bits_outside_range(nums)
         arr = np.array(nums)
         return np.reshape(arr, (K, N))
 
+    def handle_bits_outside_range(self, nums):
+        for i, element in enumerate(nums):
+            if element > self.L:
+                if not self.first_bin:
+                    self.first_bin = bin(element + self.max_val // 2)
+                    self.next_new = int('0b' + self.first_bin[3:], 2)
+                else:
+                    if self.next_new < self.max_val:
+                        self.next_new = self.next_new + 1
+                    else:
+                        self.next_new = 0
+                element = self.next_new - self.max_val // 2
+                nums[i] = element
+        return nums
 
     def arr_to_bits(self, arr, max_val):
         al = []
