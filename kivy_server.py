@@ -18,7 +18,7 @@ class ServerLayout(GridLayout):
         self.n_label = Label(text="N value")
         self.k_label = Label(text="K value")
         self.l_label = Label(text="L value")
-        self.n_value = Label(text="10")
+        self.n_value = Label(text="2")
         self.k_value = Label(text="10")
         self.l_value = Label(text="10")
 
@@ -127,6 +127,9 @@ class ServerLayout(GridLayout):
         self.alice.set_seed(self.seed_text_field.text)
         self.alice.generate_bits()
         self.bits_label_all.text = str(self.alice.bits.bits)
+        self.alice.create_machine()
+        self.n_value.text = str(self.alice.N)
+        self.k_value.text = str(self.alice.K)
 
     def on_send_config(self, instance):
         self.n_slider.disabled = True
@@ -157,7 +160,6 @@ class ServerLayout(GridLayout):
         self.popup_window.open()
 
     def on_run_machine(self, instance):
-        self.alice.create_machine()
         self.show_run_popup()
         self.run_thread = threading.Thread(target=self.alice.run_machine)
         self.run_thread.daemon = True
