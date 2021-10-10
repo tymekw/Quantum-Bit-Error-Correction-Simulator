@@ -1,7 +1,9 @@
-from subprocess import Popen, PIPE
+import os
+from subprocess import Popen
+
 if __name__ == "__main__":
-    p1 = Popen("python D:\\AGH\\inż\\neural_crypto\\neural_crypto\\kivy_server.py",stderr=PIPE, stdout=PIPE, shell=True)
-    p2 = Popen("python D:\\AGH\\inż\\neural_crypto\\neural_crypto\\kivy_bob.py",stderr=PIPE, stdout=PIPE, shell=True)
-    p1.communicate()
-    p2.communicate()
-    # print()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    p1 = Popen("python {}\\kivy_server.py".format(dir_path))
+    p2 = Popen("python {}\\kivy_bob.py".format(dir_path))
+    print(p1.communicate())
+    print(p2.communicate())
