@@ -1,3 +1,4 @@
+import math
 
 import bob_client
 import time
@@ -48,6 +49,7 @@ bob.create_random_bits()
 time.sleep(2)
 print("bob create machine")
 bob.create_machine()
+print("K: {}, N : {}".format(bob.K, bob.N))
 print("alice run")
 time.sleep(2)
 print("bob run")

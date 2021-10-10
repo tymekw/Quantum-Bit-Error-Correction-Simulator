@@ -5,7 +5,7 @@ import math
 class Bits:
     def __init__(self, L):
         self.bits = None
-        self.BER = None
+        self.BER = 3
         self.type = 'random'
         self.L = L
         self.max_val = 2*self.L
@@ -43,19 +43,20 @@ class Bits:
                     b_list[start_idx + i] = "1"
 
         self.bits = "".join(b_list)
-
-    def bits_to_arr(self, K, N):
+    def bits_to_w(self):
         min_req_bits = math.ceil(math.log2(self.max_val + 1))
         bits_list = [self.bits[i:i + min_req_bits] for i in range(0, len(self.bits), min_req_bits)]
         if len(bits_list[-1]) < min_req_bits:
-            bits_list[-1] = '0'*( min_req_bits - len(bits_list[-1]))  +bits_list[-1]
+            bits_list[-1] = '0' * (min_req_bits - len(bits_list[-1])) + bits_list[-1]
         nums = [int("0b" + str(bit), 2) - self.max_val // 2 for bit in bits_list]
-        nums = nums[:N * K]
         self.first_bin = None
         self.next_new = None
         nums = self.handle_bits_outside_range(nums)
         arr = np.array(nums)
-        return np.reshape(arr, (K, N))
+        return arr
+
+    def bits_to_arr(self, K, N):
+        return np.reshape(self.bits_to_w(), (K, N))
 
     def handle_bits_outside_range(self, nums):
         for i, element in enumerate(nums):
@@ -82,3 +83,5 @@ class Bits:
         b = ['0' * (max_len - len(bit)) + bit for bit in result_bits]
         b = ''.join(b)
         return b[:length]
+
+

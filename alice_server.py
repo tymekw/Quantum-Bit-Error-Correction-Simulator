@@ -1,3 +1,4 @@
+import math
 import socket
 import pickle
 import threading
@@ -59,7 +60,34 @@ class AliceServer:
     def generate_bits(self):
         self.bits.generate_bits(self.seed, self.bits_length)
 
+    def get_possible_N_K(self, w_len):
+        factors = self.get_factors_list(w_len)
+        return self.get_best_pair(factors)
+        # return factors
+
+    def get_factors_list(self, w_len):
+        factors = []
+        for i in range(1, w_len + 1):
+            if w_len % i == 0:
+                factors.append((i, int(w_len / i)))
+        return factors
+
+    def get_best_pair(self, factors):
+        best_pair = None
+        tmp = math.inf
+        for factor_pair in factors:
+            dif = max(factor_pair) - min(factor_pair)
+            if tmp > dif:
+                best_pair = factor_pair
+                tmp = dif
+        return best_pair
+
+    # def check_N_K(self, N, K, bits_len):
+    #     return N * K < bits_len
+
     def create_machine(self):
+        W_len = len(self.bits.bits_to_w())
+        self.N, self.K = self.get_possible_N_K(W_len)
         self.W = self.bits.bits_to_arr(self.K, self.N)
         self.alice = TPM.Tpm(self.N, self.K, self.L, self.W)
 
@@ -108,6 +136,8 @@ class AliceServer:
             self.alice.update_weights(self.X)
 
         print("outside loop")
+
+        #ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(self.alice.W, bob_wei):

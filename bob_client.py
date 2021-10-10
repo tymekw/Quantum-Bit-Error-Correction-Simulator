@@ -72,6 +72,7 @@ class BobClient:
             print(i)
             self.bob.update_weights(self.X)
 
+        #ToDo check if weights are the same
         data = pickle.dumps(self.bob.W)
         self.s.sendall(data)
 
