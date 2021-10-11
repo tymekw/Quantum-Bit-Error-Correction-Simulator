@@ -115,7 +115,8 @@ class AliceServer:
                 except:
                     print("socket error")
 
-                self.X = np.random.randint(-self.L, self.L + 1, size=(self.K, self.N))
+                self.X = np.random.choice([-1, 1], size=(self.K, self.N))
+
                 self.alice.calculate_tau(self.X)
                 print("sending X")
                 data = pickle.dumps(self.X)

@@ -10,12 +10,14 @@ def get_possible_N_K(bits_len):
     factors = get_factors_list(bits_len)
     return get_best_pair(factors)
 
+
 def get_factors_list(number):
-    factors =[]
-    for i in range(1, number+1):
+    factors = []
+    for i in range(1, number + 1):
         if number % i == 0:
-            factors.append((i, int(number/i)))
+            factors.append((i, int(number / i)))
     return factors
+
 
 def get_best_pair(factors):
     best_pair = None
@@ -28,8 +30,9 @@ def get_best_pair(factors):
 
     return best_pair
 
+
 def check_N_K(N, K, bits_len):
-    return N*K < bits_len
+    return N * K < bits_len
 
 
 print("alice bind")
