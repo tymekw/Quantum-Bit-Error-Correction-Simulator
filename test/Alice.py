@@ -8,12 +8,14 @@ L = 2
 bob_b = bits.Bits(L)
 alice_b = bits.Bits(L)
 
-bob_b.generate_bits(100, 300)
-alice_b.generate_bits(100, 300)
+bob_b.generate_bits(100, 288)
+alice_b.generate_bits(100, 288)
 bob_b.type = 'block'
-bob_b.BER = 30
+bob_b.BER = 3
 bob_b.create_BER()
 
+input = alice_b.bits
+input_b = bob_b.bits
 
 def get_possible_N_K(bits_len):
     factors = get_factors_list(bits_len)
@@ -54,11 +56,17 @@ def check_N_K(N, K, bits_len):
 
 # fink K and L
 bits_len = len(alice_b.bits_to_w())
-print(bits_len)
-print(get_possible_N_K(bits_len))
+# print(bits_len)
+K,N = get_best_pair(get_possible_N_K(bits_len))
+print(str(K) + ' ' + str(N))
+# W_len = alice_b.bits.bits_to_w())
+# self.N, self.K = self.get_possible_N_K(W_len)
+# self.W = self.bits.bits_to_arr(self.K, self.N)
+# self.alice = TPM.Tpm(self.N, self.K, self.L, self.W)
 
-K = 2
-N = 43
+
+# # K = 2
+# # N = 43
 W_bob = bob_b.bits_to_arr(K, N)
 W = alice_b.bits_to_arr(K, N)
 
@@ -85,9 +93,13 @@ while not np.array_equal(alice.W, bob.W):
 # b = bits.Bits(2)
 # print(len(b.arr_to_bits(alice.W, alice_b.max_val)))
 # print(len(b.arr_to_bits(bob.W, bob_b.max_val)))
-
+print(input)
+print(input_b)
 new_bits_bob = bob_b.arr_to_bits(bob.W, 256)
 new_bits_alice = alice_b.arr_to_bits(alice.W, 256)
-# print(bob_b.bits)
-# print(alice_b.bits)
-# print(len())
+print(new_bits_bob)
+print(new_bits_alice)
+
+
+print(bob.W)
+print(alice.W)

@@ -70,7 +70,7 @@ class BobClient:
                 print(common_X)
 
             print(i)
-            self.bob.update_weights(self.X)
+            self.W_bob = self.bob.update_weights(self.X)
 
         #ToDo check if weights are the same
         data = pickle.dumps(self.bob.W)
@@ -79,3 +79,13 @@ class BobClient:
         print(self.bob.W)
         print("done")
         self.bits.bits = self.bits.arr_to_bits(self.bob.W, self.bits_length)
+
+
+    def get_config(self, N, K, L, seed, len):
+        self.N = N
+        self.K = K
+        self.L = L
+        self.seed = seed
+        self.bits_length = len
+        self.bits = bits.Bits(self.L)
+

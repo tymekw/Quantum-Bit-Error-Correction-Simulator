@@ -115,8 +115,7 @@ class AliceServer:
                 except:
                     print("socket error")
 
-                self.X = np.random.choice([-1, 1], size=(self.K, self.N))
-
+                self.X = np.random.choice([-1,1], size=(self.K, self.N))
                 self.alice.calculate_tau(self.X)
                 print("sending X")
                 data = pickle.dumps(self.X)
@@ -134,7 +133,7 @@ class AliceServer:
                     self.conn.sendall(data)
                     print("X not chosen")
             print(i)
-            self.alice.update_weights(self.X)
+            self.W = self.alice.update_weights(self.X)
 
         print("outside loop")
 

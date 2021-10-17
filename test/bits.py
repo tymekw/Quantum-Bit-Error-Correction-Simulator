@@ -43,6 +43,7 @@ class Bits:
                     b_list[start_idx + i] = "1"
 
         self.bits = "".join(b_list)
+
     def bits_to_w(self):
         min_req_bits = math.ceil(math.log2(self.max_val + 1))
         bits_list = [self.bits[i:i + min_req_bits] for i in range(0, len(self.bits), min_req_bits)]
