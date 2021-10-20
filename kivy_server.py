@@ -7,6 +7,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 import alice_server
 import threading
+from plyer import filechooser
 
 
 class ServerLayout(GridLayout):
@@ -58,7 +59,6 @@ class ServerLayout(GridLayout):
         # for i in range(0,10):
         #     self.N_grid_layout.add_widget(Button(text=str(i)))
 
-
         self.machine_sliders_text_layout.add_widget(self.N_grid_layout)
         self.machine_sliders_text_layout.add_widget(self.K_grid_layout)
         self.machine_sliders_text_layout.add_widget(self.l_slider)
@@ -73,8 +73,8 @@ class ServerLayout(GridLayout):
         self.create_bits_button = Button(text="Create random bits")
         self.create_bits_button.bind(on_press=self.on_create_bits)
 
-        self.import_bits_button = Button(text="Import bits", disabled=True)
-        # self.import_bits_button.bind(on_press=self.function)
+        self.import_bits_button = Button(text="Import bits", disabled=False)
+        self.import_bits_button.bind(on_press=self.on_import_bits)
 
         self.send_machine_config_button = Button(text="Send machine config", disabled=True)
         self.send_machine_config_button.bind(on_press=self.on_send_config)
@@ -90,10 +90,38 @@ class ServerLayout(GridLayout):
         self.add_widget(self.buttons_layout)
 
         self.bits_layout = GridLayout(cols=1)
-        self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0,0))
+        self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0, 0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
         self.on_bind(self.bind_button)
+
+    def on_import_bits(self, instance):
+        self.remove_n_k_buttons()
+        path = filechooser.open_file(title="Pick a txt file..",
+                                     filters=[("Text files", "*.txt")])[0]
+        # print(path)
+        with open(path, 'r') as f:
+            lines = f.readline()
+
+        self.alice.bits.bits = lines
+        self.bits_label_all.text = str(self.alice.bits.bits)
+        self.alice.create_machine()
+        possible_nk = self.alice.get_factors_list()
+        print(possible_nk)
+        for i, j in possible_nk:
+            self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
+            self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
+        self.n_value.text = str(self.alice.N)
+        self.k_value.text = str(self.alice.K)
+        self.bits_slider.value = str(len(self.alice.bits.bits))
+        self.bits_slider.disabled = True
+        self.l_slider.disabled = True
+        self.create_bits_button.disabled = True
+        self.import_bits_button.disabled = True
+        self.send_machine_config_button.disabled = False
+
+
+
 
     def on_slider_n(self, instance, value):
         self.n_value.text = str(int(value))
@@ -113,7 +141,7 @@ class ServerLayout(GridLayout):
 
     def on_bind(self, instance):
         instance.disabled = True
-        self.send_machine_config_button.disabled = False
+        # self.send_machine_config_button.disabled = False
         # self.show_bind_popup()
         self.bind_thread = threading.Thread(target=self.alice.bind)
         self.bind_thread.daemon = True
@@ -144,8 +172,15 @@ class ServerLayout(GridLayout):
         for i, j in possible_nk:
             self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
             self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
+        for b in self.N_grid_layout.children:
+            if b.text == str(self.alice.N):
+                b.background_normal = b.background_down
+        for b in self.K_grid_layout.children:
+            if b.text ==  str(self.alice.K):
+                b.background_normal = b.background_down
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
+        self.send_machine_config_button.disabled = False
 
     def remove_n_k_buttons(self):
         self.N_grid_layout.clear_widgets()
@@ -154,8 +189,6 @@ class ServerLayout(GridLayout):
             self.N_grid_layout.remove_widget(b)
         for b in self.K_grid_layout.children:
             self.K_grid_layout.remove_widget(b)
-
-
 
     def get_possible_k(self, given_n):
         for n, k in self.alice.get_factors_list():
@@ -200,7 +233,6 @@ class ServerLayout(GridLayout):
             button.background_normal = 'atlas://data/images/defaulttheme/button'
         for button in self.K_grid_layout.children:
             button.background_normal = 'atlas://data/images/defaulttheme/button'
-
 
     def on_send_config(self, instance):
         # self.n_slider.disabled = True
@@ -260,6 +292,7 @@ class ServerLayout(GridLayout):
         self.popup_window = Popup(title="running machine", size_hint=(None, None), size=(400, 400),
                                   auto_dismiss=False)
         self.popup_window.open()
+
 
 class ServerApp(App):
     def build(self):

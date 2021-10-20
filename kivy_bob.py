@@ -8,6 +8,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 import bob_client
 import threading
+from plyer import filechooser
 
 
 class ClientLayout(GridLayout):
@@ -50,7 +51,7 @@ class ClientLayout(GridLayout):
         self.buttons_layout.add_widget(self.create_bits_button)
         self.create_bits_button.bind(on_press=self.on_create_bits)
         self.buttons_layout.add_widget(self.import_bits_button)
-        # ToDo import bits
+        self.import_bits_button.bind(on_press=self.on_import_bits)
         self.buttons_layout.add_widget(self.run_machine_button)
         self.run_machine_button.bind(on_press=self.on_run_machine)
 
@@ -81,6 +82,37 @@ class ClientLayout(GridLayout):
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
 
+    def on_import_bits(self, instance):
+        # self.remove_n_k_buttons()
+        path = filechooser.open_file(title="Pick a txt file..",
+                                     filters=[("Text files", "*.txt")])[0]
+        # print(path)
+        with open(path, 'r') as f:
+            lines = f.readline()
+
+        self.bob.bits.bits = lines
+        self.bits_label_all.text = str(self.bob.bits.bits)
+        self.bits_len_value = len(self.bob.bits.bits)
+        if len(self.bob.bits.bits) != self.bob.bits_length:
+            self.bits_label_all.text = "choose bits with proper length: {}".format( self.bob.bits_length)
+        else:
+            self.run_machine_button.disabled = False
+            self.create_bits_button.disabled = True
+            self.import_bits_button.disabled = True
+        # self..create_machine()
+        # possible_nk = self.alice.get_factors_list()
+        # print(possible_nk)
+        # for i, j in possible_nk:
+        #     self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
+        #     self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
+        # self.n_value.text = str(self.alice.N)
+        # self.k_value.text = str(self.alice.K)
+        # self.bits_slider.value = str(len(self.alice.bits.bits))
+        # self.bits_slider.disabled = True
+        # self.l_slider.disabled = True
+        # self.create_bits_button.disabled = True
+        # self.import_bits_button.disabled = True
+
     def on_ber_slider(self, instance, value):
         self.ber_value.text = str(int(value))
         self.bob.bits.BER = int(value)
@@ -110,6 +142,7 @@ class ClientLayout(GridLayout):
     def on_read_config(self, instance):
         instance.disabled = True
         self.create_bits_button.disabled = False
+        self.import_bits_button.disabled = False
         self.ber_slider.disabled = False
         self.random_button.disabled = False
         self.block_button.disabled = False
@@ -120,6 +153,7 @@ class ClientLayout(GridLayout):
         close_popup_thread = threading.Thread(target=self.close_read_popup)
         close_popup_thread.daemon = True
         close_popup_thread.start()
+
 
     def close_read_popup(self):
         while True:
