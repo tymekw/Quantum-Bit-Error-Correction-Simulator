@@ -103,19 +103,6 @@ class ClientLayout(GridLayout):
                 self.import_bits_button.disabled = True
         else:
             self.bits_label_all.text = "Choose file containing only '0' and '1'"
-        # self..create_machine()
-        # possible_nk = self.alice.get_factors_list()
-        # print(possible_nk)
-        # for i, j in possible_nk:
-        #     self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
-        #     self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
-        # self.n_value.text = str(self.alice.N)
-        # self.k_value.text = str(self.alice.K)
-        # self.bits_slider.value = str(len(self.alice.bits.bits))
-        # self.bits_slider.disabled = True
-        # self.l_slider.disabled = True
-        # self.create_bits_button.disabled = True
-        # self.import_bits_button.disabled = True
 
     def on_ber_slider(self, instance, value):
         self.ber_value.text = str(int(value))
