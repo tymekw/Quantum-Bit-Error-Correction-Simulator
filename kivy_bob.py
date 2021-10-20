@@ -1,3 +1,5 @@
+import re
+
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
@@ -89,16 +91,18 @@ class ClientLayout(GridLayout):
         # print(path)
         with open(path, 'r') as f:
             lines = f.readline()
-
-        self.bob.bits.bits = lines
-        self.bits_label_all.text = str(self.bob.bits.bits)
-        self.bits_len_value = len(self.bob.bits.bits)
-        if len(self.bob.bits.bits) != self.bob.bits_length:
-            self.bits_label_all.text = "choose bits with proper length: {}".format( self.bob.bits_length)
+        if re.match(r'^[01]*$', lines):
+            self.bob.bits.bits = lines
+            self.bits_label_all.text = str(self.bob.bits.bits)
+            self.bits_len_value = len(self.bob.bits.bits)
+            if len(self.bob.bits.bits) != self.bob.bits_length:
+                self.bits_label_all.text = "choose bits with proper length: {}".format(self.bob.bits_length)
+            else:
+                self.run_machine_button.disabled = False
+                self.create_bits_button.disabled = True
+                self.import_bits_button.disabled = True
         else:
-            self.run_machine_button.disabled = False
-            self.create_bits_button.disabled = True
-            self.import_bits_button.disabled = True
+            self.bits_label_all.text = "Choose file containing only '0' and '1'"
         # self..create_machine()
         # possible_nk = self.alice.get_factors_list()
         # print(possible_nk)

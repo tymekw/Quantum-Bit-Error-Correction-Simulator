@@ -1,3 +1,5 @@
+import re
+
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
@@ -103,22 +105,25 @@ class ServerLayout(GridLayout):
         with open(path, 'r') as f:
             lines = f.readline()
 
-        self.alice.bits.bits = lines
-        self.bits_label_all.text = str(self.alice.bits.bits)
-        self.alice.create_machine()
-        possible_nk = self.alice.get_factors_list()
-        print(possible_nk)
-        for i, j in possible_nk:
-            self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
-            self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
-        self.n_value.text = str(self.alice.N)
-        self.k_value.text = str(self.alice.K)
-        self.bits_slider.value = str(len(self.alice.bits.bits))
-        self.bits_slider.disabled = True
-        self.l_slider.disabled = True
-        self.create_bits_button.disabled = True
-        self.import_bits_button.disabled = True
-        self.send_machine_config_button.disabled = False
+        if re.match(r'^[01]*$', lines):
+            self.alice.bits.bits = lines
+            self.bits_label_all.text = str(self.alice.bits.bits)
+            self.alice.create_machine()
+            possible_nk = self.alice.get_factors_list()
+            print(possible_nk)
+            for i, j in possible_nk:
+                self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
+                self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
+            self.n_value.text = str(self.alice.N)
+            self.k_value.text = str(self.alice.K)
+            self.bits_slider.value = str(len(self.alice.bits.bits))
+            self.bits_slider.disabled = True
+            self.l_slider.disabled = True
+            self.create_bits_button.disabled = True
+            self.import_bits_button.disabled = True
+            self.send_machine_config_button.disabled = False
+        else:
+            self.bits_label_all.text = "Choose file containing only '1' and '0'"
 
 
 
@@ -181,6 +186,7 @@ class ServerLayout(GridLayout):
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
         self.send_machine_config_button.disabled = False
+        self.import_bits_button.disabled = True
 
     def remove_n_k_buttons(self):
         self.N_grid_layout.clear_widgets()
