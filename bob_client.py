@@ -76,6 +76,6 @@ class BobClient:
         data = pickle.dumps(self.bobTPM.W)
         self.s.sendall(data)
 
-        print(self.bobTPM.W)
+        # print(self.bobTPM.W)
         print("done")
         self.bits.bits = self.bits.arr_to_bits(self.bobTPM.W, self.bits_length)

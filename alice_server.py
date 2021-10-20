@@ -152,8 +152,10 @@ class AliceServer:
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(self.aliceTPM.W, bob_wei):
             print('dziala')
+        else:
+            print("NIE dziala")
 
-        print("done")
+        # print("done")
 
-        print(self.aliceTPM.W)
+        # print(self.aliceTPM.W)
         self.bits.bits = self.bits.arr_to_bits(self.aliceTPM.W, self.bits_length)

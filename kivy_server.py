@@ -148,6 +148,8 @@ class ServerLayout(GridLayout):
         self.k_value.text = str(self.alice.K)
 
     def remove_n_k_buttons(self):
+        self.N_grid_layout.clear_widgets()
+        self.K_grid_layout.clear_widgets()
         for b in self.N_grid_layout.children:
             self.N_grid_layout.remove_widget(b)
         for b in self.K_grid_layout.children:
@@ -243,8 +245,8 @@ class ServerLayout(GridLayout):
                 self.popup_window.dismiss()
                 self.bits_label_all.text = str(self.alice.bits.bits)
                 self.bits_label_all.disabled = False
-                self.n_slider.disabled = False
-                self.k_slider.disabled = False
+                # self.n_slider.disabled = False
+                # self.k_slider.disabled = False
                 self.l_slider.disabled = False
                 self.bits_slider.disabled = False
                 self.seed_text_field.disabled = False
