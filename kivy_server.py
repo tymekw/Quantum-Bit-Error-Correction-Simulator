@@ -71,7 +71,7 @@ class ServerLayout(GridLayout):
 
         self.buttons_layout = GridLayout(cols=2)
         self.bind_button = Button(text="Bind with client")
-        self.bind_button.bind(on_press=self.on_bind)
+        # self.bind_button.bind(on_press=self.on_bind)
         self.create_bits_button = Button(text="Create random bits")
         self.create_bits_button.bind(on_press=self.on_create_bits)
 
@@ -83,7 +83,7 @@ class ServerLayout(GridLayout):
         self.run_machine_button = Button(text="Run machine", disabled=True)
         self.run_machine_button.bind(on_press=self.on_run_machine)
 
-        self.buttons_layout.add_widget(self.bind_button)
+        # self.buttons_layout.add_widget(self.bind_button)
         self.buttons_layout.add_widget(self.create_bits_button)
         self.buttons_layout.add_widget(self.import_bits_button)
         self.buttons_layout.add_widget(self.send_machine_config_button)
@@ -289,7 +289,7 @@ class ServerLayout(GridLayout):
                 self.bits_slider.disabled = False
                 self.seed_text_field.disabled = False
                 self.create_bits_button.disabled = False
-                self.bind_button.disabled = False
+                # self.bind_button.disabled = False
                 self.run_machine_button.disabled = False
                 self.send_machine_config_button.disabled = False
                 return True
