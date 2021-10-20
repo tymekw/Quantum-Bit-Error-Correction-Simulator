@@ -20,7 +20,7 @@ class AliceServer:
         self.addr = None
         self.machine_conf = None
         self.W = None
-        self.alice = None
+        self.aliceTPM = None
         self.X = None
         self.bits = bits.Bits(self.L)
         self.seed = 1
@@ -40,6 +40,7 @@ class AliceServer:
 
     def set_L(self, L):
         self.L = L
+        self.bits.L = self.L
 
     def choose_machine_details(self, N, K, L):
         self.N = N
@@ -65,7 +66,9 @@ class AliceServer:
         return self.get_best_pair(factors)
         # return factors
 
-    def get_factors_list(self, w_len):
+    def get_factors_list(self, w_len=0):
+        if w_len == 0:
+            w_len = len(self.bits.bits_to_w())
         factors = []
         for i in range(1, w_len + 1):
             if w_len % i == 0:
@@ -89,7 +92,14 @@ class AliceServer:
         W_len = len(self.bits.bits_to_w())
         self.N, self.K = self.get_possible_N_K(W_len)
         self.W = self.bits.bits_to_arr(self.K, self.N)
-        self.alice = TPM.Tpm(self.N, self.K, self.L, self.W)
+        print(self.W)
+        self.aliceTPM = TPM.Tpm(self.N, self.K, self.L, self.W)
+
+    def change_machine_config(self):
+        self.W = self.bits.bits_to_arr(self.K, self.N)
+        print(self.W)
+        self.aliceTPM = TPM.Tpm(self.N, self.K, self.L, self.W)
+
 
     def send_machine_config(self):
         self.machine_conf = [self.N, self.K, self.L, self.seed, self.bits_length]
@@ -102,12 +112,12 @@ class AliceServer:
     def run_machine(self):
         print("waits")
         print(self.W)
-        print(self.alice.W)
+        print(self.aliceTPM.W)
         for i in range(0, 150):
             print("inside loop")
             bob_tau = None
-            self.alice.tau = 1
-            while self.alice.tau != bob_tau:
+            self.aliceTPM.tau = 1
+            while self.aliceTPM.tau != bob_tau:
                 print("choose X")
                 try:
                     self.s.listen()
@@ -116,7 +126,7 @@ class AliceServer:
                     print("socket error")
 
                 self.X = np.random.choice([-1,1], size=(self.K, self.N))
-                self.alice.calculate_tau(self.X)
+                self.aliceTPM.calculate_tau(self.X)
                 print("sending X")
                 data = pickle.dumps(self.X)
                 self.conn.sendall(data)
@@ -124,7 +134,7 @@ class AliceServer:
                 rec_tau = self.conn.recv(1000000)
                 bob_tau = pickle.loads(rec_tau)
 
-                if self.alice.tau == bob_tau:
+                if self.aliceTPM.tau == bob_tau:
                     data = pickle.dumps(1)
                     self.conn.sendall(data)
                     print("X chosen")
@@ -133,17 +143,17 @@ class AliceServer:
                     self.conn.sendall(data)
                     print("X not chosen")
             print(i)
-            self.alice.update_weights(self.X)
+            self.W = self.aliceTPM.update_weights(self.X)
 
         print("outside loop")
 
         #ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
-        if np.array_equal(self.alice.W, bob_wei):
+        if np.array_equal(self.aliceTPM.W, bob_wei):
             print('dziala')
 
         print("done")
 
-        print(self.alice.W)
-        self.bits.bits = self.bits.arr_to_bits(self.alice.W, self.bits_length)
+        print(self.aliceTPM.W)
+        self.bits.bits = self.bits.arr_to_bits(self.aliceTPM.W, self.bits_length)

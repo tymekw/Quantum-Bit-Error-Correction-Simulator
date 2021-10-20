@@ -18,9 +18,9 @@ class ServerLayout(GridLayout):
         self.n_label = Label(text="N value")
         self.k_label = Label(text="K value")
         self.l_label = Label(text="L value")
-        self.n_value = Label(text="2")
-        self.k_value = Label(text="10")
-        self.l_value = Label(text="10")
+        self.n_value = Label(text=str(self.alice.N))
+        self.k_value = Label(text=str(self.alice.K))
+        self.l_value = Label(text=str(self.alice.L))
 
         self.bits_label = Label(text="bits length")
         self.seed_label = Label(text="write seed")
@@ -40,18 +40,27 @@ class ServerLayout(GridLayout):
         self.add_widget(self.machine_details_layout)
 
         self.machine_sliders_text_layout = GridLayout(cols=1)
-        self.n_slider = Slider(min=1, max=100, value=10)
-        self.n_slider.bind(value=self.on_slider_n)
-        self.k_slider = Slider(min=1, max=100, value=10)
-        self.k_slider.bind(value=self.on_slider_k)
+        self.N_grid_layout = GridLayout(rows=1)
+        self.K_grid_layout = GridLayout(rows=1)
+        # self.n_slider = Slider(min=1, max=100, value=10)
+        # self.n_slider.bind(value=self.on_slider_n)
+        # self.k_slider = Slider(min=1, max=100, value=10)
+        # self.k_slider.bind(value=self.on_slider_k)
         self.l_slider = Slider(min=1, max=100, value=2)
         self.l_slider.bind(value=self.on_slider_l)
         self.bits_slider = Slider(min=1, max=10000, value=1000)
         self.bits_slider.bind(value=self.on_slider_bits)
         self.seed_text_field = TextInput(text='Write your seed')
 
-        self.machine_sliders_text_layout.add_widget(self.n_slider)
-        self.machine_sliders_text_layout.add_widget(self.k_slider)
+        # self.machine_sliders_text_layout.add_widget(self.n_slider)
+        # self.machine_sliders_text_layout.add_widget(self.k_slider)
+
+        # for i in range(0,10):
+        #     self.N_grid_layout.add_widget(Button(text=str(i)))
+
+
+        self.machine_sliders_text_layout.add_widget(self.N_grid_layout)
+        self.machine_sliders_text_layout.add_widget(self.K_grid_layout)
         self.machine_sliders_text_layout.add_widget(self.l_slider)
         self.machine_sliders_text_layout.add_widget(self.bits_slider)
         self.machine_sliders_text_layout.add_widget(self.seed_text_field)
@@ -84,6 +93,7 @@ class ServerLayout(GridLayout):
         self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0,0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
+        self.on_bind(self.bind_button)
 
     def on_slider_n(self, instance, value):
         self.n_value.text = str(int(value))
@@ -104,13 +114,13 @@ class ServerLayout(GridLayout):
     def on_bind(self, instance):
         instance.disabled = True
         self.send_machine_config_button.disabled = False
-        self.show_bind_popup()
+        # self.show_bind_popup()
         self.bind_thread = threading.Thread(target=self.alice.bind)
         self.bind_thread.daemon = True
         self.bind_thread.start()
-        close_popup_thread = threading.Thread(target=self.close_bid_popup)
-        close_popup_thread.daemon = True
-        close_popup_thread.start()
+        # close_popup_thread = threading.Thread(target=self.close_bid_popup)
+        # close_popup_thread.daemon = True
+        # close_popup_thread.start()
 
     def close_bid_popup(self):
         while True:
@@ -124,16 +134,75 @@ class ServerLayout(GridLayout):
         self.popup_window.open()
 
     def on_create_bits(self, instance):
+        self.remove_n_k_buttons()
         self.alice.set_seed(self.seed_text_field.text)
         self.alice.generate_bits()
         self.bits_label_all.text = str(self.alice.bits.bits)
         self.alice.create_machine()
+        possible_nk = self.alice.get_factors_list()
+        print(possible_nk)
+        for i, j in possible_nk:
+            self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
+            self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
 
+    def remove_n_k_buttons(self):
+        for b in self.N_grid_layout.children:
+            self.N_grid_layout.remove_widget(b)
+        for b in self.K_grid_layout.children:
+            self.K_grid_layout.remove_widget(b)
+
+
+
+    def get_possible_k(self, given_n):
+        for n, k in self.alice.get_factors_list():
+            if n == given_n:
+                return k
+
+    def get_possible_n(self, given_k):
+        for n, k in self.alice.get_factors_list():
+            if k == given_k:
+                return n
+
+    def handle_new_n(self, instance):
+        self.reset_buttons()
+        instance.background_normal = instance.background_down
+        self.alice.N = int(instance.text)
+        self.alice.K = self.get_possible_k(int(instance.text))
+        for button in self.K_grid_layout.children:
+            if button.text == str(self.alice.K):
+                button.background_normal = instance.background_down
+        self.n_value.text = str(self.alice.N)
+        self.k_value.text = str(self.alice.K)
+        self.alice.change_machine_config()
+        print(self.alice.W)
+        print(self.alice.aliceTPM.W)
+
+    def handle_new_k(self, instance):
+        self.reset_buttons()
+        instance.background_normal = instance.background_down
+        self.alice.K = int(instance.text)
+        self.alice.N = self.get_possible_k(int(instance.text))
+        for button in self.N_grid_layout.children:
+            if button.text == str(self.alice.N):
+                button.background_normal = instance.background_down
+        self.n_value.text = str(self.alice.N)
+        self.k_value.text = str(self.alice.K)
+        self.alice.change_machine_config()
+        print(self.alice.W)
+        print(self.alice.aliceTPM.W)
+
+    def reset_buttons(self):
+        for button in self.N_grid_layout.children:
+            button.background_normal = 'atlas://data/images/defaulttheme/button'
+        for button in self.K_grid_layout.children:
+            button.background_normal = 'atlas://data/images/defaulttheme/button'
+
+
     def on_send_config(self, instance):
-        self.n_slider.disabled = True
-        self.k_slider.disabled = True
+        # self.n_slider.disabled = True
+        # self.k_slider.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
         self.seed_text_field.disabled = True

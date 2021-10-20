@@ -12,7 +12,7 @@ class BobClient:
         self.L = None
         self.K = None
         self.W_bob = None
-        self.bob = None
+        self.bobTPM = None
         self.X = None
         self.seed = None
         self.HOST = '127.0.0.1'
@@ -40,11 +40,11 @@ class BobClient:
 
     def create_machine(self):
         self.W_bob = self.bits.bits_to_arr(self.K, self.N)
-        self.bob = TPM.Tpm(self.N, self.K, self.L, self.W_bob)
+        self.bobTPM = TPM.Tpm(self.N, self.K, self.L, self.W_bob)
 
     def run_TPM_machine(self):
         print(self.W_bob)
-        print(self.bob.W)
+        print(self.bobTPM.W)
         for i in range(0, 150):
 
             print("inside loop")
@@ -60,9 +60,9 @@ class BobClient:
                 x = self.s.recv(1000000)
                 print("x reciv")
                 self.X = pickle.loads(x)
-                self.bob.calculate_tau(self.X)
+                self.bobTPM.calculate_tau(self.X)
                 print("tau")
-                data = pickle.dumps(self.bob.tau)
+                data = pickle.dumps(self.bobTPM.tau)
                 self.s.sendall(data)
                 print("tau send")
                 data = self.s.recv(10000000)
@@ -70,12 +70,12 @@ class BobClient:
                 print(common_X)
 
             print(i)
-            self.bob.update_weights(self.X)
+            self.W = self.bobTPM.update_weights(self.X)
 
         #ToDo check if weights are the same
-        data = pickle.dumps(self.bob.W)
+        data = pickle.dumps(self.bobTPM.W)
         self.s.sendall(data)
 
-        print(self.bob.W)
+        print(self.bobTPM.W)
         print("done")
-        self.bits.bits = self.bits.arr_to_bits(self.bob.W, self.bits_length)
+        self.bits.bits = self.bits.arr_to_bits(self.bobTPM.W, self.bits_length)

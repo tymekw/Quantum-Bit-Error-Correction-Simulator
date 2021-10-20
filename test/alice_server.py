@@ -40,6 +40,7 @@ class AliceServer:
 
     def set_L(self, L):
         self.L = L
+        self.bits.change_L(self.L)
 
     def choose_machine_details(self, N, K, L):
         self.N = N
@@ -75,6 +76,7 @@ class AliceServer:
     def get_best_pair(self, factors):
         best_pair = None
         tmp = math.inf
+        print(factors)
         for factor_pair in factors:
             dif = max(factor_pair) - min(factor_pair)
             if tmp > dif:
