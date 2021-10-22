@@ -89,17 +89,22 @@ class ClientLayout(GridLayout):
     def random_bits_create(self, instance):
         # self.create_bits_button.disabled = True
         # self.run_machine_button.disabled = False
+        self.random_button.background_normal = instance.background_down
+        self.block_button.background_normal = 'atlas://data/images/defaulttheme/button'
         self.bob.bits.type = 'random'
-        self.bob.create_random_bits()
+        # self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
         # instance.disabled = True
 
     def block_bits_create(self, instance):
         # self.create_bits_button.disabled = True
         # self.run_machine_button.disabled = False
+        self.block_button.background_normal = instance.background_down
+        self.random_button.background_normal = 'atlas://data/images/defaulttheme/button'
         self.bob.bits.type = 'block'
-        self.bob.create_random_bits()
+        # self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
+
         # instance.disabled = True
 
     def on_import_bits(self, instance):
@@ -180,7 +185,7 @@ class ClientLayout(GridLayout):
         self.popup_window.open()
 
     def on_create_bits(self, instance):
-        self.create_bits_button.disabled = True
+        # self.create_bits_button.disabled = True
         self.run_machine_button.disabled = False
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)

@@ -241,12 +241,13 @@ class ServerLayout(GridLayout):
             button.background_normal = 'atlas://data/images/defaulttheme/button'
 
     def on_send_config(self, instance):
+        instance.disabled = True
         # self.n_slider.disabled = True
         # self.k_slider.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
         self.seed_text_field.disabled = True
-        # self.create_bits_button.disabled = True
+        self.create_bits_button.disabled = True
         instance.disabled = True
         self.run_machine_button.disabled = False
         self.show_send_popup()
