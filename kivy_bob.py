@@ -68,9 +68,9 @@ class ClientLayout(GridLayout):
 
         self.choose_label = Label(text="Choose BER version")
         self.random_button = Button(text="RANDOM", disabled=True)
-        self.random_button.bind(value=self.random_bits_create)
+        self.random_button.bind(on_press=self.random_bits_create)
         self.block_button = Button(text="BLOCK", disabled=True)
-        self.random_button.bind(value=self.block_bits_create)
+        self.block_button.bind(on_press=self.block_bits_create)
 
         self.bits_editor_layout.add_widget(self.ber_label)
         self.bits_editor_layout.add_widget(self.ber_value)
@@ -87,20 +87,20 @@ class ClientLayout(GridLayout):
         self.add_widget(self.bits_layout)
 
     def random_bits_create(self, instance):
-        self.create_bits_button.disabled = True
-        self.run_machine_button.disabled = False
+        # self.create_bits_button.disabled = True
+        # self.run_machine_button.disabled = False
         self.bob.bits.type = 'random'
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
-        instance.disabled = True
+        # instance.disabled = True
 
     def block_bits_create(self, instance):
-        self.create_bits_button.disabled = True
-        self.run_machine_button.disabled = False
+        # self.create_bits_button.disabled = True
+        # self.run_machine_button.disabled = False
         self.bob.bits.type = 'block'
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
-        instance.disabled = True
+        # instance.disabled = True
 
     def on_import_bits(self, instance):
         # self.remove_n_k_buttons()
