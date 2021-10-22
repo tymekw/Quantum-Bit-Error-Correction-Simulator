@@ -24,7 +24,7 @@ class AliceServer:
         self.X = None
         self.bits = bits.Bits(self.L)
         self.seed = 1
-        self.bits_length = 1000
+        self.bits_length = 256
 
     def set_bits_length(self, length):
         self.bits_length = length

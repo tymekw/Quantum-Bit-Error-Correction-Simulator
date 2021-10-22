@@ -76,7 +76,7 @@ class AliceServer:
     def get_best_pair(self, factors):
         best_pair = None
         tmp = math.inf
-        print(factors)
+        # print(factors)
         for factor_pair in factors:
             dif = max(factor_pair) - min(factor_pair)
             if tmp > dif:

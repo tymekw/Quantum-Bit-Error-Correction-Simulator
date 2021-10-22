@@ -27,7 +27,7 @@ class ServerLayout(GridLayout):
 
         self.bits_label = Label(text="bits length")
         self.seed_label = Label(text="write seed")
-        self.bits_value = Label(text="1000")
+        self.bits_value = Label(text="256")
 
         self.machine_details_layout.add_widget(self.n_label)
         self.machine_details_layout.add_widget(self.n_value)

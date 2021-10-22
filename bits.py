@@ -15,8 +15,9 @@ class Bits:
         self.max_val = 2 * self.L
 
     def generate_bits(self, seed, length):
-        random.seed(seed)
-        b = random.getrandbits(length)
+        myrandom = random.Random(seed)
+        # random.seed(seed)
+        b = myrandom.getrandbits(length)
         b = b
         b = bin(b)
         b = b[2:]
@@ -27,11 +28,13 @@ class Bits:
     def create_BER(self):
         b_list = [i for i in self.bits]
         if self.type == 'random':
-            for _ in range(int(len(b_list) * 0.01*self.BER)):
-                if b_list[random.randint(0, len(b_list) - 1)] == "1":
-                    b_list[random.randint(0, len(b_list) - 1)] = "0"
+            errors = int(len(b_list) * 0.01*self.BER)
+            indexes = random.sample(range(0, len(b_list) - 1), errors)
+            for i in indexes:
+                if b_list[i] == "1":
+                    b_list[i] = "0"
                 else:
-                    b_list[random.randint(0, len(b_list) - 1)] = "1"
+                    b_list[i] = "1"
 
         elif self.type == 'block':
             how_many_to_change = int(len(b_list) * 0.01*self.BER)
