@@ -1,5 +1,4 @@
 import re
-
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
@@ -26,9 +25,9 @@ class ServerLayout(GridLayout):
         self.l_value = Label(text=str(self.alice.L))
 
         self.bits_label = Label(text="bits length")
-        self.seed_label = Label(text="write seed")
+        self.seed_label = Label(text="seed")
         self.bits_value = Label(text="256")
-
+        self.seed_text_field = TextInput(text="seed")
         self.machine_details_layout.add_widget(self.n_label)
         self.machine_details_layout.add_widget(self.n_value)
         self.machine_details_layout.add_widget(self.k_label)
@@ -39,39 +38,34 @@ class ServerLayout(GridLayout):
         self.machine_details_layout.add_widget(self.bits_label)
         self.machine_details_layout.add_widget(self.bits_value)
         self.machine_details_layout.add_widget(self.seed_label)
-
+        self.machine_details_layout.add_widget(self.seed_text_field)
         self.add_widget(self.machine_details_layout)
 
         self.machine_sliders_text_layout = GridLayout(cols=1)
         self.N_grid_layout = GridLayout(rows=1)
         self.K_grid_layout = GridLayout(rows=1)
-        # self.n_slider = Slider(min=1, max=100, value=10)
-        # self.n_slider.bind(value=self.on_slider_n)
-        # self.k_slider = Slider(min=1, max=100, value=10)
-        # self.k_slider.bind(value=self.on_slider_k)
         self.l_slider = Slider(min=1, max=100, value=2)
         self.l_slider.bind(value=self.on_slider_l)
         self.bits_slider = Slider(min=1, max=10000, value=1000)
         self.bits_slider.bind(value=self.on_slider_bits)
-        self.seed_text_field = TextInput(text='Write your seed')
-
-        # self.machine_sliders_text_layout.add_widget(self.n_slider)
-        # self.machine_sliders_text_layout.add_widget(self.k_slider)
-
-        # for i in range(0,10):
-        #     self.N_grid_layout.add_widget(Button(text=str(i)))
 
         self.machine_sliders_text_layout.add_widget(self.N_grid_layout)
         self.machine_sliders_text_layout.add_widget(self.K_grid_layout)
         self.machine_sliders_text_layout.add_widget(self.l_slider)
         self.machine_sliders_text_layout.add_widget(self.bits_slider)
-        self.machine_sliders_text_layout.add_widget(self.seed_text_field)
+        self.synchro_num_widget = GridLayout(cols=2)
+        self.synchro_num_label = Label(text="number of synchronizations")
+        self.synchro_num_field = TextInput(text='150')
+        self.synchro_num_widget.add_widget(self.synchro_num_label)
+        self.synchro_num_widget.add_widget(self.synchro_num_field)
+
+        self.machine_sliders_text_layout.add_widget(self.synchro_num_widget)
 
         self.add_widget(self.machine_sliders_text_layout)
 
         self.buttons_layout = GridLayout(cols=2)
         self.bind_button = Button(text="Bind with client")
-        # self.bind_button.bind(on_press=self.on_bind)
+
         self.create_bits_button = Button(text="Create random bits")
         self.create_bits_button.bind(on_press=self.on_create_bits)
 
@@ -98,35 +92,35 @@ class ServerLayout(GridLayout):
         self.on_bind(self.bind_button)
 
     def on_import_bits(self, instance):
-        self.remove_n_k_buttons()
-        path = filechooser.open_file(title="Pick a txt file..",
-                                     filters=[("Text files", "*.txt")])[0]
-        # print(path)
-        with open(path, 'r') as f:
-            lines = f.readline()
+        try:
+            self.remove_n_k_buttons()
+            path = filechooser.open_file(title="Pick a txt file..",
+                                         filters=[("Text files", "*.txt")])[0]
+            # print(path)
+            with open(path, 'r') as f:
+                lines = f.readline()
 
-        if re.match(r'^[01]*$', lines):
-            self.alice.bits.bits = lines
-            self.bits_label_all.text = str(self.alice.bits.bits)
-            self.alice.create_machine()
-            possible_nk = self.alice.get_factors_list()
-            print(possible_nk)
-            for i, j in possible_nk:
-                self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
-                self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
-            self.n_value.text = str(self.alice.N)
-            self.k_value.text = str(self.alice.K)
-            self.bits_slider.value = str(len(self.alice.bits.bits))
-            self.bits_slider.disabled = True
-            self.l_slider.disabled = True
-            self.create_bits_button.disabled = True
-            self.import_bits_button.disabled = True
-            self.send_machine_config_button.disabled = False
-        else:
-            self.bits_label_all.text = "Choose file containing only '1' and '0'"
-
-
-
+            if re.match(r'^[01]*$', lines):
+                self.alice.bits.bits = lines
+                self.bits_label_all.text = str(self.alice.bits.bits)
+                self.alice.create_machine()
+                possible_nk = self.alice.get_factors_list()
+                print(possible_nk)
+                for i, j in possible_nk:
+                    self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
+                    self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
+                self.n_value.text = str(self.alice.N)
+                self.k_value.text = str(self.alice.K)
+                self.bits_slider.value = str(len(self.alice.bits.bits))
+                self.bits_slider.disabled = True
+                self.l_slider.disabled = True
+                self.create_bits_button.disabled = True
+                self.import_bits_button.disabled = True
+                self.send_machine_config_button.disabled = False
+            else:
+                self.bits_label_all.text = "Choose file containing only '1' and '0'"
+        except Exception as e:
+            print(e)
 
     def on_slider_n(self, instance, value):
         self.n_value.text = str(int(value))
@@ -146,14 +140,9 @@ class ServerLayout(GridLayout):
 
     def on_bind(self, instance):
         instance.disabled = True
-        # self.send_machine_config_button.disabled = False
-        # self.show_bind_popup()
         self.bind_thread = threading.Thread(target=self.alice.bind)
         self.bind_thread.daemon = True
         self.bind_thread.start()
-        # close_popup_thread = threading.Thread(target=self.close_bid_popup)
-        # close_popup_thread.daemon = True
-        # close_popup_thread.start()
 
     def close_bid_popup(self):
         while True:
@@ -181,7 +170,7 @@ class ServerLayout(GridLayout):
             if b.text == str(self.alice.N):
                 b.background_normal = b.background_down
         for b in self.K_grid_layout.children:
-            if b.text ==  str(self.alice.K):
+            if b.text == str(self.alice.K):
                 b.background_normal = b.background_down
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
@@ -242,14 +231,19 @@ class ServerLayout(GridLayout):
 
     def on_send_config(self, instance):
         instance.disabled = True
-        # self.n_slider.disabled = True
-        # self.k_slider.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
         self.seed_text_field.disabled = True
         self.create_bits_button.disabled = True
         instance.disabled = True
         self.run_machine_button.disabled = False
+        self.synchro_num_field.disabled = True
+        try:
+            self.alice.num_of_synchro = int(self.synchro_num_field.text)
+        except Exception as e:
+            print(e)
+            self.alice.num_of_synchro = 150
+            self.synchro_num_field.text = "Invalid value, setting to default {}".format(self.alice.num_of_synchro)
         self.show_send_popup()
         self.send_config_thread = threading.Thread(target=self.alice.send_machine_config)
         self.send_config_thread.daemon = True

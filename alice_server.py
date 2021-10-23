@@ -25,6 +25,7 @@ class AliceServer:
         self.bits = bits.Bits(self.L)
         self.seed = 1
         self.bits_length = 256
+        self.num_of_synchro = 150
 
     def set_bits_length(self, length):
         self.bits_length = length
@@ -85,9 +86,6 @@ class AliceServer:
                 tmp = dif
         return best_pair
 
-    # def check_N_K(self, N, K, bits_len):
-    #     return N * K < bits_len
-
     def create_machine(self):
         W_len = len(self.bits.bits_to_w())
         self.N, self.K = self.get_possible_N_K(W_len)
@@ -100,9 +98,8 @@ class AliceServer:
         print(self.W)
         self.aliceTPM = TPM.Tpm(self.N, self.K, self.L, self.W)
 
-
     def send_machine_config(self):
-        self.machine_conf = [self.N, self.K, self.L, self.seed, self.bits_length]
+        self.machine_conf = [self.N, self.K, self.L, self.seed, self.bits_length, self.num_of_synchro]
         data = pickle.dumps(self.machine_conf)
         self.conn.sendall(data)
         rec = self.conn.recv(1024)
@@ -113,7 +110,7 @@ class AliceServer:
         print("waits")
         print(self.W)
         print(self.aliceTPM.W)
-        for i in range(0, 150):
+        for i in range(0, self.num_of_synchro):
             print("inside loop")
             bob_tau = None
             self.aliceTPM.tau = 1
@@ -122,10 +119,10 @@ class AliceServer:
                 try:
                     self.s.listen()
                     self.conn, self.addr = self.s.accept()
-                except:
-                    print("socket error")
+                except Exception as e:
+                    print("socket error: {}".format(e))
 
-                self.X = np.random.choice([-1,1], size=(self.K, self.N))
+                self.X = np.random.choice([-1, 1], size=(self.K, self.N))
                 self.aliceTPM.calculate_tau(self.X)
                 print("sending X")
                 data = pickle.dumps(self.X)
@@ -147,7 +144,7 @@ class AliceServer:
 
         print("outside loop")
 
-        #ToDo check if W are the same
+        # ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(self.aliceTPM.W, bob_wei):
@@ -155,7 +152,4 @@ class AliceServer:
         else:
             print("NIE dziala")
 
-        # print("done")
-
-        # print(self.aliceTPM.W)
         self.bits.bits = self.bits.arr_to_bits(self.aliceTPM.W, self.bits_length)

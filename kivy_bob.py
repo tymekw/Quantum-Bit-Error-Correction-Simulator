@@ -108,10 +108,9 @@ class ClientLayout(GridLayout):
         # instance.disabled = True
 
     def on_import_bits(self, instance):
-        # self.remove_n_k_buttons()
         path = filechooser.open_file(title="Pick a txt file..",
                                      filters=[("Text files", "*.txt")])[0]
-        # print(path)
+
         with open(path, 'r') as f:
             lines = f.readline()
         if re.match(r'^[01]*$', lines):
@@ -168,7 +167,6 @@ class ClientLayout(GridLayout):
         close_popup_thread.daemon = True
         close_popup_thread.start()
 
-
     def close_read_popup(self):
         while True:
             if not self.read_config_thread.is_alive():
@@ -185,14 +183,13 @@ class ClientLayout(GridLayout):
         self.popup_window.open()
 
     def on_create_bits(self, instance):
-        # self.create_bits_button.disabled = True
         self.run_machine_button.disabled = False
         self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
 
     def on_run_machine(self, instance):
         self.bob.create_machine()
-        self.show_run_popup() # ToDo
+        self.show_run_popup()  # ToDo
         self.run_thread = threading.Thread(target=self.bob.run_TPM_machine)
         self.run_thread.daemon = True
         self.run_thread.start()
@@ -211,6 +208,7 @@ class ClientLayout(GridLayout):
         self.popup_window = Popup(title="running machine", size_hint=(None, None), size=(400, 400),
                                   auto_dismiss=False)
         self.popup_window.open()
+
 
 class ClientApp(App):
     def build(self):

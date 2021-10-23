@@ -1,6 +1,5 @@
 import pickle
 import socket
-import numpy as np
 import TPM
 import bits
 
@@ -19,6 +18,7 @@ class BobClient:
         self.PORT = 65432
         self.bits = None
         self.bits_length = None
+        self.num_of_synchro = 150
 
     def bind(self):
         print("BIIIIIIIIIIIIIND")
@@ -27,7 +27,7 @@ class BobClient:
 
     def receive_machine_config(self):
         data = self.s.recv(1024)
-        self.N, self.K, self.L, self.seed, self.bits_length = pickle.loads(data)
+        self.N, self.K, self.L, self.seed, self.bits_length, self.num_of_synchro = pickle.loads(data)
         self.bits = bits.Bits(self.L)
         self.s.sendall(pickle.dumps("OK"))
 
@@ -45,7 +45,7 @@ class BobClient:
     def run_TPM_machine(self):
         print(self.W_bob)
         print(self.bobTPM.W)
-        for i in range(0, 150):
+        for i in range(0, self.num_of_synchro):
 
             print("inside loop")
             common_X = False
@@ -70,12 +70,11 @@ class BobClient:
                 print(common_X)
 
             print(i)
-            self.W = self.bobTPM.update_weights(self.X)
+            self.W_bob = self.bobTPM.update_weights(self.X)
 
         #ToDo check if weights are the same
         data = pickle.dumps(self.bobTPM.W)
         self.s.sendall(data)
 
-        # print(self.bobTPM.W)
         print("done")
         self.bits.bits = self.bits.arr_to_bits(self.bobTPM.W, self.bits_length)
