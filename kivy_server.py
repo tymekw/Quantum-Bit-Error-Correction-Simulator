@@ -26,7 +26,7 @@ class ServerLayout(GridLayout):
 
         self.bits_label = Label(text="bits length")
         self.seed_label = Label(text="seed")
-        self.bits_value = Label(text="256")
+        self.bits_value = TextInput(text="256")
         self.seed_text_field = TextInput(text="seed")
         self.machine_details_layout.add_widget(self.n_label)
         self.machine_details_layout.add_widget(self.n_value)
@@ -90,7 +90,6 @@ class ServerLayout(GridLayout):
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
         self.on_bind(self.bind_button)
-
     def on_import_bits(self, instance):
         try:
             self.remove_n_k_buttons()
@@ -234,6 +233,7 @@ class ServerLayout(GridLayout):
         instance.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
+        self.bits_value.disabled = True
         self.seed_text_field.disabled = True
         self.create_bits_button.disabled = True
         instance.disabled = True

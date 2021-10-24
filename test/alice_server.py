@@ -66,12 +66,22 @@ class AliceServer:
         return self.get_best_pair(factors)
         # return factors
 
-    def get_factors_list(self, w_len):
+
+    def get_factors_list(self, w_len=0):
+        if w_len == 0:
+            w_len = len(self.bits.bits_to_w())
         factors = []
         for i in range(1, w_len + 1):
             if w_len % i == 0:
                 factors.append((i, int(w_len / i)))
         return factors
+
+    # def get_factors_list(self, w_len):
+    #     factors = []
+    #     for i in range(1, w_len + 1):
+    #         if w_len % i == 0:
+    #             factors.append((i, int(w_len / i)))
+    #     return factors
 
     def get_best_pair(self, factors):
         best_pair = None
@@ -89,7 +99,7 @@ class AliceServer:
 
     def create_machine(self):
         W_len = len(self.bits.bits_to_w())
-        self.N, self.K = self.get_possible_N_K(W_len)
+        # self.N, self.K = self.get_possible_N_K(W_len)
         self.W = self.bits.bits_to_arr(self.K, self.N)
         self.alice = TPM.Tpm(self.N, self.K, self.L, self.W)
 
