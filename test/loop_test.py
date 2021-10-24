@@ -1,14 +1,14 @@
 import numpy as np
 from numpy import random
 import alice_server, bob_client
-import yaml
 import csv
 
-REPETITIONS = 700
-Ls = [2, 3, 4, 5]
-BERs = [2, 3, 4, 5]
-b_lens = [i for i in range(128, 500, 2)]
-print(b_lens)
+REPETITIONS = 600
+Ls = [2, 3, 4]
+BERs = [1, 2, 3]
+b_lens = [i for i in range(128, 600, 8)]
+
+
 fields = ["bits_len", "L", "BER", "N", "K", "results"]
 with open("test.csv", "a+") as f:
     w = csv.writer(f, delimiter=';')
@@ -29,12 +29,14 @@ for b_len in b_lens:
         for ber in BERs:
             data[str(b_len)][str(l)][str(ber)] = {}
             for N, K in N_K_list:
+                print("B_LEN:{}, L:{}, BER:{}, N:{}, K:{}".format(b_len, l, ber, N, K))
                 results = []
                 if N == 1:
                     continue
                 data[str(b_len)][str(l)][str(ber)][str(N)] = {}
                 data[str(b_len)][str(l)][str(ber)][str(N)][str(K)] = {}
-                print("NEW N:{}, K: {}, BER: {}, L: {}".format(N, K, ber, l))
+                # print("NEW N:{}, K: {}, BER: {}, L: {}".format(N, K, ber, l))
+                print("current bits length checked: {}".format(b_len))
                 for i in range(0, REPETITIONS):
                     alice = alice_server.AliceServer()
                     bob = bob_client.BobClient()
@@ -53,6 +55,8 @@ for b_len in b_lens:
 
                     s = 0
                     while not np.array_equal(alice.W, bob.W_bob):
+                        if s == 1000:
+                            break
                         X = np.random.choice([-1, 1], size=(alice.K, alice.N))
                         alice.alice.calculate_tau(X)
                         bob.bob.calculate_tau(X)
@@ -75,7 +79,7 @@ for b_len in b_lens:
                     results.append(s)
 
                 results = [i for i in results if i != 0]
-                results = results[0:600]
+                results = results[0:500]
                 data[str(b_len)][str(l)][str(ber)][str(N)][str(K)] = results
                 with open("test.csv", "a+") as f:
                     w = csv.writer(f, delimiter=';')
