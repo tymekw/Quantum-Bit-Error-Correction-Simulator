@@ -1,8 +1,6 @@
 import re
-
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
 from kivy.app import App
@@ -13,15 +11,16 @@ import threading
 from plyer import filechooser
 from kivy.graphics import Color, Rectangle
 
+
 class ClientLayout(GridLayout):
     def __init__(self, **kwargs):
         self.bob = bob_client.BobClient()
         super(ClientLayout, self).__init__(**kwargs)
         self.cols = 2
         self.machine_details_layout = GridLayout(cols=2)
-        self.n_label = Label(text="N value")
-        self.k_label = Label(text="K value")
-        self.l_label = Label(text="L value")
+        self.n_label = Label(text="Inputs per one hidden neuron")
+        self.k_label = Label(text="Neurons in hidden layer")
+        self.l_label = Label(text="Weights range")
         self.bits_len_label = Label(text="Bits length")
         self.n_value = Label(text=str(self.bob.N))
         self.k_value = Label(text=str(self.bob.K))
@@ -40,11 +39,11 @@ class ClientLayout(GridLayout):
         self.add_widget(self.machine_details_layout)
 
         self.buttons_layout = GridLayout(cols=2)
-        self.bind_button = Button(text="Bind with server")
-        self.read_config_button = Button(text="Read machine config", disabled=True)
+        self.bind_button = Button(text="Connect to server")
+        self.read_config_button = Button(text="Get settings", disabled=True)
         self.create_bits_button = Button(text="Create random bits", disabled=True)
         self.import_bits_button = Button(text="Import bits", disabled=True)
-        self.run_machine_button = Button(text="Run machine", disabled=True)
+        self.run_machine_button = Button(text="START", disabled=True, bold=True)
 
         self.buttons_layout.add_widget(self.bind_button)
         self.bind_button.bind(on_press=self.on_bind)
@@ -66,7 +65,7 @@ class ClientLayout(GridLayout):
         self.ber_slider = Slider(min=0, max=10, value=0, disabled=True)
         self.ber_slider.bind(value=self.on_ber_slider)
 
-        self.choose_label = Label(text="Choose BER version")
+        self.choose_label = Label(text="BER TYPE")
         self.random_button = Button(text="RANDOM", disabled=True)
         self.random_button.bind(on_press=self.random_bits_create)
         self.block_button = Button(text="BLOCK", disabled=True)
@@ -95,6 +94,7 @@ class ClientLayout(GridLayout):
             #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
             #     border=(10, 10, 10, 10))
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+
     def update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
@@ -209,7 +209,6 @@ class ClientLayout(GridLayout):
         close_popup_thread = threading.Thread(target=self.close_run_popup)  # ToDo
         close_popup_thread.daemon = True
         close_popup_thread.start()
-
 
     def close_run_popup(self):
         while True:
