@@ -9,7 +9,7 @@ from kivy.uix.textinput import TextInput
 import alice_server
 import threading
 from plyer import filechooser
-
+from kivy.graphics import Color, Rectangle
 
 class ServerLayout(GridLayout):
     def __init__(self, **kwargs):
@@ -85,11 +85,33 @@ class ServerLayout(GridLayout):
 
         self.add_widget(self.buttons_layout)
 
-        self.bits_layout = GridLayout(cols=1)
+        self.bits_layout = GridLayout(cols=1, padding=5)
+        # self.bits_layout.background_color = 'white'
         self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0, 0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
         self.on_bind(self.bind_button)
+
+        with self.bits_layout.canvas.before:
+            Color(0, 0, 0, 1)
+
+            # Add a rectangle
+            self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+            # BorderImage(
+            #     size=(self.bits_label_all.width + 100, self.bits_label_all.height + 100),
+            #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
+            #     border=(10, 10, 10, 10))
+        self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+    def update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
+
+
+
+
+
+    # listen to size and position changes
+
     def on_import_bits(self, instance):
         try:
             self.remove_n_k_buttons()
@@ -273,6 +295,7 @@ class ServerLayout(GridLayout):
         close_popup_thread.daemon = True
         close_popup_thread.start()
 
+
     def close_run_popup(self):
         while True:
             if not self.run_thread.is_alive():
@@ -288,6 +311,15 @@ class ServerLayout(GridLayout):
                 # self.bind_button.disabled = False
                 self.run_machine_button.disabled = False
                 self.send_machine_config_button.disabled = False
+                if self.alice.success:
+                    print("OK")
+                    with self.bits_layout.canvas.before:
+                        Color(0, 1, 0, 1)
+                        self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+                else:
+                    with self.bits_layout.canvas.before:
+                        Color(1, 0, 0, 1)
+                        self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
                 return True
 
     def show_run_popup(self):

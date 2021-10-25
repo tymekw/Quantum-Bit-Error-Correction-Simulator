@@ -11,7 +11,7 @@ from kivy.uix.textinput import TextInput
 import bob_client
 import threading
 from plyer import filechooser
-
+from kivy.graphics import Color, Rectangle
 
 class ClientLayout(GridLayout):
     def __init__(self, **kwargs):
@@ -81,10 +81,23 @@ class ClientLayout(GridLayout):
 
         self.add_widget(self.bits_editor_layout)
 
-        self.bits_layout = GridLayout(cols=1)
+        self.bits_layout = GridLayout(cols=1, padding=5)
         self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0, 0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
+        with self.bits_layout.canvas.before:
+            Color(0, 0, 0, 1)
+
+            # Add a rectangle
+            self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+            # BorderImage(
+            #     size=(self.bits_label_all.width + 100, self.bits_label_all.height + 100),
+            #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
+            #     border=(10, 10, 10, 10))
+        self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+    def update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
 
     def random_bits_create(self, instance):
         # self.create_bits_button.disabled = True
@@ -197,11 +210,21 @@ class ClientLayout(GridLayout):
         close_popup_thread.daemon = True
         close_popup_thread.start()
 
+
     def close_run_popup(self):
         while True:
             if not self.run_thread.is_alive():
                 self.popup_window.dismiss()
                 self.bits_label_all.text = str(self.bob.bits.bits)
+                if self.bob.success:
+                    print("OK")
+                    with self.bits_layout.canvas.before:
+                        Color(0, 1, 0, 1)
+                        self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+                else:
+                    with self.bits_layout.canvas.before:
+                        Color(1, 0, 0, 1)
+                        self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
                 return True
 
     def show_run_popup(self):

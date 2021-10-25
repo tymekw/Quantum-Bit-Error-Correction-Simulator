@@ -19,6 +19,7 @@ class BobClient:
         self.bits = None
         self.bits_length = None
         self.num_of_synchro = 150
+        self.success = False
 
     def bind(self):
         print("BIIIIIIIIIIIIIND")
@@ -73,8 +74,14 @@ class BobClient:
             self.W_bob = self.bobTPM.update_weights(self.X)
 
         #ToDo check if weights are the same
-        data = pickle.dumps(self.bobTPM.W)
+        data = pickle.dumps(TPM.sha256(self.bobTPM.W))
         self.s.sendall(data)
 
+        data = self.s.recv(10000000)
+        is_success = pickle.loads(data)
+        if is_success=="True":
+            self.success = True
+        else:
+            self.success = False
         print("done")
         self.bits.bits = self.bits.arr_to_bits(self.bobTPM.W, self.bits_length)

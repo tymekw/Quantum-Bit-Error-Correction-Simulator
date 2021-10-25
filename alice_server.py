@@ -26,6 +26,7 @@ class AliceServer:
         self.seed = 1
         self.bits_length = 256
         self.num_of_synchro = 150
+        self.success = False
 
     def set_bits_length(self, length):
         self.bits_length = length
@@ -147,9 +148,15 @@ class AliceServer:
         # ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
-        if np.array_equal(self.aliceTPM.W, bob_wei):
+        if np.array_equal(TPM.sha256(self.aliceTPM.W), bob_wei):
+            data = pickle.dumps("True")
+            self.conn.sendall(data)
+            self.success = True
             print('dziala')
         else:
+            data = pickle.dumps("False")
+            self.conn.sendall(data)
+            self.success = False
             print("NIE dziala")
 
         self.bits.bits = self.bits.arr_to_bits(self.aliceTPM.W, self.bits_length)
