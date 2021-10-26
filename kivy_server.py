@@ -136,6 +136,7 @@ class ServerLayout(GridLayout):
         self.bits_slider.disabled = False
         self.seed_text_field.disabled = False
         self.bits_value.disabled = False
+        self.synchro_num_field.disabled = False
         self.on_bind(self.bind_button)
 
 
@@ -281,6 +282,10 @@ class ServerLayout(GridLayout):
             button.background_normal = 'atlas://data/images/defaulttheme/button'
 
     def on_send_config(self, instance):
+        for widget in self.N_grid_layout.children:
+            widget.disabled=True
+        for widget in self.K_grid_layout.children:
+            widget.disabled=True
         instance.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
