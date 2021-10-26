@@ -2,24 +2,48 @@ import numpy as np
 from numpy import random
 import alice_server, bob_client
 import csv
-# 18:25
-#from 216 one last, 23:55 no writing to data{}
-REPETITIONS = 600
-Ls = [2, 3, 4]
-BERs = [1, 2, 3]
-b_lens = [i for i in range(224, 448, 8)]
+import argparse
 
+parser = argparse.ArgumentParser()
 
-# fields = ["bits_len", "L", "BER", "N", "K", "results"]
-# with open("new_test.csv", "a+") as f:
-#     w = csv.writer(f, delimiter=';')
-#     w.writerow(fields)
+parser.add_argument("-r", "--repetitions", type=int, help="set number of repetitions per one TPM setting, min 200")
+parser.add_argument("-l", "--range", type=int, nargs='+', help="set list of Ls (range of weights {-L,L}) to generate "
+                                                               "data about, separated by SPACE")
+parser.add_argument("-b", "--BER", type=int, nargs='+', help="set list of BERs to generate data about, separated by "
+                                                             "SPACE")
+parser.add_argument("-len", "--bits_lengths", type=int, nargs='+', help="set list of bits lengths to generate data "
+                                                                        "about, separated by SPACE")
+parser.add_argument("-n", "--filename", type=str, help="name of file to save data to [test.csv]")
 
-# data = {}
+args = parser.parse_args()
+if args.repetitions:
+    REPETITIONS = int(args.repetitions)
+    if REPETITIONS < 200:
+        raise argparse.ArgumentTypeError("Minimum REPETITIONS is 200")
+
+if args.range:
+    Ls = [int(i) for i in args.range]
+if args.BER:
+    BERs = [int(i) for i in args.BER]
+if args.repetitions:
+    b_lens = [int(i) for i in args.bits_lengths]
+if args.filename:
+    if args.filename.endswith(".csv"):
+        filename = args.filename
+    else:
+        filename = "test.csv"
+        print("using default filename: test.csv")
+
+if not REPETITIONS and Ls and BERs and b_lens:
+    print("run script with proper arguments, help with --help")
+
+fields = ["bits_len", "L", "BER", "N", "K", "results"]
+with open(filename, "a+") as f:
+    w = csv.writer(f, delimiter=';')
+    w.writerow(fields)
+
 for b_len in b_lens:
-    # data[str(b_len)] = {}
     for l in Ls:
-        # data[str(b_len)][str(l)] = {}
         aliceTEST = alice_server.AliceServer()
         aliceTEST.set_bits_length(b_len)
         aliceTEST.set_L(l)
@@ -28,15 +52,11 @@ for b_len in b_lens:
         N_K_list = aliceTEST.get_factors_list()
 
         for ber in BERs:
-            # data[str(b_len)][str(l)][str(ber)] = {}
             for N, K in N_K_list:
                 print("B_LEN:{}, L:{}, BER:{}, N:{}, K:{}".format(b_len, l, ber, N, K))
                 results = []
                 if N == 1:
                     continue
-                # data[str(b_len)][str(l)][str(ber)][str(N)] = {}
-                # data[str(b_len)][str(l)][str(ber)][str(N)][str(K)] = {}
-                # print("NEW N:{}, K: {}, BER: {}, L: {}".format(N, K, ber, l))
                 print("current bits length checked: {}".format(b_len))
                 for i in range(0, REPETITIONS):
                     alice = alice_server.AliceServer()
@@ -80,31 +100,8 @@ for b_len in b_lens:
                     results.append(s)
 
                 results = [i for i in results if i != 0]
-                results = results[0:500]
-                # data[str(b_len)][str(l)][str(ber)][str(N)][str(K)] = results
-                with open("new_test.csv", "a+") as f:
+                results = results[0:REPETITIONS-100]
+                with open(filename, "a+") as f:
                     w = csv.writer(f, delimiter=';')
                     row = [str(b_len), str(l), str(ber), str(N), str(K), ",".join([str(i) for i in results])]
                     w.writerow(row)
-
-                # data[b_len][l][ber][N][K] = [str(i) for i in results]
-
-                # print(len(results))
-                # print(sum(results)/len(results))
-                # print(min(results))
-                # print(max(results))
-                # print(statistics.median(results))
-                #
-                # fig, ax = plt.subplots()
-                # plt.hist(x=results, bins='auto')
-                # plt.title("Number of required synchronizations for TPM with parameters: \n N={}, K={}, L={}".format(alice.N, alice.K, L))
-                # plt.xlabel("Number of TPM synchronizations")
-                # plt.yticks([])
-                # plt.show()
-#
-# # a = np.hstack((results.normal(size=1000),
-# #                rng.normal(loc=5, scale=2, size=1000)))
-
-# print("done")
-# print(data)
-# print(yaml.dump(data, allow_unicode=True, default_flow_style=False))

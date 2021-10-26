@@ -19,6 +19,16 @@ python main.py
 ~~~~
 
 ## /test directory
-- loop_test.py script generates data about number of required synchronizations
+- generate_data.py script generates data about number of required synchronizations,
+-
+    -  example usage:
+~~~~
+python generate_data.py -r 200 -l 1 123 -b 1 2 -len 1 2 3 -n sample_name.csv
+~~~~
+-
+	 -  more info about usage:
+~~~~
+python generate_data.py --help
+~~~~
 - test_data.ipynb used to display plots and calculate statistics
 - remaining scripts are used by loop_test.py
