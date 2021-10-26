@@ -44,6 +44,7 @@ class ClientLayout(GridLayout):
         self.create_bits_button = Button(text="Create random bits", disabled=True)
         self.import_bits_button = Button(text="Import bits", disabled=True)
         self.run_machine_button = Button(text="START", disabled=True, bold=True)
+        self.reset_button = Button(text="RESET", disabled=True, bold=True)
 
         self.buttons_layout.add_widget(self.bind_button)
         self.bind_button.bind(on_press=self.on_bind)
@@ -55,6 +56,8 @@ class ClientLayout(GridLayout):
         self.import_bits_button.bind(on_press=self.on_import_bits)
         self.buttons_layout.add_widget(self.run_machine_button)
         self.run_machine_button.bind(on_press=self.on_run_machine)
+        self.buttons_layout.add_widget(self.reset_button)
+        self.reset_button.bind(on_press=self.on_reset)
 
         self.add_widget(self.buttons_layout)
 
@@ -119,6 +122,27 @@ class ClientLayout(GridLayout):
         self.bits_label_all.text = str(self.bob.bits.bits)
 
         # instance.disabled = True
+
+    def on_reset(self, instance):
+        self.bob = bob_client.BobClient()
+        self.n_value.text = str(self.bob.N)
+        self.k_value.text = str(self.bob.K)
+        self.l_value.text = str(self.bob.L)
+        self.bits_len_value.text = str(self.bob.bits_length)
+        self.bind_button.disabled = False
+        self.read_config_button.disabled = True
+        self.create_bits_button.disabled = True
+        self.import_bits_button.disabled = True
+        self.run_machine_button.disabled = True
+        self.reset_button.disabled = True
+        with self.bits_layout.canvas.before:
+            Color(0, 0, 0, 1)
+            self.bits_layout.canvas.before.remove(self.rect)
+            self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+
+        self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+
+
 
     def on_import_bits(self, instance):
         path = filechooser.open_file(title="Pick a txt file..",
@@ -209,6 +233,7 @@ class ClientLayout(GridLayout):
         close_popup_thread = threading.Thread(target=self.close_run_popup)  # ToDo
         close_popup_thread.daemon = True
         close_popup_thread.start()
+        self.reset_button.disabled = False
 
     def close_run_popup(self):
         while True:
@@ -219,11 +244,14 @@ class ClientLayout(GridLayout):
                     print("OK")
                     with self.bits_layout.canvas.before:
                         Color(0, 1, 0, 1)
+                        self.bits_layout.canvas.before.remove(self.rect)
                         self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
                 else:
                     with self.bits_layout.canvas.before:
                         Color(1, 0, 0, 1)
+                        self.bits_layout.canvas.before.remove(self.rect)
                         self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+                self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
                 return True
 
     def show_run_popup(self):

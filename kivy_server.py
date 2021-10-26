@@ -74,14 +74,19 @@ class ServerLayout(GridLayout):
 
         self.send_machine_config_button = Button(text="Send settings", disabled=True)
         self.send_machine_config_button.bind(on_press=self.on_send_config)
+
         self.run_machine_button = Button(text="START", disabled=True, bold=True)
         self.run_machine_button.bind(on_press=self.on_run_machine)
+
+        self.reset_button = Button(text="RESET", disabled=True, bold=True)
+        self.reset_button.bind(on_press=self.on_reset)
 
         # self.buttons_layout.add_widget(self.bind_button)
         self.buttons_layout.add_widget(self.create_bits_button)
         self.buttons_layout.add_widget(self.import_bits_button)
         self.buttons_layout.add_widget(self.send_machine_config_button)
         self.buttons_layout.add_widget(self.run_machine_button)
+        self.buttons_layout.add_widget(self.reset_button)
 
         self.add_widget(self.buttons_layout)
 
@@ -102,15 +107,39 @@ class ServerLayout(GridLayout):
             #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
             #     border=(10, 10, 10, 10))
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+
     def update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
+    def on_reset(self, instance):
+        self.alice = alice_server.AliceServer()
+        self.n_value.text = str(self.alice.N)
+        self.k_value.text = str(self.alice.K)
+        self.l_value.text = str(self.alice.L)
+        self.bits_value.text="256"
+        self.seed_text_field.text="seed"
+        self.synchro_num_field.text='150'
+        self.l_slider.value = 2
+        self.bits_slider.value = 256
+        with self.bits_layout.canvas.before:
+            Color(0, 0, 0, 1)
+            self.bits_layout.canvas.before.remove(self.rect)
+            self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+
+        self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
+        self.reset_button.disabled = True
+        self.import_bits_button.disabled = False
+        self.send_machine_config_button.disabled = True
+        self.run_machine_button.disabled = True
+        self.reset_button.disabled = True
+        self.bits_slider.disabled = False
+        self.seed_text_field.disabled = False
+        self.bits_value.disabled = False
+        self.on_bind(self.bind_button)
 
 
 
-
-    # listen to size and position changes
 
     def on_import_bits(self, instance):
         try:
@@ -294,6 +323,7 @@ class ServerLayout(GridLayout):
         close_popup_thread = threading.Thread(target=self.close_run_popup)
         close_popup_thread.daemon = True
         close_popup_thread.start()
+        self.reset_button.disabled = False
 
 
     def close_run_popup(self):
@@ -315,11 +345,14 @@ class ServerLayout(GridLayout):
                     print("OK")
                     with self.bits_layout.canvas.before:
                         Color(0, 1, 0, 1)
+                        self.bits_layout.canvas.before.remove(self.rect)
                         self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
                 else:
                     with self.bits_layout.canvas.before:
                         Color(1, 0, 0, 1)
+                        self.bits_layout.canvas.before.remove(self.rect)
                         self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
+                self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
                 return True
 
     def show_run_popup(self):
