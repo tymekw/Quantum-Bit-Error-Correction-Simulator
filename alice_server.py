@@ -42,7 +42,7 @@ class AliceServer:
 
     def set_L(self, L):
         self.L = L
-        self.bits.L = self.L
+        self.bits.change_L(self.L)
 
     def choose_machine_details(self, N, K, L):
         self.N = N

@@ -184,6 +184,7 @@ class ServerLayout(GridLayout):
     def on_slider_l(self, instance, value):
         self.l_value.text = str(int(value))
         self.alice.set_L(int(value))
+        self.on_create_bits(self.create_bits_button)
 
     def on_slider_bits(self, instance, value):
         self.bits_value.text = str(int(value))
@@ -207,6 +208,7 @@ class ServerLayout(GridLayout):
         self.popup_window.open()
 
     def on_create_bits(self, instance):
+        self.alice.set_L(int(self.l_value.text))
         self.alice.set_bits_length(int(self.bits_value.text))
         self.remove_n_k_buttons()
         self.alice.set_seed(self.seed_text_field.text)
