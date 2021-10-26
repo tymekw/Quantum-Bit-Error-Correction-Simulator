@@ -18,8 +18,8 @@ class ClientLayout(GridLayout):
         super(ClientLayout, self).__init__(**kwargs)
         self.cols = 2
         self.machine_details_layout = GridLayout(cols=2)
-        self.n_label = Label(text="Inputs per one hidden neuron")
-        self.k_label = Label(text="Neurons in hidden layer")
+        self.n_label = Label(text="Inputs per one \nhidden neuron", halign='center', valign='middle')
+        self.k_label = Label(text="Neurons in \nhidden layer", halign='center', valign='middle')
         self.l_label = Label(text="Weights range")
         self.bits_len_label = Label(text="Bits length")
         self.n_value = Label(text=str(self.bob.N))
@@ -171,6 +171,7 @@ class ClientLayout(GridLayout):
         instance.disabled = True
         self.read_config_button.disabled = False
         self.show_bind_popup()
+
         self.bind_thread = threading.Thread(target=self.bob.bind)
         self.bind_thread.daemon = True
         self.bind_thread.start()
@@ -178,11 +179,19 @@ class ClientLayout(GridLayout):
         close_popup_thread.daemon = True
         close_popup_thread.start()
 
+
     def close_bind_popup(self):
         while True:
             if not self.bind_thread.is_alive():
-                self.popup_window.dismiss()
-                return True
+                if self.bob.connected == True:
+                    self.popup_window.dismiss()
+                    return True
+                else:
+                    print("connection unsuccessfull")
+                    self.bind_button.disabled = False
+                    self.read_config_button.disabled = True
+                    self.popup_window.dismiss()
+                    return True
 
     def show_bind_popup(self):
         self.popup_window = Popup(title="waiting", size_hint=(None, None), size=(400, 400),

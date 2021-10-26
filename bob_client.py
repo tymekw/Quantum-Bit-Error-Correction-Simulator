@@ -20,11 +20,17 @@ class BobClient:
         self.bits_length = None
         self.num_of_synchro = 150
         self.success = False
+        self.connected = False
 
     def bind(self):
         print("BIIIIIIIIIIIIIND")
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect((self.HOST, self.PORT))
+        try:
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s.connect((self.HOST, self.PORT))
+            self.connected = True
+        except ConnectionRefusedError:
+            self.connected = False
+
 
     def receive_machine_config(self):
         data = self.s.recv(1024)
