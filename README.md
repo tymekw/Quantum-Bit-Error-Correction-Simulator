@@ -1,7 +1,7 @@
 # Application allowing to correct errors arising in quantum key distribution
 
 Application allows user to simulate error correction of bits created in quantum key distribution process using neural network.
-User is able to upload bits on its own as well as create random bits with chosen bits error rate to be corrected.
+User is able to upload bits on its own as well as create random bits with chosen bit error rate to be corrected.
 Some tweaks in neural network structure are also possible. Application after synchronization process
 checks if new bits are properly corrected and shows it by green or red frame around them
 
