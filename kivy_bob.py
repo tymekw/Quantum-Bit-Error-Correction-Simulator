@@ -18,10 +18,10 @@ class ClientLayout(GridLayout):
         super(ClientLayout, self).__init__(**kwargs)
         self.cols = 2
         self.machine_details_layout = GridLayout(cols=2)
-        self.n_label = Label(text="Inputs per one \nhidden neuron", halign='center', valign='middle')
-        self.k_label = Label(text="Neurons in \nhidden layer", halign='center', valign='middle')
-        self.l_label = Label(text="Weights range")
-        self.bits_len_label = Label(text="Bits length")
+        self.n_label = Label(text="Inputs per one \nhidden neuron [N]", halign='center', valign='middle')
+        self.k_label = Label(text="Neurons in \nhidden layer [K]", halign='center', valign='middle')
+        self.l_label = Label(text="Weights range {-L, L}")
+        self.bits_len_label = Label(text="Key length [bits]")
         self.n_value = Label(text=str(self.bob.N))
         self.k_value = Label(text=str(self.bob.K))
         self.l_value = Label(text=str(self.bob.L))
@@ -63,7 +63,7 @@ class ClientLayout(GridLayout):
 
         self.bits_editor_layout = GridLayout(cols=3)
 
-        self.ber_label = Label(text="BER")
+        self.ber_label = Label(text="QBER [%]")
         self.ber_value = Label(text="0")
         self.ber_slider = Slider(min=0, max=10, value=0, disabled=True)
         self.ber_slider.bind(value=self.on_ber_slider)

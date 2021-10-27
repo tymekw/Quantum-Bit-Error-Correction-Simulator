@@ -7,3 +7,4 @@ if __name__ == "__main__":
     p2 = Popen("python {}\\kivy_bob.py".format(dir_path))
     print(p1.communicate())
     print(p2.communicate())
+# K, N, key len, QBER %

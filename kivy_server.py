@@ -17,14 +17,14 @@ class ServerLayout(GridLayout):
         super(ServerLayout, self).__init__(**kwargs)
         self.cols = 2
         self.machine_details_layout = GridLayout(cols=2)
-        self.n_label = Label(text="Inputs per one \nhidden neuron", halign='center', valign='middle')
-        self.k_label = Label(text="Neurons in\nhidden layer", halign='center', valign='middle')
-        self.l_label = Label(text="Weights range")
+        self.n_label = Label(text="Inputs per one \nhidden neuron [N]", halign='center', valign='middle')
+        self.k_label = Label(text="Neurons in\nhidden layer [K]", halign='center', valign='middle')
+        self.l_label = Label(text="Weights range {-L, L}")
         self.n_value = Label(text=str(self.alice.N))
         self.k_value = Label(text=str(self.alice.K))
         self.l_value = Label(text=str(self.alice.L))
 
-        self.bits_label = Label(text="Bits length")
+        self.bits_label = Label(text="Key length [bits]")
         self.seed_label = Label(text="Seed")
         self.bits_value = TextInput(text="256")
         self.seed_text_field = TextInput(text="seed")

@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--repetitions", type=int, help="set number of repetitions per one TPM setting, min 200")
 parser.add_argument("-l", "--range", type=int, nargs='+', help="set list of Ls (range of weights {-L,L}) to generate "
                                                                "data about, separated by SPACE")
-parser.add_argument("-b", "--BER", type=int, nargs='+', help="set list of BERs to generate data about, separated by "
+parser.add_argument("-b", "--QBER", type=int, nargs='+', help="set list of BERs to generate data about, separated by "
                                                              "SPACE")
 parser.add_argument("-len", "--bits_lengths", type=int, nargs='+', help="set list of bits lengths to generate data "
                                                                         "about, separated by SPACE")
