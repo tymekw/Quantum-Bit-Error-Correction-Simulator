@@ -101,11 +101,11 @@ class ServerLayout(GridLayout):
             self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
 
-    def update_rect(self, instance):
+    def update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
-    def on_reset(self):
+    def on_reset(self, instance):
         self.alice = alice_server.AliceServer()
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
