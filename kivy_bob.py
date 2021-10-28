@@ -93,7 +93,7 @@ class ClientLayout(GridLayout):
             self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
 
-    def update_rect(self, instance, value):
+    def update_rect(self, instance):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 

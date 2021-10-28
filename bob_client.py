@@ -30,7 +30,6 @@ class BobClient:
         except ConnectionRefusedError:
             self.connected = False
 
-
     def receive_machine_config(self):
         data = self.s.recv(1024)
         self.N, self.K, self.L, self.seed, self.bits_length, self.num_of_synchro = pickle.loads(data)
