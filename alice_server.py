@@ -1,8 +1,6 @@
 import math
 import socket
 import pickle
-import threading
-
 import bits
 import numpy as np
 import TPM
@@ -51,13 +49,9 @@ class AliceServer:
 
     def bind(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("before bind")
         self.s.bind((self.HOST, self.PORT))
-        print("bind")
-
         self.s.listen()
         self.conn, self.addr = self.s.accept()
-        print("binded")
         return True
 
     def generate_bits(self):
@@ -66,7 +60,6 @@ class AliceServer:
     def get_possible_N_K(self, w_len):
         factors = self.get_factors_list(w_len)
         return self.get_best_pair(factors)
-        # return factors
 
     def get_factors_list(self, w_len=0):
         if w_len == 0:
@@ -91,12 +84,10 @@ class AliceServer:
         W_len = len(self.bits.bits_to_w())
         self.N, self.K = self.get_possible_N_K(W_len)
         self.W = self.bits.bits_to_arr(self.K, self.N)
-        print(self.W)
         self.aliceTPM = TPM.Tpm(self.N, self.K, self.L, self.W)
 
     def change_machine_config(self):
         self.W = self.bits.bits_to_arr(self.K, self.N)
-        print(self.W)
         self.aliceTPM = TPM.Tpm(self.N, self.K, self.L, self.W)
 
     def send_machine_config(self):
@@ -108,15 +99,10 @@ class AliceServer:
             return True
 
     def run_machine(self):
-        print("waits")
-        print(self.W)
-        print(self.aliceTPM.W)
         for i in range(0, self.num_of_synchro):
-            print("inside loop")
             bob_tau = None
             self.aliceTPM.tau = 1
             while self.aliceTPM.tau != bob_tau:
-                print("choose X")
                 try:
                     self.s.listen()
                     self.conn, self.addr = self.s.accept()
@@ -125,38 +111,29 @@ class AliceServer:
 
                 self.X = np.random.choice([-1, 1], size=(self.K, self.N))
                 self.aliceTPM.calculate_tau(self.X)
-                print("sending X")
                 data = pickle.dumps(self.X)
                 self.conn.sendall(data)
-                print("X send")
                 rec_tau = self.conn.recv(1000000)
                 bob_tau = pickle.loads(rec_tau)
 
                 if self.aliceTPM.tau == bob_tau:
                     data = pickle.dumps(1)
                     self.conn.sendall(data)
-                    print("X chosen")
                 else:
                     data = pickle.dumps(0)
                     self.conn.sendall(data)
-                    print("X not chosen")
             print(i)
             self.W = self.aliceTPM.update_weights(self.X)
 
-        print("outside loop")
-
-        # ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(TPM.sha256(self.aliceTPM.W), bob_wei):
             data = pickle.dumps("True")
             self.conn.sendall(data)
             self.success = True
-            print('dziala')
         else:
             data = pickle.dumps("False")
             self.conn.sendall(data)
             self.success = False
-            print("NIE dziala")
 
         self.bits.bits = self.bits.arr_to_bits(self.aliceTPM.W, self.bits_length)

@@ -18,7 +18,7 @@ pip install -r requirements.txt
 python main.py
 ~~~~
 
-## /test directory
+## /test iterations directory
 - generate_data.py script generates data about number of required synchronizations,
 -
     -  example usage:

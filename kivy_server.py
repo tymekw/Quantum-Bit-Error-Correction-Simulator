@@ -11,6 +11,7 @@ import threading
 from plyer import filechooser
 from kivy.graphics import Color, Rectangle
 
+
 class ServerLayout(GridLayout):
     def __init__(self, **kwargs):
         self.alice = alice_server.AliceServer()
@@ -81,7 +82,6 @@ class ServerLayout(GridLayout):
         self.reset_button = Button(text="RESET", disabled=True, bold=True)
         self.reset_button.bind(on_press=self.on_reset)
 
-        # self.buttons_layout.add_widget(self.bind_button)
         self.buttons_layout.add_widget(self.create_bits_button)
         self.buttons_layout.add_widget(self.import_bits_button)
         self.buttons_layout.add_widget(self.send_machine_config_button)
@@ -91,7 +91,6 @@ class ServerLayout(GridLayout):
         self.add_widget(self.buttons_layout)
 
         self.bits_layout = GridLayout(cols=1, padding=5)
-        # self.bits_layout.background_color = 'white'
         self.bits_label_all = TextInput(text='111', disabled=False, cursor=(0, 0))
         self.bits_layout.add_widget(self.bits_label_all)
         self.add_widget(self.bits_layout)
@@ -99,13 +98,7 @@ class ServerLayout(GridLayout):
 
         with self.bits_layout.canvas.before:
             Color(0, 0, 0, 1)
-
-            # Add a rectangle
             self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
-            # BorderImage(
-            #     size=(self.bits_label_all.width + 100, self.bits_label_all.height + 100),
-            #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
-            #     border=(10, 10, 10, 10))
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
 
     def update_rect(self, instance, value):
@@ -117,9 +110,9 @@ class ServerLayout(GridLayout):
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
         self.l_value.text = str(self.alice.L)
-        self.bits_value.text="256"
-        self.seed_text_field.text="seed"
-        self.synchro_num_field.text='150'
+        self.bits_value.text = "256"
+        self.seed_text_field.text = "seed"
+        self.synchro_num_field.text = '150'
         self.l_slider.value = 2
         self.bits_slider.value = 256
         with self.bits_layout.canvas.before:
@@ -139,15 +132,12 @@ class ServerLayout(GridLayout):
         self.synchro_num_field.disabled = False
         self.on_bind(self.bind_button)
 
-
-
-
     def on_import_bits(self, instance):
         try:
             self.remove_n_k_buttons()
             path = filechooser.open_file(title="Pick a txt file..",
                                          filters=[("Text files", "*.txt")])[0]
-            # print(path)
+
             with open(path, 'r') as f:
                 lines = f.readline()
 
@@ -188,7 +178,6 @@ class ServerLayout(GridLayout):
 
     def on_slider_bits(self, instance, value):
         self.bits_value.text = str(int(value))
-        # self.alice.set_bits_length(int(value))
 
     def on_bind(self, instance):
         instance.disabled = True
@@ -216,7 +205,6 @@ class ServerLayout(GridLayout):
         self.bits_label_all.text = str(self.alice.bits.bits)
         self.alice.create_machine()
         possible_nk = self.alice.get_factors_list()
-        print(possible_nk)
         for i, j in possible_nk:
             self.N_grid_layout.add_widget(Button(text=str(i), on_press=self.handle_new_n))
             self.K_grid_layout.add_widget(Button(text=str(j), on_press=self.handle_new_k))
@@ -260,8 +248,6 @@ class ServerLayout(GridLayout):
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
         self.alice.change_machine_config()
-        print(self.alice.W)
-        print(self.alice.aliceTPM.W)
 
     def handle_new_k(self, instance):
         self.reset_buttons()
@@ -274,8 +260,6 @@ class ServerLayout(GridLayout):
         self.n_value.text = str(self.alice.N)
         self.k_value.text = str(self.alice.K)
         self.alice.change_machine_config()
-        print(self.alice.W)
-        print(self.alice.aliceTPM.W)
 
     def reset_buttons(self):
         for button in self.N_grid_layout.children:
@@ -285,9 +269,9 @@ class ServerLayout(GridLayout):
 
     def on_send_config(self, instance):
         for widget in self.N_grid_layout.children:
-            widget.disabled=True
+            widget.disabled = True
         for widget in self.K_grid_layout.children:
-            widget.disabled=True
+            widget.disabled = True
         instance.disabled = True
         self.l_slider.disabled = True
         self.bits_slider.disabled = True
@@ -300,7 +284,6 @@ class ServerLayout(GridLayout):
         try:
             self.alice.num_of_synchro = int(self.synchro_num_field.text)
         except Exception as e:
-            print(e)
             self.alice.num_of_synchro = 150
             self.synchro_num_field.text = "Invalid value, setting to default {}".format(self.alice.num_of_synchro)
         self.show_send_popup()
@@ -332,24 +315,19 @@ class ServerLayout(GridLayout):
         close_popup_thread.start()
         self.reset_button.disabled = False
 
-
     def close_run_popup(self):
         while True:
             if not self.run_thread.is_alive():
                 self.popup_window.dismiss()
                 self.bits_label_all.text = str(self.alice.bits.bits)
                 self.bits_label_all.disabled = False
-                # self.n_slider.disabled = False
-                # self.k_slider.disabled = False
                 self.l_slider.disabled = False
                 self.bits_slider.disabled = False
                 self.seed_text_field.disabled = False
                 self.create_bits_button.disabled = False
-                # self.bind_button.disabled = False
                 self.run_machine_button.disabled = False
                 self.send_machine_config_button.disabled = False
                 if self.alice.success:
-                    print("OK")
                     with self.bits_layout.canvas.before:
                         Color(0, 1, 0, 1)
                         self.bits_layout.canvas.before.remove(self.rect)

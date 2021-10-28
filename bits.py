@@ -16,7 +16,6 @@ class Bits:
 
     def generate_bits(self, seed, length):
         myrandom = random.Random(seed)
-        # random.seed(seed)
         b = myrandom.getrandbits(length)
         b = b
         b = bin(b)

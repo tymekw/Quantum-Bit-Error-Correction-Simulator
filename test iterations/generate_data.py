@@ -1,8 +1,9 @@
+import argparse
+import csv
 import numpy as np
 from numpy import random
-import alice_server, bob_client
-import csv
-import argparse
+import alice_server
+import bob_client
 
 parser = argparse.ArgumentParser()
 
@@ -10,12 +11,12 @@ parser.add_argument("-r", "--repetitions", type=int, help="set number of repetit
 parser.add_argument("-l", "--range", type=int, nargs='+', help="set list of Ls (range of weights {-L,L}) to generate "
                                                                "data about, separated by SPACE")
 parser.add_argument("-b", "--QBER", type=int, nargs='+', help="set list of BERs to generate data about, separated by "
-                                                             "SPACE")
+                                                              "SPACE")
 parser.add_argument("-len", "--bits_lengths", type=int, nargs='+', help="set list of bits lengths to generate data "
                                                                         "about, separated by SPACE")
-parser.add_argument("-n", "--filename", type=str, help="name of file to save data to [test.csv]")
-
+parser.add_argument("-n", "--filename", type=str, help="name of file to save data to [test iterations.csv]")
 args = parser.parse_args()
+
 if args.repetitions:
     REPETITIONS = int(args.repetitions)
     if REPETITIONS < 200:
@@ -31,8 +32,8 @@ if args.filename:
     if args.filename.endswith(".csv"):
         filename = args.filename
     else:
-        filename = "test.csv"
-        print("using default filename: test.csv")
+        filename = "test iterations.csv"
+        print("using default filename: test iterations.csv")
 
 if not REPETITIONS and Ls and BERs and b_lens:
     print("run script with proper arguments, help with --help")
@@ -57,11 +58,9 @@ for b_len in b_lens:
                 results = []
                 if N == 1:
                     continue
-                print("current bits length checked: {}".format(b_len))
                 for i in range(0, REPETITIONS):
                     alice = alice_server.AliceServer()
                     bob = bob_client.BobClient()
-
                     alice.set_bits_length(b_len)
                     alice.set_L(l)
                     alice.set_seed("seed")
@@ -73,25 +72,24 @@ for b_len in b_lens:
                     bob.bits.BER = ber
                     bob.create_random_bits()
                     bob.create_machine()
-
                     s = 0
                     while not np.array_equal(alice.W, bob.W_bob):
                         if s == 1000:
                             break
                         X = np.random.choice([-1, 1], size=(alice.K, alice.N))
-                        alice.alice.calculate_tau(X)
-                        bob.bob.calculate_tau(X)
+                        alice.aliceTPM.calculate_tau(X)
+                        bob.bobTPM.calculate_tau(X)
                         w_l = 0
-                        while alice.alice.tau != bob.bob.tau:
+                        while alice.aliceTPM.tau != bob.bobTPM.tau:
                             X = np.random.choice([-1, 1], size=(alice.K, alice.N))
-                            alice.alice.calculate_tau(X)
-                            bob.bob.calculate_tau(X)
+                            alice.aliceTPM.calculate_tau(X)
+                            bob.bobTPM.calculate_tau(X)
                             w_l += 1
                             if w_l > 10:
                                 break
 
-                        alice.W = alice.alice.update_weights(X)
-                        bob.W_bob = bob.bob.update_weights(X)
+                        alice.W = alice.aliceTPM.update_weights(X)
+                        bob.W_bob = bob.bobTPM.update_weights(X)
 
                         s += 1
                         if w_l > 10:
@@ -100,7 +98,7 @@ for b_len in b_lens:
                     results.append(s)
 
                 results = [i for i in results if i != 0]
-                results = results[0:REPETITIONS-100]
+                results = results[0:REPETITIONS - 100]
                 with open(filename, "a+") as f:
                     w = csv.writer(f, delimiter=';')
                     row = [str(b_len), str(l), str(ber), str(N), str(K), ",".join([str(i) for i in results])]

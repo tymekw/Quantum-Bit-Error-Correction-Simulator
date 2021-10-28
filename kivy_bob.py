@@ -90,12 +90,7 @@ class ClientLayout(GridLayout):
         with self.bits_layout.canvas.before:
             Color(0, 0, 0, 1)
 
-            # Add a rectangle
             self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
-            # BorderImage(
-            #     size=(self.bits_label_all.width + 100, self.bits_label_all.height + 100),
-            #     pos=(self.bits_label_all.x - 50, self.bits_label_all.y - 50),
-            #     border=(10, 10, 10, 10))
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
 
     def update_rect(self, instance, value):
@@ -103,25 +98,16 @@ class ClientLayout(GridLayout):
         self.rect.size = instance.size
 
     def random_bits_create(self, instance):
-        # self.create_bits_button.disabled = True
-        # self.run_machine_button.disabled = False
         self.random_button.background_normal = instance.background_down
         self.block_button.background_normal = 'atlas://data/images/defaulttheme/button'
         self.bob.bits.type = 'random'
-        # self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
-        # instance.disabled = True
 
     def block_bits_create(self, instance):
-        # self.create_bits_button.disabled = True
-        # self.run_machine_button.disabled = False
         self.block_button.background_normal = instance.background_down
         self.random_button.background_normal = 'atlas://data/images/defaulttheme/button'
         self.bob.bits.type = 'block'
-        # self.bob.create_random_bits()
         self.bits_label_all.text = str(self.bob.bits.bits)
-
-        # instance.disabled = True
 
     def on_reset(self, instance):
         self.bob = bob_client.BobClient()
@@ -141,8 +127,6 @@ class ClientLayout(GridLayout):
             self.rect = Rectangle(pos=self.bits_layout.pos, size=self.bits_layout.size)
 
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
-
-
 
     def on_import_bits(self, instance):
         path = filechooser.open_file(title="Pick a txt file..",
@@ -179,7 +163,6 @@ class ClientLayout(GridLayout):
         close_popup_thread.daemon = True
         close_popup_thread.start()
 
-
     def close_bind_popup(self):
         while True:
             if not self.bind_thread.is_alive():
@@ -187,7 +170,6 @@ class ClientLayout(GridLayout):
                     self.popup_window.dismiss()
                     return True
                 else:
-                    print("connection unsuccessfull")
                     self.bind_button.disabled = False
                     self.read_config_button.disabled = True
                     self.popup_window.dismiss()
@@ -235,11 +217,11 @@ class ClientLayout(GridLayout):
 
     def on_run_machine(self, instance):
         self.bob.create_machine()
-        self.show_run_popup()  # ToDo
+        self.show_run_popup()
         self.run_thread = threading.Thread(target=self.bob.run_TPM_machine)
         self.run_thread.daemon = True
         self.run_thread.start()
-        close_popup_thread = threading.Thread(target=self.close_run_popup)  # ToDo
+        close_popup_thread = threading.Thread(target=self.close_run_popup)
         close_popup_thread.daemon = True
         close_popup_thread.start()
         self.reset_button.disabled = False
@@ -250,7 +232,6 @@ class ClientLayout(GridLayout):
                 self.popup_window.dismiss()
                 self.bits_label_all.text = str(self.bob.bits.bits)
                 if self.bob.success:
-                    print("OK")
                     with self.bits_layout.canvas.before:
                         Color(0, 1, 0, 1)
                         self.bits_layout.canvas.before.remove(self.rect)
