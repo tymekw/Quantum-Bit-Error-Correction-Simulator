@@ -188,13 +188,14 @@ class ServerLayout(GridLayout):
     def close_bid_popup(self):
         while True:
             if not self.bind_thread.is_alive():
-                self.popup_window.dismiss()
+                self.bind_popup_window.dismiss()
                 return True
 
     def show_bind_popup(self):
-        self.popup_window = Popup(title="waiting", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.bind_popup_window = Popup(title="WAIT", content=Label(text="Waiting for clinet..."),
+                                       size_hint=(None, None), size=(400, 400),
+                                       auto_dismiss=False)
+        self.bind_popup_window.open()
 
     def on_create_bits(self, instance):
         self.alice.set_L(int(self.l_value.text))
@@ -297,13 +298,14 @@ class ServerLayout(GridLayout):
     def close_send_popup(self):
         while True:
             if not self.send_config_thread.is_alive():
-                self.popup_window.dismiss()
+                self.send_popup_window.dismiss()
                 return True
 
     def show_send_popup(self):
-        self.popup_window = Popup(title="waiting", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.send_popup_window = Popup(title="WAIT", content=Label(text="Waiting for client to receive data..."),
+                                       size_hint=(None, None), size=(400, 400),
+                                       auto_dismiss=False)
+        self.send_popup_window.open()
 
     def on_run_machine(self, instance):
         self.show_run_popup()
@@ -318,7 +320,7 @@ class ServerLayout(GridLayout):
     def close_run_popup(self):
         while True:
             if not self.run_thread.is_alive():
-                self.popup_window.dismiss()
+                self.run_popup_window.dismiss()
                 self.bits_label_all.text = str(self.alice.bits.bits)
                 self.bits_label_all.disabled = False
                 self.l_slider.disabled = False
@@ -341,9 +343,10 @@ class ServerLayout(GridLayout):
                 return True
 
     def show_run_popup(self):
-        self.popup_window = Popup(title="running machine", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.run_popup_window = Popup(title="START", content=Label(text="Synchronization in progress..."),
+                                      size_hint=(None, None), size=(400, 400),
+                                      auto_dismiss=False)
+        self.run_popup_window.open()
 
 
 class ServerApp(App):

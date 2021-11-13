@@ -167,18 +167,19 @@ class ClientLayout(GridLayout):
         while True:
             if not self.bind_thread.is_alive():
                 if self.bob.connected == True:
-                    self.popup_window.dismiss()
+                    self.bind_popup_window.dismiss()
                     return True
                 else:
                     self.bind_button.disabled = False
                     self.read_config_button.disabled = True
-                    self.popup_window.dismiss()
+                    self.bind_popup_window.dismiss()
                     return True
 
     def show_bind_popup(self):
-        self.popup_window = Popup(title="waiting", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.bind_popup_window = Popup(title="BIND", content=Label(text="Waiting for server..."),
+                                       size_hint=(None, None), size=(400, 400),
+                                       auto_dismiss=False)
+        self.bind_popup_window.open()
 
     def on_read_config(self, instance):
         instance.disabled = True
@@ -198,7 +199,7 @@ class ClientLayout(GridLayout):
     def close_read_popup(self):
         while True:
             if not self.read_config_thread.is_alive():
-                self.popup_window.dismiss()
+                self.read_popup_window.dismiss()
                 self.n_value.text = str(self.bob.N)
                 self.k_value.text = str(self.bob.K)
                 self.l_value.text = str(self.bob.L)
@@ -206,9 +207,10 @@ class ClientLayout(GridLayout):
                 return True
 
     def show_read_popup(self):
-        self.popup_window = Popup(title="waiting", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.read_popup_window = Popup(title="WAIT", content=Label(text="Waiting for data from server..."),
+                                       size_hint=(None, None), size=(400, 400),
+                                       auto_dismiss=False)
+        self.read_popup_window.open()
 
     def on_create_bits(self, instance):
         self.run_machine_button.disabled = False
@@ -229,7 +231,7 @@ class ClientLayout(GridLayout):
     def close_run_popup(self):
         while True:
             if not self.run_thread.is_alive():
-                self.popup_window.dismiss()
+                self.run_popup_window.dismiss()
                 self.bits_label_all.text = str(self.bob.bits.bits)
                 if self.bob.success:
                     with self.bits_layout.canvas.before:
@@ -245,9 +247,10 @@ class ClientLayout(GridLayout):
                 return True
 
     def show_run_popup(self):
-        self.popup_window = Popup(title="running machine", size_hint=(None, None), size=(400, 400),
-                                  auto_dismiss=False)
-        self.popup_window.open()
+        self.run_popup_window = Popup(title="START", content=Label(text="Synchronization in progress..."),
+                                      size_hint=(None, None), size=(400, 400),
+                                      auto_dismiss=False)
+        self.run_popup_window.open()
 
 
 class ClientApp(App):
