@@ -37,6 +37,5 @@ class Tpm:
                 w_new[k, n] = int(self.L)
             else:
                 w_new[k, n] = int(z)
-
         self.W = w_new
         return w_new

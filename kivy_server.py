@@ -122,7 +122,9 @@ class ServerLayout(GridLayout):
 
         self.bits_layout.bind(pos=self.update_rect, size=self.update_rect)
         self.reset_button.disabled = True
+        self.create_bits_button.disabled = False
         self.import_bits_button.disabled = False
+        self.l_slider.disabled = False
         self.send_machine_config_button.disabled = True
         self.run_machine_button.disabled = True
         self.reset_button.disabled = True
@@ -154,10 +156,11 @@ class ServerLayout(GridLayout):
                 self.k_value.text = str(self.alice.K)
                 self.bits_slider.value = str(len(self.alice.bits.bits))
                 self.bits_slider.disabled = True
-                self.l_slider.disabled = True
+                # self.l_slider.disabled = True
                 self.create_bits_button.disabled = True
                 self.import_bits_button.disabled = True
                 self.send_machine_config_button.disabled = False
+                self.bits_value.disabled = True
             else:
                 self.bits_label_all.text = "Choose file containing only '1' and '0'"
         except Exception as e:
@@ -322,13 +325,12 @@ class ServerLayout(GridLayout):
             if not self.run_thread.is_alive():
                 self.run_popup_window.dismiss()
                 self.bits_label_all.text = str(self.alice.bits.bits)
-                self.bits_label_all.disabled = False
-                self.l_slider.disabled = False
-                self.bits_slider.disabled = False
-                self.seed_text_field.disabled = False
-                self.create_bits_button.disabled = False
-                self.run_machine_button.disabled = False
-                self.send_machine_config_button.disabled = False
+                self.l_slider.disabled = True
+                self.bits_slider.disabled = True
+                self.seed_text_field.disabled = True
+                self.create_bits_button.disabled = True
+                self.run_machine_button.disabled = True
+                self.send_machine_config_button.disabled = True
                 if self.alice.success:
                     with self.bits_layout.canvas.before:
                         Color(0, 1, 0, 1)

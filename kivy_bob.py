@@ -229,6 +229,12 @@ class ClientLayout(GridLayout):
         self.reset_button.disabled = False
 
     def close_run_popup(self):
+        self.run_machine_button.disabled = True
+        self.create_bits_button.disabled = True
+        self.import_bits_button.disabled = True
+        self.random_button.disabled = True
+        self.block_button.disabled = True
+        self.ber_slider.disabled = True
         while True:
             if not self.run_thread.is_alive():
                 self.run_popup_window.dismiss()

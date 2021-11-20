@@ -69,15 +69,11 @@ class Bits:
         for i, element in enumerate(nums):
             if element > self.L or element < -self.L :
                 if not self.first_bin:
-                    self.first_bin = bin(element + self.max_val // 2)
+                    self.first_bin = bin(abs(element))
                     self.next_new = int('0b' + self.first_bin[3:], 2)
                 else:
-                    if self.next_new < self.max_val:
-                        self.next_new = self.next_new + 1
-                    else:
-                        self.next_new = 0
-                element = self.next_new - self.max_val // 2
-                nums[i] = element
+                    self.next_new = self.next_new + 1 if self.next_new < self.L else -self.L
+                nums[i] = self.next_new
         return nums
 
 
