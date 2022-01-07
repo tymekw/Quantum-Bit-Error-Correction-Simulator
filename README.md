@@ -23,7 +23,8 @@ python main.py
 -
     -  example usage:
 ~~~~
-python generate_data.py -r 200 -l 1 123 -b 1 2 -len 1 2 3 -n sample_name.csv
+python generate_data.py -r 200 -l 1 2 -b 2 3 -len 128 -n sample_name.csv
+
 ~~~~
 -
 	 -  more info about usage:

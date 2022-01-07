@@ -155,6 +155,7 @@ class ServerLayout(GridLayout):
                 self.n_value.text = str(self.alice.N)
                 self.k_value.text = str(self.alice.K)
                 self.bits_slider.value = str(len(self.alice.bits.bits))
+                self.alice.bits_length = len(self.alice.bits.bits)
                 self.bits_slider.disabled = True
                 # self.l_slider.disabled = True
                 self.create_bits_button.disabled = True
@@ -181,6 +182,7 @@ class ServerLayout(GridLayout):
 
     def on_slider_bits(self, instance, value):
         self.bits_value.text = str(int(value))
+        self.alice.set_bits_length(int(self.bits_value.text))
 
     def on_bind(self, instance):
         instance.disabled = True

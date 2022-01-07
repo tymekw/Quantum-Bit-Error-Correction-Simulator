@@ -125,7 +125,7 @@ class AliceServer:
             print(i)
             self.W = self.aliceTPM.update_weights(self.X)
 
-        bob_w = self.conn.recv(1000000)
+        bob_w = self.conn.recv(4096)
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(TPM.sha256(self.aliceTPM.W), bob_wei):
             data = pickle.dumps("True")

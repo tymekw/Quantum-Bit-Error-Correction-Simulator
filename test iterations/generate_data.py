@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--repetitions", type=int, help="set number of repetitions per one TPM setting, min 200")
 parser.add_argument("-l", "--range", type=int, nargs='+', help="set list of Ls (range of weights {-L,L}) to generate "
                                                                "data about, separated by SPACE")
-parser.add_argument("-b", "--QBER", type=int, nargs='+', help="set list of BERs to generate data about, separated by "
+parser.add_argument("-b", "--QBER", type=int, nargs='+', help="set list of QBERs to generate data about, separated by "
                                                               "SPACE")
 parser.add_argument("-len", "--bits_lengths", type=int, nargs='+', help="set list of bits lengths to generate data "
                                                                         "about, separated by SPACE")
@@ -24,16 +24,16 @@ if args.repetitions:
 
 if args.range:
     Ls = [int(i) for i in args.range]
-if args.BER:
-    BERs = [int(i) for i in args.BER]
-if args.repetitions:
+if args.QBER:
+    BERs = [int(i) for i in args.QBER]
+if args.bits_lengths:
     b_lens = [int(i) for i in args.bits_lengths]
 if args.filename:
     if args.filename.endswith(".csv"):
         filename = args.filename
     else:
-        filename = "test iterations.csv"
-        print("using default filename: test iterations.csv")
+        filename = "test_iterations.csv"
+        print("using default filename: test_iterations.csv")
 
 if not REPETITIONS and Ls and BERs and b_lens:
     print("run script with proper arguments, help with --help")
