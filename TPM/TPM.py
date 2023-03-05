@@ -41,9 +41,9 @@ class TPM:
         for (k, n), _ in np.ndenumerate(self.X):
             z = self.W[k, n] + self.X[k, n] * self.sigma[k] * get_theta(self.sigma[k])
             if z <= -self.L:
-                new_weights[k, n] = int(-self.L)
+                new_weights[k, n] = -self.L
             elif z >= self.L:
-                new_weights[k, n] = int(self.L)
+                new_weights[k, n] = self.L
             else:
                 new_weights[k, n] = int(z)
 
