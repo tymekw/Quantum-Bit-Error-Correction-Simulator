@@ -1,20 +1,47 @@
 import argparse
 import csv
+
 import numpy as np
-from numpy import random
+
 import alice_server
 import bob_client
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-r", "--repetitions", type=int, help="set number of repetitions per one TPM setting, min 200")
-parser.add_argument("-l", "--range", type=int, nargs='+', help="set list of Ls (range of weights {-L,L}) to generate "
-                                                               "data about, separated by SPACE")
-parser.add_argument("-b", "--QBER", type=int, nargs='+', help="set list of QBERs to generate data about, separated by "
-                                                              "SPACE")
-parser.add_argument("-len", "--bits_lengths", type=int, nargs='+', help="set list of bits lengths to generate data "
-                                                                        "about, separated by SPACE")
-parser.add_argument("-n", "--filename", type=str, help="name of file to save data to [test iterations.csv]")
+parser.add_argument(
+    "-r",
+    "--repetitions",
+    type=int,
+    help="set number of repetitions per one TPM setting, min 200",
+)
+parser.add_argument(
+    "-l",
+    "--range",
+    type=int,
+    nargs="+",
+    help="set list of Ls (range of weights {-L,L}) to generate "
+         "data about, separated by SPACE",
+)
+parser.add_argument(
+    "-b",
+    "--QBER",
+    type=int,
+    nargs="+",
+    help="set list of QBERs to generate data about, separated by " "SPACE",
+)
+parser.add_argument(
+    "-len",
+    "--bits_lengths",
+    type=int,
+    nargs="+",
+    help="set list of bits lengths to generate data " "about, separated by SPACE",
+)
+parser.add_argument(
+    "-n",
+    "--filename",
+    type=str,
+    help="name of file to save data to [test iterations.csv]",
+)
 args = parser.parse_args()
 
 if args.repetitions:
@@ -40,7 +67,7 @@ if not REPETITIONS and Ls and BERs and b_lens:
 
 fields = ["bits_len", "L", "BER", "N", "K", "results"]
 with open(filename, "a+") as f:
-    w = csv.writer(f, delimiter=';')
+    w = csv.writer(f, delimiter=";")
     w.writerow(fields)
 
 for b_len in b_lens:
@@ -68,7 +95,9 @@ for b_len in b_lens:
                     alice.set_N(N)
                     alice.set_K(K)
                     alice.create_machine()
-                    bob.get_config(alice.N, alice.K, alice.L, alice.seed, alice.bits_length)
+                    bob.get_config(
+                        alice.N, alice.K, alice.L, alice.seed, alice.bits_length
+                    )
                     bob.bits.BER = ber
                     bob.create_random_bits()
                     bob.create_machine()
@@ -98,8 +127,15 @@ for b_len in b_lens:
                     results.append(s)
 
                 results = [i for i in results if i != 0]
-                results = results[0:REPETITIONS - 100]
+                results = results[0: REPETITIONS - 100]
                 with open(filename, "a+") as f:
-                    w = csv.writer(f, delimiter=';')
-                    row = [str(b_len), str(l), str(ber), str(N), str(K), ",".join([str(i) for i in results])]
+                    w = csv.writer(f, delimiter=";")
+                    row = [
+                        str(b_len),
+                        str(l),
+                        str(ber),
+                        str(N),
+                        str(K),
+                        ",".join([str(i) for i in results]),
+                    ]
                     w.writerow(row)

@@ -29,7 +29,12 @@ class TPM:
         self.tau = new_tau
 
     def calculate_TPM_results(self) -> Union[int, np.array]:
-        sigma = np.array([-1 if x == 0 else x for x in np.sign(np.sum(np.multiply(self.X, self.W), axis=1))])
+        sigma = np.array(
+            [
+                -1 if x == 0 else x
+                for x in np.sign(np.sum(np.multiply(self.X, self.W), axis=1))
+            ]
+        )
         tau = np.prod(sigma)
         return tau, sigma
 

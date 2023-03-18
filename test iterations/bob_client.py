@@ -1,6 +1,6 @@
 import pickle
 import socket
-import numpy as np
+
 import TPM
 import bits
 
@@ -15,7 +15,7 @@ class BobClient:
         self.bobTPM = None
         self.X = None
         self.seed = None
-        self.HOST = '127.0.0.1'
+        self.HOST = "127.0.0.1"
         self.PORT = 65432
         self.bits = None
         self.bits_length = None
@@ -46,7 +46,6 @@ class BobClient:
         print(self.W_bob)
         print(self.bobTPM.W)
         for i in range(0, 150):
-
             print("inside loop")
             common_X = False
             while not common_X:

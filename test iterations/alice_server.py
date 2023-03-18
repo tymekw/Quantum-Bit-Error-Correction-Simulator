@@ -1,11 +1,11 @@
 import math
-import socket
 import pickle
-import threading
+import socket
 
-import bits
 import numpy as np
+
 import TPM
+import bits
 
 
 class AliceServer:
@@ -13,7 +13,7 @@ class AliceServer:
         self.N = 10
         self.K = 5
         self.L = 2
-        self.HOST = '127.0.0.1'
+        self.HOST = "127.0.0.1"
         self.PORT = 65432
         self.s = None
         self.conn = None
@@ -66,7 +66,6 @@ class AliceServer:
         return self.get_best_pair(factors)
         # return factors
 
-
     def get_factors_list(self, w_len=0):
         if w_len == 0:
             w_len = len(self.bits.bits_to_w())
@@ -108,7 +107,7 @@ class AliceServer:
         data = pickle.dumps(self.machine_conf)
         self.conn.sendall(data)
         rec = self.conn.recv(1024)
-        if pickle.loads(rec) == 'OK':
+        if pickle.loads(rec) == "OK":
             return True
 
     def run_machine(self):
@@ -127,7 +126,7 @@ class AliceServer:
                 except:
                     print("socket error")
 
-                self.X = np.random.choice([-1,1], size=(self.K, self.N))
+                self.X = np.random.choice([-1, 1], size=(self.K, self.N))
                 self.aliceTPM.calculate_tau(self.X)
                 print("sending X")
                 data = pickle.dumps(self.X)
@@ -149,11 +148,11 @@ class AliceServer:
 
         print("outside loop")
 
-        #ToDo check if W are the same
+        # ToDo check if W are the same
         bob_w = self.conn.recv(1000000)
         bob_wei = pickle.loads(bob_w)
         if np.array_equal(self.aliceTPM.W, bob_wei):
-            print('dziala')
+            print("dziala")
 
         print("done")
 

@@ -1,5 +1,6 @@
-import numpy as np
 import hashlib
+
+import numpy as np
 
 
 def calculate_theta(sigma_k, tau):
@@ -30,7 +31,9 @@ class Tpm:
         self.calculate_tau(X)
         w_new = np.empty([self.K, self.N])
         for (k, n), _ in np.ndenumerate(X):
-            z = self.W[k, n] + X[k, n] * self.sigma[k] * calculate_theta(self.sigma[k], self.tau)
+            z = self.W[k, n] + X[k, n] * self.sigma[k] * calculate_theta(
+                self.sigma[k], self.tau
+            )
             if z <= -self.L:
                 w_new[k, n] = int(-self.L)
             elif z >= self.L:
