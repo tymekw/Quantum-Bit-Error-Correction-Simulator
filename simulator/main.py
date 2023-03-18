@@ -106,8 +106,9 @@ for l, n, k, ber, ber_type, rep in itertools.product(L, N, K, QBER, BER_TYPES, r
         bob.set_sigma(a_sigma)
         alice.update_weights()
         bob.update_weights()
+
     execution_time = time.time() - start_time
-    data_row = [l, n, k, different_weights, ber, ber_type, rep, tau_not_hit, execution_time, runs]
+    data_row = [l, n, k, ber, different_weights, ber_type, rep, tau_not_hit, execution_time, runs]
 
     with open(filename, "a+", newline='') as f:
         w = csv.writer(f, delimiter=";")
