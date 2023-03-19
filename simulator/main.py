@@ -64,25 +64,24 @@ if args.filename:
     if args.filename.endswith(".csv"):
         filename = args.filename
 else:
-    filename = "test_iterations.csv"
-    print("using default filename: test_iterations.csv")
+    filename = "test_iterations_coding_back.csv"
+    print("using default filename: test_iterations_coding_back.csv")
 
 data_rows = ["L", "N", "K", "QBER", "ERRORS", "QBER_TYPE", "REP", "TAU_MISSES", "TIME", "REPETITIONS"]
 with open(filename, "a+", newline='') as f:
     w = csv.writer(f, delimiter=";")
     w.writerow(data_rows)
 
-REPS_FOR_STATS = 2
+REPS_FOR_STATS = 6
 BER_TYPES = ("random", "bursty")
 
 for l, n, k, ber, ber_type, rep in itertools.product(L, N, K, QBER, BER_TYPES, range(REPS_FOR_STATS)):
     initial_weights_alice, initial_weights_bob, different_weights = generate_weights(
         ber, ber_type, k, n, l
     )
+    print(f'l:{l}, n:{n}, k:{k}, ber:{ber}, ber_type:{ber_type}, rep:{rep}')
     alice = TPM(n, k, l, initial_weights_alice)
     bob = TPM(n, k, l, initial_weights_bob)
-    print("#" * 10)
-    print("OK!")
     runs = 0
     tau_not_hit = 0
     start_time = time.time()
