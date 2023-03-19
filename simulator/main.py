@@ -64,8 +64,8 @@ if args.filename:
     if args.filename.endswith(".csv"):
         filename = args.filename
 else:
-    filename = "test_iterations_coding_back.csv"
-    print("using default filename: test_iterations_coding_back.csv")
+    filename = "test_iterations_coding_back1.csv"
+    print("using default filename: test_iterations_coding_back1.csv")
 
 data_rows = ["L", "N", "K", "QBER", "ERRORS", "QBER_TYPE", "REP", "TAU_MISSES", "TIME", "REPETITIONS"]
 with open(filename, "a+", newline='') as f:
