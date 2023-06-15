@@ -52,14 +52,6 @@ def get_observations_and_targets(filename: str) -> Tuple[np.array, np.array]:
     return np.array(observations), np.array(targets)
 
 
-
-
-# write_prepared_data('../simulator/test_iterations_coding1.csv')
-# X, Y = get_observations_and_targets(PREPARED_DATA_FILENAME + '_' + QBERType.RANDOM + '.csv')
-# linear_regression = LinearRegression().fit(X, Y)
-
-print('OK')
-
 if __name__ == '__main__':
     write_prepared_data(TRAINING_DATASET_FILENAME, is_test_data=False)
     write_prepared_data(TESTING_DATASET_FILENAME, is_test_data=True)

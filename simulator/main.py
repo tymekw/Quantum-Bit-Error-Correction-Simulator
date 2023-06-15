@@ -70,9 +70,8 @@ if args.filename:
     if args.filename.endswith(".csv"):
         filename = args.filename
 else:
-    filename = "test_eve.csv"
+    filename = "../results/partial/test_eve.csv"
     print("using default filename: test_iterations_coding_L5.csv")
-
 
 if args.eve:
     EVE = args.eve
