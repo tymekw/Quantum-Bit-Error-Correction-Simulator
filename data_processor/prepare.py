@@ -26,8 +26,8 @@ def write_prepared_data(path: str, is_test_data: bool=False) -> None:
 
         with open(prepared_data_random_qber_filename, 'w+', newline='') as random_qber_file,\
                 open(prepared_data_bursty_qber_filename, 'w+',  newline='') as bursty_qber_file:
-                    random_qber_writer = csv.writer(random_qber_file)
-                    bursty_qber_writer = csv.writer(bursty_qber_file)
+                    random_qber_writer = csv.writer(random_qber_file, delimiter =';')
+                    bursty_qber_writer = csv.writer(bursty_qber_file, delimiter =';')
                     random_qber_writer.writerow(PREPARED_DATA_HEADER)
                     bursty_qber_writer.writerow(PREPARED_DATA_HEADER)
                     next(reader, None) # skip header
@@ -40,24 +40,24 @@ def write_prepared_data(path: str, is_test_data: bool=False) -> None:
 
 def write_prepared_data_with_statistics(path: str, path_to_write: str) -> None:
     with open(path, 'r') as file:
-        reader = csv.reader(file,  delimiter =';')
+        reader = csv.reader(file, delimiter =';')
 
         is_next = next(reader, None)
         with open(path_to_write, 'w+', newline='') as stats_file:
-            stats_writer = csv.writer(stats_file)
+            stats_writer = csv.writer(stats_file, delimiter =';')
             stats_writer.writerow(STATS_DATA_HEADER)
             while is_next:
                 rows = [next(reader, None) for _ in range(6)]
                 is_next = None not in rows
                 if is_next:
-                    REPS = [int(row[0].split(',')[-1]) for row in rows]
+                    REPS = [int(row[-1]) for row in rows]
                     max_reps = str(max(REPS))
                     min_reps = str(min(REPS))
                     mean = str(int(np.mean(REPS)))
                     median = str(int(np.median(REPS)))
                     std_dev = str(np.std(REPS))
                     variance = str(np.var(REPS))
-                    row_with_stats = rows[0][0].split(',')[0:4] + [max_reps, min_reps, mean, median, std_dev, variance]
+                    row_with_stats = rows[0][0:4] + [max_reps, min_reps, mean, median, std_dev, variance]
                     stats_writer.writerow(row_with_stats)
 
 
