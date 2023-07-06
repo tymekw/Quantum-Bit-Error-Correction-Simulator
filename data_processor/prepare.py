@@ -32,7 +32,7 @@ def write_prepared_data(path: str, is_test_data: bool=False) -> None:
                     bursty_qber_writer.writerow(PREPARED_DATA_HEADER)
                     next(reader, None) # skip header
                     for row in reader:
-                        required_data = [*row[0:4], row[-1]]
+                        required_data = [*row[0:4], row[7], row[-1]]
                         if row[5] == QBERType.RANDOM:
                             random_qber_writer.writerow(required_data)
                         elif row[5] == QBERType.BURSTY:
@@ -50,6 +50,7 @@ def write_prepared_data_with_statistics(path: str, path_to_write: str) -> None:
                 rows = [next(reader, None) for _ in range(6)]
                 is_next = None not in rows
                 if is_next:
+                    mean_tau_misses = str(int(np.mean([int(row[-2]) for row in rows])))
                     REPS = [int(row[-1]) for row in rows]
                     max_reps = str(max(REPS))
                     min_reps = str(min(REPS))
@@ -57,7 +58,7 @@ def write_prepared_data_with_statistics(path: str, path_to_write: str) -> None:
                     median = str(int(np.median(REPS)))
                     std_dev = str(np.std(REPS))
                     variance = str(np.var(REPS))
-                    row_with_stats = rows[0][0:4] + [max_reps, min_reps, mean, median, std_dev, variance]
+                    row_with_stats = rows[0][0:4] + [mean_tau_misses, max_reps, min_reps, mean, median, std_dev, variance]
                     stats_writer.writerow(row_with_stats)
 
 
