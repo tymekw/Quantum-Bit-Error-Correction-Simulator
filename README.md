@@ -1,9 +1,5 @@
-# Application allowing to correct errors arising in quantum key distribution
+# Simulator and data processing tool for correcting errors arisen during quantum key distribution
 
-Application allows user to simulate error correction of bits created in quantum key distribution process using neural network.
-User is able to upload bits on its own as well as create random bits with chosen bit error rate to be corrected.
-Some tweaks in neural network structure are also possible. Application after synchronization process
-checks if new bits are properly corrected and shows it by green or red frame around them
 
 ## Prerequisites
  - Python 3.7 installed and added to PATH
@@ -12,24 +8,42 @@ checks if new bits are properly corrected and shows it by green or red frame aro
 pip install -r requirements.txt
 ~~~~
 
-## Run locally
-2. Run script main.py inside neural_crypto directory
+## Simulation tool
+Run script main.py inside simulator directory from this project with chosen arguments
 ~~~~
-python main.py
+usage: main.py [-h] [-l WEIGHTS_RANGE [WEIGHTS_RANGE ...]]
+               [-n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]]
+               [-k NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...]]
+               [-b QBER [QBER ...]] [-e EVE] [-f FILENAME]
+
+Simulate TPM to correct errors.
+
+optional arguments:
+  -h, --help            
+                        show this help message and exit
+  -l WEIGHTS_RANGE [WEIGHTS_RANGE ...], --weights_range WEIGHTS_RANGE [WEIGHTS_RANGE ...]
+                        list of Ls (range of weights {-L,L}) to generate data, separated by SPACE
+  -n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...], --number_of_inputs_per_neuron NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]
+                        Ns (numbers of inputs to a single neuron) to generate data, [from to by] separated by SPACE
+  -k NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...], --number_of_neurons_in_hidden_layer NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...]
+                        Ks (numbers of neurons in hidden layer) to generate data, [from to by] separated by SPACE
+  -b QBER [QBER ...], --QBER QBER [QBER ...]
+                        set list of QBERs to generate data about, separated by SPACE
+  -e EVE, --eve EVE     
+                        number of Eve's machines
+  -f FILENAME, --filename FILENAME
+                        name of file to save data to [test iterations.csv]
+~~~~
+Example usage:
+~~~~
+python main.py --weights_range 1 2 3 4 5 --QBER 10 11 --number_of_inputs_per_neuron 10 140 10 --number_of_neurons_in_hidden_layer 10 140 10 --filename raw_data.csv
 ~~~~
 
-## /test iterations directory
-- generate_data.py script generates data about number of required synchronizations,
--
-    -  example usage:
-~~~~
-python generate_data.py -r 200 -l 1 2 -b 2 3 -len 128 -n sample_name.csv
+## Data processing
 
-~~~~
--
-	 -  more info about usage:
-~~~~
-python generate_data.py --help
-~~~~
-- test_data.ipynb used to display plots and calculate statistics
-- remaining scripts are used by loop_test.py
+# ToDo
+
+
+## Generating plots
+
+# TODo

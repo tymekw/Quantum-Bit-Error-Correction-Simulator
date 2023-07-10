@@ -1,28 +1,24 @@
 import csv
+from typing import List
 
 import numpy as np
 
 from neural_crypto.data_processor.common import (
-    RANDOM_QBER_TEST_DATA_PATH,
     RANDOM_QBER_DATA_PATH,
-    BURSTY_QBER_TEST_DATA_PATH,
     BURSTY_QBER_DATA_PATH,
     PREPARED_DATA_HEADER,
     QBERType,
-    RAW_TESTING_DATASET_PATH,
-    RAW_TRAINING_DATASET_PATH,
     STATS_DATA_HEADER,
-    RANDOM_QBER_TEST_STATS_DATA_PATH,
-    BURSTY_QBER_TEST_STATS_DATA_PATH,
     RANDOM_QBER_STATS_DATA_PATH,
     BURSTY_QBER_STATS_DATA_PATH,
+    RAW_DATASET_PATH, ColumnsDataStats,
 )
 
-def write_prepared_data(path: str, is_test_data: bool=False) -> None:
+def write_prepared_data(path: str) -> None:
     with open(path, 'r') as file:
         reader = csv.reader(file,  delimiter =';')
-        prepared_data_random_qber_filename = RANDOM_QBER_TEST_DATA_PATH if is_test_data else RANDOM_QBER_DATA_PATH
-        prepared_data_bursty_qber_filename = BURSTY_QBER_TEST_DATA_PATH if is_test_data else BURSTY_QBER_DATA_PATH
+        prepared_data_random_qber_filename = RANDOM_QBER_DATA_PATH
+        prepared_data_bursty_qber_filename = BURSTY_QBER_DATA_PATH
 
         with open(prepared_data_random_qber_filename, 'w+', newline='') as random_qber_file,\
                 open(prepared_data_bursty_qber_filename, 'w+',  newline='') as bursty_qber_file:
@@ -61,12 +57,23 @@ def write_prepared_data_with_statistics(path: str, path_to_write: str) -> None:
                     row_with_stats = rows[0][0:4] + [mean_tau_misses, max_reps, min_reps, mean, median, std_dev, variance]
                     stats_writer.writerow(row_with_stats)
 
+def sort_and_prepare_data(filename: str) -> List[List[float]]:
+    data = np.genfromtxt(filename, delimiter=';', skip_header=True)
+    # L, N*K, QBER, TAU_MISS, MAX, MIN, MEAN, MEDIAN, STD_DEV, VAR
+    data = [[row[0], row[1] * row[2], *row[3:]] for row in data]
+    data.sort(key=lambda x: (x[ColumnsDataStats.L], x[ColumnsDataStats.QBER], x[ColumnsDataStats.N_K]))  # sorted by L, QBER than N*K
+    return data
 
 
 if __name__ == '__main__':
-    write_prepared_data(RAW_TRAINING_DATASET_PATH, is_test_data=False)
-    write_prepared_data(RAW_TESTING_DATASET_PATH, is_test_data=True)
+    write_prepared_data(RAW_DATASET_PATH)
     write_prepared_data_with_statistics(RANDOM_QBER_DATA_PATH, RANDOM_QBER_STATS_DATA_PATH)
     write_prepared_data_with_statistics(BURSTY_QBER_DATA_PATH, BURSTY_QBER_STATS_DATA_PATH)
-    write_prepared_data_with_statistics(RANDOM_QBER_TEST_DATA_PATH, RANDOM_QBER_TEST_STATS_DATA_PATH)
-    write_prepared_data_with_statistics(BURSTY_QBER_TEST_DATA_PATH, BURSTY_QBER_TEST_STATS_DATA_PATH)
+
+
+    # write_prepared_data(RAW_TRAINING_DATASET_PATH, is_test_data=False)
+    # write_prepared_data(RAW_TESTING_DATASET_PATH, is_test_data=True)
+    # write_prepared_data_with_statistics(RANDOM_QBER_DATA_PATH, RANDOM_QBER_STATS_DATA_PATH)
+    # write_prepared_data_with_statistics(BURSTY_QBER_DATA_PATH, BURSTY_QBER_STATS_DATA_PATH)
+    # write_prepared_data_with_statistics(RANDOM_QBER_TEST_DATA_PATH, RANDOM_QBER_TEST_STATS_DATA_PATH)
+    # write_prepared_data_with_statistics(BURSTY_QBER_TEST_DATA_PATH, BURSTY_QBER_TEST_STATS_DATA_PATH)

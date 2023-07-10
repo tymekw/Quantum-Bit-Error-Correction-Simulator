@@ -1,31 +1,15 @@
-from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
 import numpy as np
 from matplotlib import pyplot as plt
 
-from neural_crypto.data_processor.common import QBERType
-
-
-@dataclass(frozen=True)
-class ColumnsDataStats:
-    L = 0
-    N_K = 1
-    QBER = 2
-    MEAN_TAU_MISSED = 3
-    REPS_MAX = 4
-    REPS_MIN = 5
-    REPS_MEAN = 6
-    REPS_MEDIAN = 7
-    REPS_STD_DEV = 8
-    REPS_VAR = 9
-
-
-def sort_and_prepare_data(filename: str) -> List[List[float]]:
-    data = np.genfromtxt(filename, delimiter=';', skip_header=True)
-    # L, N*K, QBER, TAU_MISS, MAX, MIN, MEAN, MEDIAN, STD_DEV, VAR
-    data = [[row[0], row[1] * row[2], *row[3:]] for row in data]
-    data.sort(key=lambda x: (x[ColumnsDataStats.L], x[ColumnsDataStats.QBER], x[ColumnsDataStats.N_K]))  # sorted by L, QBER than N*K
-    return data
+from neural_crypto.data_processor.common import (
+    QBERType,
+    ColumnsDataStats,
+    RANDOM_QBER_STATS_DATA_PATH,
+    BURSTY_QBER_STATS_DATA_PATH,
+    PATH_TO_PLOTS
+)
+from neural_crypto.data_processor.prepare import sort_and_prepare_data
 
 
 def plot_qber(data: List, expected_l: int, data_type: QBERType, plotted_column: ColumnsDataStats) -> None:
@@ -67,7 +51,7 @@ def plot_l(data: List, expected_qber: int, data_type: QBERType, plotted_column: 
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
     plt.ylabel(f'Mean number of required repetitions of TPM')
     plt.legend()
-    plt.savefig(f'../results/plots/L_QBER_{expected_qber}_{plot_type}_{data_type}.png')
+    plt.savefig(f'{PATH_TO_PLOTS}/L_QBER_{expected_qber}_{plot_type}_{data_type}.png')
     plt.show()
 
 def plot_compare_type_of_errors(random_data: List, bursty_data: List, qber: int, l: int, plotted_column: ColumnsDataStats) -> None:
@@ -91,18 +75,17 @@ def plot_compare_type_of_errors(random_data: List, bursty_data: List, qber: int,
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
     plt.ylabel(f'Mean number of required repetitions of TPM')
     plt.legend()
-    plt.savefig(f'../results/plots/data_type_L_{l}_QBER_{qber}_{plot_type}.png')
+    plt.savefig(f'{PATH_TO_PLOTS}/data_type_L_{l}_QBER_{qber}_{plot_type}.png')
     plt.show()
 
 
 if __name__ == '__main__':
-    bursty_data = '../results/data_stats/stats_bursty.csv'
-    random_data = '../results/data_stats/stats_random.csv'
-    sorted_bursty_data = sort_and_prepare_data(bursty_data)
-    sorted_random_data = sort_and_prepare_data(random_data)
+    sorted_bursty_data = sort_and_prepare_data(BURSTY_QBER_STATS_DATA_PATH)
+    sorted_random_data = sort_and_prepare_data(RANDOM_QBER_STATS_DATA_PATH)
 
-    whole_random_data = '../results/data_whole/data_random.csv'
-    sorted_random_data_whole = sort_and_prepare_data(whole_random_data)
+    # TODO
+    # whole_random_data = '../results/data_whole/data_random.csv'
+    # sorted_random_data_whole = sort_and_prepare_data(whole_random_data)
 
     for required_l in [1,2,3,4,5]:
         plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
