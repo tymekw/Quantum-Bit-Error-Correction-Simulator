@@ -112,12 +112,13 @@ def plot_l_impact_on_const_TPM(n: int, k: int, qber: int, data_type: QBERType):
 
     # Create the plot
     plt.figure()
-    plt.errorbar(range(1, len(mean_values)+1), mean_values, yerr=std_deviations, fmt='o')
+    plt.errorbar(range(1, len(mean_values) + 1), mean_values, yerr=std_deviations, fmt='o')
 
-    plt.xticks(range(1, len(unique_constants)+1), range(1, len(unique_constants)+1))
+    plt.xticks(range(1, len(unique_constants) + 1), range(1, len(unique_constants) + 1))
     plt.xlabel('L')
     plt.ylabel('Mean required repetitions')
-    plt.title(f'L influence on required number of repetition for constant TPM \n (N={n}, K={k}, QBER={qber})', wrap=True)
+    plt.title(f'L influence on required number of repetition for constant TPM \n (N={n}, K={k}, QBER={qber})',
+              wrap=True)
     plt.grid(True)
 
     plt.savefig(f'{PATH_TO_PLOTS}/l_impact_on_{data_type}_TPM_N_{n}_K_{k}_qber_{qber}.png')
@@ -154,9 +155,9 @@ def plot_qber_impact_on_const_TPM(l: int, n: int, k: int, data_type: QBERType):
 
     # Create the plot
     plt.figure()
-    plt.errorbar(range(1, len(mean_values)+1), mean_values, yerr=std_deviations, fmt='o')
+    plt.errorbar(range(1, len(mean_values) + 1), mean_values, yerr=std_deviations, fmt='o')
 
-    plt.xticks(range(1, len(unique_constants)+1), range(1, len(unique_constants)+1))
+    plt.xticks(range(1, len(unique_constants) + 1), range(1, len(unique_constants) + 1))
     plt.xlabel('QBER [%]')
     plt.ylabel('Mean required repetitions')
     plt.title(f'QBER influence on required number of repetition for constant TPM \n (N={n}, K={k}, L={l})', wrap=True)
@@ -165,6 +166,22 @@ def plot_qber_impact_on_const_TPM(l: int, n: int, k: int, data_type: QBERType):
     plt.savefig(f'{PATH_TO_PLOTS}/qber_impact_on_{data_type}_TPM_N_{n}_K_{k}_L_{l}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/qber_impact_on_{data_type}_TPM_N_{n}_K_{k}_L_{l}.svg')
     # Show the plot
+    plt.show()
+
+
+def plot_scatter_data_per_N_K(data: List, expected_qber: int, expected_l: int, data_type: QBERType) -> None:
+    data = list(filter(lambda x: x[ColumnsDataStats.L] == expected_l, data))  # only with L==expected_l
+    qber_data = list(filter(lambda x: x[ColumnsDataStats.QBER] == expected_qber, data))  # only with QBER
+    x = [row[ColumnsDataStats.N_K] for row in qber_data]
+    y = [row[ColumnsDataStats.REPS_MEAN] for row in qber_data]
+    plt.scatter(x, y)
+
+    title = f'Required number of repetitions per TPM size \n(L={expected_l}, QBER={expected_qber})'
+    plt.title(title, wrap=True)
+    plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
+    plt.ylabel(f'Mean number of required repetitions of TPM')
+    plt.savefig(f'{PATH_TO_PLOTS}/scatter_L_{expected_l}_QBER_{expected_qber}_{data_type}.png')
+    plt.savefig(f'{PATH_TO_PLOTS}/scatter_L_{expected_l}_QBER_{expected_qber}_{data_type}.svg')
     plt.show()
 
 
@@ -192,6 +209,9 @@ if __name__ == '__main__':
 
     plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
     plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
+
+    plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
+    plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)
 
 # L and QBER influence on number of repetitions - DONE
 # L and QBER influence on number of re-runs :) - DONE
