@@ -5,8 +5,8 @@ import time
 
 import numpy as np
 
-from neural_crypto.TPM.TPM import TPM
-from neural_crypto.simulator.common import generate_random_input, generate_weights
+from TPM.TPM import TPM
+from simulator.common import generate_random_input, generate_weights
 
 parser = argparse.ArgumentParser(description="Simulate TPM to correct errors.")
 parser.add_argument(
