@@ -7,7 +7,7 @@ from data_processor.common import (
     ColumnsDataStats,
     RANDOM_QBER_STATS_DATA_PATH,
     BURSTY_QBER_STATS_DATA_PATH,
-    PATH_TO_PLOTS, RANDOM_QBER_DATA_PATH, BURSTY_QBER_DATA_PATH
+    PATH_TO_PLOTS, RANDOM_QBER_DATA_PATH, BURSTY_QBER_DATA_PATH, RANDOM_QBER_DATA_PATH_EVE, BURSTY_QBER_DATA_PATH_EVE
 )
 from data_processor.prepare import sort_and_prepare_data
 
@@ -185,39 +185,88 @@ def plot_scatter_data_per_N_K(data: List, expected_qber: int, expected_l: int, d
     plt.show()
 
 
+def plot_eve_on_const_N_TPM(n: int, data_type: QBERType):
+    data_filename = RANDOM_QBER_DATA_PATH_EVE if data_type == QBERType.RANDOM else BURSTY_QBER_DATA_PATH_EVE
+    data = np.genfromtxt(data_filename, delimiter=';', skip_header=True)
+    data = list(filter(lambda x: x[1] == n, data))  # only with n
+    # data = list(filter(lambda x: x[2] == k, data))  # only with k
+    # data = list(filter(lambda x: x[3] == qber, data))  # only with qber
+    data = np.array(data)
+    data = np.unique(data, axis=0)
+
+    constants = data[:, 0:4]
+    reps_eve = data[:, -1]
+    reps_alice_bob = data[:, 5]
+    # Calculate mean and standard deviation for each group of constants
+    unique_constants = np.unique(constants, axis=0)
+    mean_reps_eve = []
+    mean_reps_alice_bob = []
+    std_deviations_reps_eve = []
+    std_deviations_reps_alice_bob = []
+
+    for const_group in unique_constants:
+        mask = np.all(constants == const_group, axis=1)
+        reps_eve_group = reps_eve[mask]
+        mean_reps_eve.append(np.mean(reps_eve_group))
+        std_deviations_reps_eve.append(np.std(reps_eve_group))
+        reps_alice_bob_group = reps_alice_bob[mask]
+        mean_reps_alice_bob.append(np.mean(reps_alice_bob_group))
+        std_deviations_reps_alice_bob.append(np.std(reps_alice_bob_group))
+
+    # Convert lists to numpy arrays
+    mean_reps_eve = np.array(mean_reps_eve)
+    std_deviations_reps_eve = np.array(std_deviations_reps_eve)
+    mean_reps_alice_bob = np.array(mean_reps_alice_bob)
+    std_deviations_reps_alice_bob = np.array(std_deviations_reps_alice_bob)
+
+    # Create the plot
+    plt.figure(figsize=(8, 6))
+    # plt.size
+    plt.yscale('log')
+    plt.errorbar(range(5, 25, 5), mean_reps_eve, yerr=std_deviations_reps_eve, fmt='o', label='Eve')
+    plt.errorbar(range(5, 25, 5), mean_reps_alice_bob, yerr=std_deviations_reps_alice_bob, fmt='o', label='Alice and Bob')
+
+    plt.xticks(range(5, 25, 5), range(5, 25, 5))
+    plt.xlabel('K')
+    plt.legend()
+    plt.ylabel('Mean required repetitions')
+    plt.title(f'Comparison of required repetitions to synchronize Alice and Bob TPMs\n and at least 1 of 10 Eves TPMs '
+              f'\n (N={n}, L={3}, QBER={8}, qber_type={data_type})',
+              wrap=True)
+    plt.grid(True)
+
+    plt.savefig(f'{PATH_TO_PLOTS}/eve_attack_on_{data_type}_TPM_N_{n}.png')
+    plt.savefig(f'{PATH_TO_PLOTS}/eve_attack_on_{data_type}_TPM_N_{n}.svg')
+    # Show the plot
+    plt.show()
+
+
 if __name__ == '__main__':
-    sorted_bursty_data = sort_and_prepare_data(BURSTY_QBER_STATS_DATA_PATH)
-    sorted_random_data = sort_and_prepare_data(RANDOM_QBER_STATS_DATA_PATH)
-
-    for required_l in [1, 2, 3, 4, 5]:
-        plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
-        plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
-        plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
-        plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
-
-    for required_qber in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
-        plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
-        plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
-        plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
-        plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
-
-    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
-    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
-
-    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.RANDOM)
-    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.BURSTY)
-
-    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
-    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
-
-    plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
-    plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)
-
-# L and QBER influence on number of repetitions - DONE
-# L and QBER influence on number of re-runs :) - DONE
-
-# compare error type on repetitions for L = 5 and QBER = 9 - DONE
-# compare error type on re-runs for L = 5 and QBER = 9 - DONE
-
-# lets see for N on X axis
-# lets see for K on X axis
+    plot_eve_on_const_N_TPM(5, QBERType.RANDOM)
+    plot_eve_on_const_N_TPM(5, QBERType.BURSTY)
+    # sorted_bursty_data = sort_and_prepare_data(BURSTY_QBER_STATS_DATA_PATH)
+    # sorted_random_data = sort_and_prepare_data(RANDOM_QBER_STATS_DATA_PATH)
+    #
+    # for required_l in [1, 2, 3, 4, 5]:
+    #     plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
+    #     plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
+    #     plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
+    #     plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
+    #
+    # for required_qber in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
+    #     plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
+    #     plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
+    #     plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
+    #     plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
+    #
+    # plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
+    # plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
+    #
+    # plot_l_impact_on_const_TPM(120, 110, 11, QBERType.RANDOM)
+    # plot_l_impact_on_const_TPM(120, 110, 11, QBERType.BURSTY)
+    #
+    # plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
+    # plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
+    #
+    # plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
+    # plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)

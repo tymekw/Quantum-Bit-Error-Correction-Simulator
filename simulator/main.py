@@ -1,6 +1,7 @@
 import argparse
 import csv
 import itertools
+import math
 import time
 
 import numpy as np
@@ -136,6 +137,7 @@ else:
         alice = TPM(n, k, l, initial_weights_alice)
         bob = TPM(n, k, l, initial_weights_bob)
         eves = [TPM(n, k, l, eves_weights[i]) for i in range(EVE)]
+        runs_required = math.inf
         runs = 0
         eve_runs = 0
         tau_not_hit = 0
@@ -144,9 +146,7 @@ else:
         success_eve = 0
         while not any(np.array_equal(alice.W, eve.W) for eve in eves):
             if np.array_equal(alice.W, bob.W):
-                for eve_idx in range(EVE):
-                    if np.array_equal(eves[eve_idx].W, bob.W):
-                        success_eve += 1
+                runs_required = min(runs, runs_required)
             else:
                 runs += 1
 
@@ -188,10 +188,14 @@ else:
 
 
         execution_time = time.time() - start_time
-        data_row = [l, n, k, ber, different_weights, ber_type, rep, tau_not_hit, execution_time, runs, success_eve, eve_runs]
+        for eve_idx in range(EVE):
+            if np.array_equal(eves[eve_idx].W, bob.W):
+                success_eve += 1
+        data_row = [l, n, k, ber, different_weights, ber_type, rep, tau_not_hit, execution_time, runs_required, success_eve, eve_runs]
         print("#"*100)
         print(f'Eve sucessfull: {success_eve}')
         print(f'Eve runs: {eve_runs}')
+        print(f'Alcie Bob runs: {runs_required}')
 
         with open(filename, "a+", newline='') as f:
             w = csv.writer(f, delimiter=";")
