@@ -189,8 +189,6 @@ def plot_eve_on_const_N_TPM(n: int, data_type: QBERType):
     data_filename = RANDOM_QBER_DATA_PATH_EVE if data_type == QBERType.RANDOM else BURSTY_QBER_DATA_PATH_EVE
     data = np.genfromtxt(data_filename, delimiter=';', skip_header=True)
     data = list(filter(lambda x: x[1] == n, data))  # only with n
-    # data = list(filter(lambda x: x[2] == k, data))  # only with k
-    # data = list(filter(lambda x: x[3] == qber, data))  # only with qber
     data = np.array(data)
     data = np.unique(data, axis=0)
 
@@ -242,31 +240,33 @@ def plot_eve_on_const_N_TPM(n: int, data_type: QBERType):
 
 
 if __name__ == '__main__':
-    plot_eve_on_const_N_TPM(5, QBERType.RANDOM)
-    plot_eve_on_const_N_TPM(5, QBERType.BURSTY)
-    # sorted_bursty_data = sort_and_prepare_data(BURSTY_QBER_STATS_DATA_PATH)
-    # sorted_random_data = sort_and_prepare_data(RANDOM_QBER_STATS_DATA_PATH)
-    #
-    # for required_l in [1, 2, 3, 4, 5]:
-    #     plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
-    #     plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
-    #     plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
-    #     plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
-    #
-    # for required_qber in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
-    #     plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
-    #     plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
-    #     plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
-    #     plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
-    #
-    # plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
-    # plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
-    #
-    # plot_l_impact_on_const_TPM(120, 110, 11, QBERType.RANDOM)
-    # plot_l_impact_on_const_TPM(120, 110, 11, QBERType.BURSTY)
-    #
-    # plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
-    # plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
-    #
-    # plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
-    # plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)
+    sorted_bursty_data = sort_and_prepare_data(BURSTY_QBER_STATS_DATA_PATH)
+    sorted_random_data = sort_and_prepare_data(RANDOM_QBER_STATS_DATA_PATH)
+
+    for required_l in [1, 2, 3, 4, 5]:
+        plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
+        plot_qber(sorted_bursty_data, required_l, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
+        plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
+        plot_qber(sorted_random_data, required_l, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
+
+    for required_qber in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
+        plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.REPS_MEAN)
+        plot_l(sorted_bursty_data, required_qber, QBERType.BURSTY, ColumnsDataStats.MEAN_TAU_MISSED)
+        plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
+        plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
+
+    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
+    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
+
+    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.RANDOM)
+    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.BURSTY)
+
+    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
+    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
+
+    plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
+    plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)
+
+    for n in [5,10,15,20]:
+        plot_eve_on_const_N_TPM(n, QBERType.RANDOM)
+        plot_eve_on_const_N_TPM(n, QBERType.BURSTY)
