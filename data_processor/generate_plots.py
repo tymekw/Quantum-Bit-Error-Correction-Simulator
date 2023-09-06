@@ -26,9 +26,9 @@ def plot_qber(data: List, expected_l: int, data_type: QBERType, plotted_column: 
 
     plot_type = 'repetitions' if plotted_column == ColumnsDataStats.REPS_MEAN else 're-runs'
     title = f'QBER influence on mean number of required {plot_type} of TPM with L={expected_l}'
-    plt.title(title, wrap=True)
+    # plt.title(title, wrap=True)
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
-    plt.ylabel(f'Mean number of required repetitions of TPM')
+    plt.ylabel(f'Mean number of required iterations of TPM')
     plt.legend()
     plt.savefig(f'{PATH_TO_PLOTS}/QBER_L_{expected_l}_{plot_type}_{data_type}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/QBER_L_{expected_l}_{plot_type}_{data_type}.svg')
@@ -48,9 +48,9 @@ def plot_l(data: List, expected_qber: int, data_type: QBERType, plotted_column: 
         plt.plot(x, p(x), label=f'L: {l}')
     plot_type = 'repetitions' if plotted_column == ColumnsDataStats.REPS_MEAN else 're-runs'
     title = f'L influence on mean number of required {plot_type} of TPM with {data_type} QBER={expected_qber}'
-    plt.title(title, wrap=True)
+    # plt.title(title, wrap=True)
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
-    plt.ylabel(f'Mean number of required repetitions of TPM')
+    plt.ylabel(f'Mean number of required iterations of TPM')
     plt.legend()
     plt.savefig(f'{PATH_TO_PLOTS}/L_QBER_{expected_qber}_{plot_type}_{data_type}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/L_QBER_{expected_qber}_{plot_type}_{data_type}.svg')
@@ -75,9 +75,9 @@ def plot_compare_type_of_errors(random_data: List, bursty_data: List, qber: int,
 
     plot_type = 'repetitions' if plotted_column == ColumnsDataStats.REPS_MEAN else 're-runs'
     title = f'Errors type influence on mean number of required {plot_type} of TPM with QBER={qber} and L={l}'
-    plt.title(title, wrap=True)
+    # plt.title(title, wrap=True)
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
-    plt.ylabel(f'Mean number of required repetitions of TPM')
+    plt.ylabel(f'Mean number of required iterations of TPM')
     plt.legend()
     plt.savefig(f'{PATH_TO_PLOTS}/data_type_L_{l}_QBER_{qber}_{plot_type}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/data_type_L_{l}_QBER_{qber}_{plot_type}.svg')
@@ -116,15 +116,15 @@ def plot_l_impact_on_const_TPM(n: int, k: int, qber: int, data_type: QBERType):
 
     plt.xticks(range(1, len(unique_constants) + 1), range(1, len(unique_constants) + 1))
     plt.xlabel('L')
-    plt.ylabel('Mean required repetitions')
-    plt.title(f'L influence on required number of repetition for constant TPM \n (N={n}, K={k}, QBER={qber})',
-              wrap=True)
+    plt.ylabel('Required iterations')
+    # plt.title(f'L influence on required number of iterations for constant TPM \n (N={n}, K={k}, QBER={qber})',
+    #           wrap=True)
     plt.grid(True)
 
     plt.savefig(f'{PATH_TO_PLOTS}/l_impact_on_{data_type}_TPM_N_{n}_K_{k}_qber_{qber}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/l_impact_on_{data_type}_TPM_N_{n}_K_{k}_qber_{qber}.svg')
     # Show the plot
-    plt.show()
+    # plt.show()
 
 
 def plot_qber_impact_on_const_TPM(l: int, n: int, k: int, data_type: QBERType):
@@ -159,14 +159,14 @@ def plot_qber_impact_on_const_TPM(l: int, n: int, k: int, data_type: QBERType):
 
     plt.xticks(range(1, len(unique_constants) + 1), range(1, len(unique_constants) + 1))
     plt.xlabel('QBER [%]')
-    plt.ylabel('Mean required repetitions')
-    plt.title(f'QBER influence on required number of repetition for constant TPM \n (N={n}, K={k}, L={l})', wrap=True)
+    plt.ylabel('Required iterations')
+    # plt.title(f'QBER influence on required number of iterations for constant TPM \n (N={n}, K={k}, L={l})', wrap=True)
     plt.grid(True)
 
     plt.savefig(f'{PATH_TO_PLOTS}/qber_impact_on_{data_type}_TPM_N_{n}_K_{k}_L_{l}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/qber_impact_on_{data_type}_TPM_N_{n}_K_{k}_L_{l}.svg')
     # Show the plot
-    plt.show()
+    # plt.show()
 
 
 def plot_scatter_data_per_N_K(data: List, expected_qber: int, expected_l: int, data_type: QBERType) -> None:
@@ -176,10 +176,10 @@ def plot_scatter_data_per_N_K(data: List, expected_qber: int, expected_l: int, d
     y = [row[ColumnsDataStats.REPS_MEAN] for row in qber_data]
     plt.scatter(x, y)
 
-    title = f'Required number of repetitions per TPM size \n(L={expected_l}, QBER={expected_qber})'
-    plt.title(title, wrap=True)
+    title = f'Required number of iterations per TPM size \n(L={expected_l}, QBER={expected_qber})'
+    # plt.title(title, wrap=True)
     plt.xlabel(f'Number of input neurons multiplied by number of hidden neurons [N*K]')
-    plt.ylabel(f'Mean number of required repetitions of TPM')
+    plt.ylabel(f'Mean number of required iterations of TPM')
     plt.savefig(f'{PATH_TO_PLOTS}/scatter_L_{expected_l}_QBER_{expected_qber}_{data_type}.png')
     plt.savefig(f'{PATH_TO_PLOTS}/scatter_L_{expected_l}_QBER_{expected_qber}_{data_type}.svg')
     plt.show()
@@ -227,10 +227,10 @@ def plot_eve_on_const_N_TPM(n: int, data_type: QBERType):
     plt.xticks(range(5, 25, 5), range(5, 25, 5))
     plt.xlabel('K')
     plt.legend()
-    plt.ylabel('Mean required repetitions')
-    plt.title(f'Comparison of required repetitions to synchronize Alice and Bob TPMs\n and at least 1 of 10 Eves TPMs '
-              f'\n (N={n}, L={3}, QBER={8}, qber_type={data_type})',
-              wrap=True)
+    plt.ylabel('Required iterations')
+    # plt.title(f'Comparison of required iterations to synchronize Alice and Bob TPMs\n and at least 1 of 10 Eves TPMs '
+    #           f'\n (N={n}, L={3}, QBER={8}, qber_type={data_type})',
+    #           wrap=True)
     plt.grid(True)
 
     plt.savefig(f'{PATH_TO_PLOTS}/eve_attack_on_{data_type}_TPM_N_{n}.png')
@@ -258,15 +258,20 @@ if __name__ == '__main__':
     plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
     plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
 
-    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.RANDOM)
-    plot_l_impact_on_const_TPM(120, 110, 11, QBERType.BURSTY)
+    for i in range(1, 12):
+        for j in range(10, 140, 10):
+            for k in range(10, 140, 10):
+                plot_l_impact_on_const_TPM(j, k, i, QBERType.RANDOM)
+                plot_l_impact_on_const_TPM(j, k, i, QBERType.BURSTY)
 
-    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.BURSTY)
-    plot_qber_impact_on_const_TPM(4, 120, 110, QBERType.RANDOM)
+    for i in range(1, 6):
+        for j in range(10, 140, 10):
+            for k in range(10, 140, 10):
+                plot_qber_impact_on_const_TPM(i, j, k, QBERType.BURSTY)
+                plot_qber_impact_on_const_TPM(i, j, k, QBERType.RANDOM)
 
     plot_scatter_data_per_N_K(sorted_random_data, 10, 5, QBERType.RANDOM)
     plot_scatter_data_per_N_K(sorted_bursty_data, 10, 5, QBERType.BURSTY)
 
-    for n in [5,10,15,20]:
-        plot_eve_on_const_N_TPM(n, QBERType.RANDOM)
-        plot_eve_on_const_N_TPM(n, QBERType.BURSTY)
+    plot_eve_on_const_N_TPM(5, QBERType.RANDOM)
+    plot_eve_on_const_N_TPM(5, QBERType.BURSTY)
