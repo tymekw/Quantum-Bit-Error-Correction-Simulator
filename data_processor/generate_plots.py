@@ -255,8 +255,10 @@ if __name__ == '__main__':
         plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.REPS_MEAN)
         plot_l(sorted_random_data, required_qber, QBERType.RANDOM, ColumnsDataStats.MEAN_TAU_MISSED)
 
-    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.MEAN_TAU_MISSED)
-    plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, 9, 5, ColumnsDataStats.REPS_MEAN)
+    for i in range(1, 12):
+        for j in range(1, 6):
+            plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, i, j, ColumnsDataStats.MEAN_TAU_MISSED)
+            plot_compare_type_of_errors(sorted_random_data, sorted_bursty_data, i, j, ColumnsDataStats.REPS_MEAN)
 
     for i in range(1, 12):
         for j in range(10, 140, 10):
