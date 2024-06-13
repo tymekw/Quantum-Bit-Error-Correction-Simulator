@@ -6,8 +6,8 @@ import time
 
 import numpy as np
 
-from TPM.TPM import TPM
-from simulator.common import generate_random_input, generate_weights
+from tpm.TPM.TPM import TPM
+from tpm.simulator.common import generate_random_input, generate_weights
 
 parser = argparse.ArgumentParser(description="Simulate TPM to correct errors.")
 parser.add_argument(

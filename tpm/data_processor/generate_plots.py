@@ -2,14 +2,14 @@ from typing import List
 import numpy as np
 from matplotlib import pyplot as plt
 
-from data_processor.common import (
+from tpm.data_processor.common import (
     QBERType,
     ColumnsDataStats,
     RANDOM_QBER_STATS_DATA_PATH,
     BURSTY_QBER_STATS_DATA_PATH,
     PATH_TO_PLOTS, RANDOM_QBER_DATA_PATH, BURSTY_QBER_DATA_PATH, RANDOM_QBER_DATA_PATH_EVE, BURSTY_QBER_DATA_PATH_EVE
 )
-from data_processor.prepare import sort_and_prepare_data
+from tpm.data_processor.prepare import sort_and_prepare_data
 
 
 def plot_qber(data: List, expected_l: int, data_type: QBERType, plotted_column: ColumnsDataStats) -> None:
