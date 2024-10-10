@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from tree_parity_machine.tree_parity_machine import TPM
+from tpm.tree_parity_machine.tree_parity_machine import TPM
 
 
 class TestTPM:

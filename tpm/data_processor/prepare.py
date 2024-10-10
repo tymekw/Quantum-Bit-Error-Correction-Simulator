@@ -3,15 +3,9 @@ from typing import List
 
 import numpy as np
 
-from data_processor.common import (
-    RANDOM_QBER_DATA_PATH,
-    BURSTY_QBER_DATA_PATH,
-    PREPARED_DATA_HEADER,
+from tpm.data_processor.common import (
     QBERType,
     STATS_DATA_HEADER,
-    RANDOM_QBER_STATS_DATA_PATH,
-    BURSTY_QBER_STATS_DATA_PATH,
-    RAW_DATASET_PATH,
     ColumnsDataStats, RANDOM_QBER_DATA_PATH_EVE, BURSTY_QBER_DATA_PATH_EVE, PREPARED_DATA_HEADER_EVE,
     RAW_DATASET_PATH_EVE,
 )
