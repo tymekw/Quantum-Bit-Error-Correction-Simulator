@@ -53,4 +53,3 @@ class TPM:
                 new_weights[k, n] = int(z)
 
         self.W = new_weights
-        return new_weights
