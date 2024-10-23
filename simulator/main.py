@@ -1,37 +1,18 @@
-import argparse
-import csv
-from dataclasses import dataclass
 import itertools
 import math
 import time
+from pathlib import Path
 
 import numpy as np
 
 from TPM.TPM import TPM
 from simulator.common import generate_random_input, generate_weights
-from simulator.args_parser import parse_arguments
-
-
-def write_headers(filename, eve):
-    base_headers = [
-        "L",
-        "N",
-        "K",
-        "QBER",
-        "ERRORS",
-        "QBER_TYPE",
-        "REP",
-        "TAU_MISSES",
-        "TIME",
-        "REPETITIONS",
-    ]
-    eve_headers = ["EVE_SUCCESS", "EVE_REQUIRED"] if eve else []
-    with open(filename, "a+", newline="") as f:
-        w = csv.writer(f, delimiter=";")
-        w.writerow(base_headers + eve_headers)
-
+from simulator.utils import write_row
 
 REPS_FOR_STATS = 6
+file_path = Path("")
+
+
 BER_TYPES = ("random", "bursty")
 if not EVE:
     for l, n, k, ber, ber_type, rep in itertools.product(
@@ -81,9 +62,7 @@ if not EVE:
             runs,
         ]
 
-        with open(filename, "a+", newline="") as f:
-            w = csv.writer(f, delimiter=";")
-            w.writerow(data_row)
+        write_row(file_path, data_row)
 else:
     for l, n, k, ber, ber_type, rep in itertools.product(
         L, N, K, QBER, BER_TYPES, range(REPS_FOR_STATS)
@@ -173,6 +152,4 @@ else:
         print(f"Eve runs: {eve_runs}")
         print(f"Alcie Bob runs: {runs_required}")
 
-        with open(filename, "a+", newline="") as f:
-            w = csv.writer(f, delimiter=";")
-            w.writerow(data_row)
+        write_row(file_path, data_row)
