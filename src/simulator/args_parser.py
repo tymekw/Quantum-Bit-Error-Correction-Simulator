@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DEFAULT_FILENAME = "tmp_test_result.csv"
+ARGS_RANGE_EXCEPTION = (
+    "Each range argument must contain exactly three integers separated by space."
+)
 
 
 @dataclass
@@ -102,6 +105,4 @@ def _assign_list_to_range(range_list: list[int]) -> Range:
     try:
         return Range(range_list[0], range_list[1], range_list[2])
     except IndexError:
-        raise Exception(
-            "Each range argument must contain exactly three integers separated by space."
-        )
+        raise Exception(ARGS_RANGE_EXCEPTION)
