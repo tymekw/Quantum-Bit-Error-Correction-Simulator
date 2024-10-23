@@ -89,7 +89,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-from neural_crypto.data_processor.common import (
+from data_processor.common import (
     RANDOM_QBER_DATA_PATH,
 )
 
