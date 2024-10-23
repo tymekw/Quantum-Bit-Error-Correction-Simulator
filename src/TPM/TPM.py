@@ -31,7 +31,7 @@ class TPM:
         tau = np.prod(sigma)
         return tau, sigma
 
-    def update_weights(self) -> None:
+    def update_weights(self) -> np.array:
         def get_theta(sigma_k: int) -> int:
             return 0 if sigma_k != self.result else 1
 
@@ -53,4 +53,5 @@ class TPM:
                 new_weights[k, n] = int(z)
 
         self.hidden_layer_weights = new_weights
+
         return new_weights
