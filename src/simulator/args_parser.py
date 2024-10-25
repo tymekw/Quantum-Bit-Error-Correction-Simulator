@@ -1,10 +1,14 @@
 from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Iterator
+
+from simulator.common import SimulatorException
 
 DEFAULT_FILENAME = "tmp_test_result.csv"
 ARGS_RANGE_EXCEPTION = (
-    "Each range argument must contain exactly three integers separated by space."
+    "Each range argument must contain exactly three integers separated by space. "
+    "Passed arguments {incorrect_args}"
 )
 
 
@@ -18,14 +22,19 @@ class Range:
 @dataclass
 class SimulatorParameters:
     weights_range: list[int]
-    range_of_inputs_per_neuron: Range
+    range_of_inputs_per_neuron: range
     qber_values: list[int]
-    range_of_neurons_in_hidden_layer: Range
+    range_of_neurons_in_hidden_layer: range
     file_path: Path
     eve: int
 
 
-def parse_arguments() -> Namespace:
+class ArgumentRangeException(SimulatorException):
+    def __init__(self, incorrect_arg: list[int]):
+        super().__init__(ARGS_RANGE_EXCEPTION.format(incorrect_args=str(incorrect_arg)))
+
+
+def parse_input_arguments() -> Namespace:
     parser = ArgumentParser(description="Simulate TPM to correct errors.")
     parser.add_argument(
         "-l",
@@ -89,7 +98,7 @@ def translate_args_to_simulator_parameters(args: Namespace) -> SimulatorParamete
         args.number_of_neurons_in_hidden_layer
     )
 
-    file_path = Path(args.file_path)
+    file_path = Path(args.filepath)
 
     return SimulatorParameters(
         weights_range,
@@ -101,8 +110,8 @@ def translate_args_to_simulator_parameters(args: Namespace) -> SimulatorParamete
     )
 
 
-def _assign_list_to_range(range_list: list[int]) -> Range:
+def _assign_list_to_range(range_list: list[int]) -> range:
     try:
-        return Range(range_list[0], range_list[1], range_list[2])
+        return range(range_list[0], range_list[1], range_list[2])
     except IndexError:
-        raise Exception(ARGS_RANGE_EXCEPTION)
+        raise ArgumentRangeException(range_list)

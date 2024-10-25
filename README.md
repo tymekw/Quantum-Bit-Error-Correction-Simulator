@@ -2,7 +2,7 @@
 
 
 ## Prerequisites
- - Python 3.7 installed and added to PATH
+ - Python 3.10+ installed and added to PATH
  - Installed required packages, using pip:
 ~~~~
 pip install -r requirements.txt

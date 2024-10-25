@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 
 
 class TPM:
@@ -7,17 +8,17 @@ class TPM:
         inputs_per_hidden_layer: int,
         hidden_layer_nodes: int,
         weights_range: int,
-        initial_weights: np.array,
+        initial_weights: npt.ArrayLike,
     ) -> None:
         self._number_of_inputs_per_hidden_layer: int = inputs_per_hidden_layer
         self._number_of_hidden_layer_nodes: int = hidden_layer_nodes
         self._weights_range_value: int = weights_range
-        self.hidden_layer_weights: np.array = initial_weights
-        self.result_weights: np.array | None = None
+        self.hidden_layer_weights: npt.ArrayLike = initial_weights
+        self.result_weights: npt.ArrayLike | None = None
         self.result: int | None = None
-        self.input_nodes: np.array | None = None
+        self.input_nodes: npt.ArrayLike | None = None
 
-    def calculate_TPM_results(self) -> int | np.array:
+    def calculate_TPM_results(self) -> int | npt.ArrayLike:
         sigma = np.array(
             [
                 -1 if x == 0 else x
@@ -31,7 +32,7 @@ class TPM:
         tau = np.prod(sigma)
         return tau, sigma
 
-    def update_weights(self) -> np.array:
+    def update_weights(self) -> npt.ArrayLike:
         def get_theta(sigma_k: int) -> int:
             return 0 if sigma_k != self.result else 1
 
