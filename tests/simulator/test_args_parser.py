@@ -8,7 +8,7 @@ from simulator.args_parser import (
     translate_args_to_simulator_parameters,
     SimulatorParameters,
     Range,
-    ARGS_RANGE_EXCEPTION,
+    ArgumentRangeException,
 )
 
 
@@ -54,5 +54,5 @@ def test_translate_args_to_simulator_parameters_raises(
         number_of_inputs_per_neuron, number_of_neurons_in_hidden_layer
     )
 
-    with pytest.raises(Exception, match=ARGS_RANGE_EXCEPTION):
+    with pytest.raises(ArgumentRangeException):
         translate_args_to_simulator_parameters(incorrect_args)

@@ -9,6 +9,12 @@ import numpy as np
 CODING = 4
 
 
+class SimulatorException(BaseException):
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(self.message)
+
+
 def random_number_excluded(range_limit: int, excluded: int) -> int:
     return random.choice(
         list(set([_ for _ in range(-range_limit, range_limit)]) - {excluded})
