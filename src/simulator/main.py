@@ -1,7 +1,9 @@
 import itertools
 import time
+import numpy.typing as npt
 
 import numpy as np
+from numpy import signedinteger
 
 from simulator.args_parser import (
     parse_input_arguments,
@@ -13,6 +15,7 @@ from simulator.common import (
     get_weights_with_error,
     generate_random_input,
 )
+from simulator.utils import write_row, write_headers
 
 from tree_parity_machine.tree_parity_machine import TPM, TMPBaseParameters
 
@@ -22,6 +25,7 @@ REPS_FOR_STATS = 6
 def main():
     args = parse_input_arguments()
     simulator_params = translate_args_to_simulator_parameters(args)
+    write_headers(simulator_params.file_path, bool(simulator_params.eve))
     run_simulation(simulator_params)
 
 
@@ -55,9 +59,23 @@ def run_simulation(simulation_parameters: SimulatorParameters) -> None:
             ]
             simulate_tmp_synchronization_with_attacker()
         else:
-            simulate_tmp_synchronization(
+            execution_time, runs, tau_not_hit = simulate_tmp_synchronization(
                 initial_weights_alice, initial_weights_bob, tmp_parameters
             )
+            data_row = [
+                weights_value_limit,
+                number_of_inputs_per_neuron,
+                number_of_neurons_in_hidden_layer,
+                qber_value,
+                number_of_different_weights,
+                ber_type,
+                rep,
+                tau_not_hit,
+                execution_time,
+                runs,
+            ]
+
+        write_row(simulation_parameters.file_path, data_row)
 
 
 def simulate_tmp_synchronization(
@@ -76,32 +94,41 @@ def simulate_tmp_synchronization(
     start_time = time.time()
     while not np.array_equal(alice.hidden_layer_weights, bob.hidden_layer_weights):
         runs += 1
-        X = generate_random_input(
+        input_nodes = generate_random_input(
             tmp_parameters.number_of_neurons_in_hidden_layer,
             tmp_parameters.number_of_inputs_per_neuron,
         )
-        alice.input_nodes = X
-        bob.input_nodes = X
-        a_tau, a_sigma = alice.calculate_TPM_results()
-        b_tau, b_sigma = bob.calculate_TPM_results()
-        while a_tau != b_tau:
+        (alice_result, alice_result_weights), (bob_result, bob_result_weights) = (
+            calculate_results(alice, bob, input_nodes)
+        )
+        while alice_result != bob_result:
             tau_not_hit += 1
-            X = generate_random_input(
+            input_nodes = generate_random_input(
                 tmp_parameters.number_of_neurons_in_hidden_layer,
                 tmp_parameters.number_of_inputs_per_neuron,
             )
-            alice.input_nodes = X
-            bob.input_nodes = X
-            a_tau, a_sigma = alice.calculate_TPM_results()
-            b_tau, b_sigma = bob.calculate_TPM_results()
-        alice.result = a_tau
-        alice.result_weights = a_sigma
-        bob.result = a_tau
-        bob.result_weights = a_sigma
+            (alice_result, alice_result_weights), (bob_result, bob_result_weights) = (
+                calculate_results(alice, bob, input_nodes)
+            )
+
+        alice.update_result_node(alice_result, alice_result_weights)
+        bob.update_result_node(bob_result, bob_result_weights)
         alice.update_weights()
         bob.update_weights()
+
     execution_time = time.time() - start_time
     print(execution_time)
+    return execution_time, runs, tau_not_hit
+
+
+def calculate_results(
+    alice: TPM, bob: TPM, input_nodes: npt.NDArray
+) -> tuple[tuple[signedinteger, npt.NDArray], tuple[signedinteger, npt.NDArray]]:
+    alice.set_input_nodes(input_nodes)
+    bob.set_input_nodes(input_nodes)
+    alice_result, alice_result_weights = alice.calculate_TPM_results()
+    bob_result, bob_result_weights = bob.calculate_TPM_results()
+    return (alice_result, alice_result_weights), (bob_result, bob_result_weights)
 
 
 def simulate_tmp_synchronization_with_attacker():

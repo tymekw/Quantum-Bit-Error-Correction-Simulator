@@ -6,7 +6,7 @@ from enum import Enum
 from pathlib import Path
 from statistics import mean
 from typing import Tuple
-
+import numpy.typing as npt
 import numpy as np
 
 from tree_parity_machine.tree_parity_machine import TMPBaseParameters
@@ -29,7 +29,7 @@ class SimulatorParameters:
     file_path: Path
     eve: int
     repetitions: range = range(REPS_FOR_STATS)
-    ber_types: tuple[str] = tuple(ber_type.value for ber_type in BerTypes)
+    ber_types: tuple[str] = tuple(BerTypes)
 
     def get_iteration_params(self):
         return (
@@ -84,31 +84,33 @@ def add_random_errors(
 
 
 def add_bursty_errors(
-    coding: int, qber: int, weights: np.array, l: int
+    coding: int, qber: int, weights: np.array, weights_range_limit: int
 ) -> Tuple[np.array, int]:
     """
     Adds errors to the weights to simulate QBER. Errors are in a single chunk, one after another.
     coding -> number of bits required for a single weight
     """
 
-    k, n = np.shape(weights)
-    number_of_bits = k * n * coding
+    number_of_hidden_layer_nodes, number_of_input_nodes_per_hidden = np.shape(weights)
+    number_of_bits = (
+        number_of_hidden_layer_nodes * number_of_input_nodes_per_hidden * coding
+    )
 
     min_different_weights = int(
         (number_of_bits / coding) * qber * 0.01
     )  # coding bits wrong in each 'bad' weight
 
-    starting_error = random.randint(0, k - 1)
+    starting_error = random.randint(0, number_of_hidden_layer_nodes - 1)
     idx = 0
     for _ in range(min_different_weights):
-        if idx < n - 1:
+        if idx < number_of_input_nodes_per_hidden - 1:
             weights[starting_error][idx] = random_number_excluded(
-                l, weights[starting_error][idx]
+                weights_range_limit, weights[starting_error][idx]
             )
             idx += 1
         else:
             idx = 0
-            if starting_error < k - 1:
+            if starting_error < number_of_hidden_layer_nodes - 1:
                 starting_error += 1
             else:
                 starting_error -= 1
@@ -126,17 +128,22 @@ def generate_single_tmp_weights(tmp_parameters: TMPBaseParameters):
     )
 
 
-def get_weights_with_error(weights, l, ber: int, ber_type: BerTypes):
-    coding = int(math.ceil(math.log2(2 * l + 1)))
-    return_weights = copy.deepcopy(weights)
+def get_weights_with_error(
+    hidden_layer_weights: npt.NDArray,
+    weights_value_limit: int,
+    ber: int,
+    ber_type: BerTypes,
+) -> tuple[npt.NDArray, int]:
+    coding = int(math.ceil(math.log2(2 * weights_value_limit + 1)))
+    return_weights = copy.deepcopy(hidden_layer_weights)
     number_of_different_weights = 0
     if ber_type is BerTypes.BURSTY:
         return_weights, number_of_different_weights = add_bursty_errors(
-            coding, ber, return_weights, l
+            coding, ber, return_weights, weights_value_limit
         )
     elif ber_type is BerTypes.RANDOM:
         return_weights, number_of_different_weights = add_random_errors(
-            coding, ber, return_weights, l
+            coding, ber, return_weights, weights_value_limit
         )
     return return_weights, number_of_different_weights
 
