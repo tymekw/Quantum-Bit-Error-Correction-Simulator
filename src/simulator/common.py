@@ -1,12 +1,45 @@
 import copy
 import math
 import random
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
 from statistics import mean
 from typing import Tuple
 
 import numpy as np
 
+from tree_parity_machine.tree_parity_machine import TMPBaseParameters
+
 CODING = 4
+REPS_FOR_STATS = 4
+
+
+class BerTypes(Enum):
+    RANDOM = "random"
+    BURSTY = "bursty"
+
+
+@dataclass
+class SimulatorParameters:
+    weights_range: list[int]
+    range_of_inputs_per_neuron: range
+    qber_values: list[int]
+    range_of_neurons_in_hidden_layer: range
+    file_path: Path
+    eve: int
+    repetitions: range = range(REPS_FOR_STATS)
+    ber_types: tuple[str] = tuple(ber_type.value for ber_type in BerTypes)
+
+    def get_iteration_params(self):
+        return (
+            self.weights_range,
+            self.range_of_inputs_per_neuron,
+            self.range_of_neurons_in_hidden_layer,
+            self.qber_values,
+            self.ber_types,
+            self.repetitions,
+        )
 
 
 class SimulatorException(BaseException):
@@ -82,20 +115,30 @@ def add_bursty_errors(
     return weights, min_different_weights
 
 
-def generate_weights(
-    ber: int, ber_type: str, k: int, n: int, l: int
-) -> Tuple[np.array, np.array, int]:
-    CODING = int(math.ceil(math.log2(2 * l + 1)))
-    weights = np.random.randint(low=-l, high=l, size=(k, n))
-    weights_bob = copy.deepcopy(weights)
-    different_weights = 0
-    if ber_type == "bursty":
-        weights_bob, different_weights = add_bursty_errors(CODING, ber, weights_bob, l)
+def generate_single_tmp_weights(tmp_parameters: TMPBaseParameters):
+    return np.random.randint(
+        low=-tmp_parameters.weights_value_limit,
+        high=tmp_parameters.weights_value_limit,
+        size=(
+            tmp_parameters.number_of_neurons_in_hidden_layer,
+            tmp_parameters.number_of_inputs_per_neuron,
+        ),
+    )
 
-    elif ber_type == "random":
-        weights_bob, different_weights = add_random_errors(CODING, ber, weights_bob, l)
 
-    return weights, weights_bob, different_weights
+def get_weights_with_error(weights, l, ber: int, ber_type: BerTypes):
+    coding = int(math.ceil(math.log2(2 * l + 1)))
+    return_weights = copy.deepcopy(weights)
+    number_of_different_weights = 0
+    if ber_type is BerTypes.BURSTY:
+        return_weights, number_of_different_weights = add_bursty_errors(
+            coding, ber, return_weights, l
+        )
+    elif ber_type is BerTypes.RANDOM:
+        return_weights, number_of_different_weights = add_random_errors(
+            coding, ber, return_weights, l
+        )
+    return return_weights, number_of_different_weights
 
 
 def generate_random_input(k, n):

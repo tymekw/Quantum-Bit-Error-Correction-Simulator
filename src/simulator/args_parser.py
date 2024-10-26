@@ -1,32 +1,13 @@
 from argparse import ArgumentParser, Namespace
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator
 
-from simulator.common import SimulatorException
+from simulator.common import SimulatorException, SimulatorParameters
 
 DEFAULT_FILENAME = "tmp_test_result.csv"
 ARGS_RANGE_EXCEPTION = (
     "Each range argument must contain exactly three integers separated by space. "
     "Passed arguments {incorrect_args}"
 )
-
-
-@dataclass
-class Range:
-    min: int
-    max: int
-    step: int
-
-
-@dataclass
-class SimulatorParameters:
-    weights_range: list[int]
-    range_of_inputs_per_neuron: range
-    qber_values: list[int]
-    range_of_neurons_in_hidden_layer: range
-    file_path: Path
-    eve: int
 
 
 class ArgumentRangeException(SimulatorException):
