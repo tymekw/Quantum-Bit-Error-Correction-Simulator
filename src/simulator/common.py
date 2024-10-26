@@ -29,7 +29,7 @@ class SimulatorParameters:
     file_path: Path
     eve: int
     repetitions: range = range(REPS_FOR_STATS)
-    ber_types: tuple[str] = tuple(BerTypes)
+    ber_types: tuple[BerTypes, ...] = tuple(BerTypes)
 
     def get_iteration_params(self):
         return (
@@ -55,8 +55,8 @@ def random_number_excluded(range_limit: int, excluded: int) -> int:
 
 
 def add_random_errors(
-    coding: int, qber: int, weights: np.array, l: int
-) -> Tuple[np.array, int]:
+    coding: int, qber: int, weights: npt.NDArray, weights_range_limit: int
+) -> Tuple[npt.NDArray, int]:
     """
     Adds randomly distributed errors to the weights to simulate QBER.
     coding -> number of bits required for a single weight
@@ -78,14 +78,14 @@ def add_random_errors(
     temp = weights.flatten()
 
     for idx in random.sample(range(k * n), number_of_different_weights):
-        temp[idx] = random_number_excluded(l, temp[idx])
+        temp[idx] = random_number_excluded(weights_range_limit, temp[idx])
 
     return temp.reshape(k, n), number_of_different_weights
 
 
 def add_bursty_errors(
-    coding: int, qber: int, weights: np.array, weights_range_limit: int
-) -> Tuple[np.array, int]:
+    coding: int, qber: int, weights: npt.NDArray, weights_range_limit: int
+) -> Tuple[npt.NDArray, int]:
     """
     Adds errors to the weights to simulate QBER. Errors are in a single chunk, one after another.
     coding -> number of bits required for a single weight

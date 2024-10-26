@@ -2,8 +2,6 @@ import numpy as np
 import numpy.typing as npt
 from dataclasses import dataclass
 
-from numpy import signedinteger
-
 
 @dataclass
 class TMPBaseParameters:
@@ -26,20 +24,20 @@ class TPM:
             tmp_parameters.number_of_neurons_in_hidden_layer
         )
         self._weights_range_value: int = tmp_parameters.weights_value_limit
-        self._result_weights: npt.NDArray | None = None
-        self._result: signedinteger | None = None
-        self._input_nodes: npt.NDArray | None = None
+        self._result_weights: npt.NDArray = np.array([])
+        self._result: np.signedinteger = np.prod([])
+        self._input_nodes: npt.NDArray = np.array([])
 
     def set_input_nodes(self, input_nodes: npt.NDArray) -> None:
         self._input_nodes = input_nodes
 
     def update_result_node(
-        self, result: signedinteger, result_weights: npt.NDArray
+        self, result: np.signedinteger, result_weights: npt.NDArray
     ) -> None:
         self._result_weights = result_weights
         self._result = result
 
-    def calculate_TPM_results(self) -> tuple[signedinteger, npt.NDArray]:
+    def calculate_TPM_results(self) -> tuple[np.signedinteger, npt.NDArray]:
         result_weights = np.array(
             [
                 -1 if x == 0 else x
