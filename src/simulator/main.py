@@ -1,14 +1,22 @@
 import itertools
+import time
 
+import numpy as np
 
 from simulator.args_parser import (
     parse_input_arguments,
     translate_args_to_simulator_parameters,
     SimulatorParameters,
 )
+from simulator.common import (
+    generate_single_tmp_weights,
+    get_weights_with_error,
+    generate_random_input,
+)
+
+from tree_parity_machine.tree_parity_machine import TPM, TMPBaseParameters
 
 REPS_FOR_STATS = 6
-BER_TYPES = ("random", "bursty")
 
 
 def main():
@@ -17,20 +25,87 @@ def main():
     run_simulation(simulator_params)
 
 
-def _get_simulation_loop_info(args: SimulatorParameters):
-    L = args.weights_range
-    N = args.range_of_inputs_per_neuron
-    K = args.range_of_neurons_in_hidden_layer
-    QBER = args.qber_values
-    return L, N, K, QBER
-
-
 def run_simulation(simulation_parameters: SimulatorParameters) -> None:
-    L, N, K, QBER = _get_simulation_loop_info(simulation_parameters)
-    for l, n, k, qber, ber_type, rep in itertools.product(
-        L, N, K, QBER, BER_TYPES, range(REPS_FOR_STATS)
-    ):
-        print(f"L:{l}")
+    for (
+        weights_value_limit,
+        number_of_inputs_per_neuron,
+        number_of_neurons_in_hidden_layer,
+        qber_value,
+        ber_type,
+        rep,
+    ) in itertools.product(*simulation_parameters.get_iteration_params()):
+        tmp_parameters = TMPBaseParameters(
+            number_of_neurons_in_hidden_layer,
+            number_of_inputs_per_neuron,
+            weights_value_limit,
+        )
+        initial_weights_alice = generate_single_tmp_weights(tmp_parameters)
+        initial_weights_bob, number_of_different_weights = get_weights_with_error(
+            initial_weights_alice, weights_value_limit, qber_value, ber_type
+        )
+
+        print(
+            f"l:{weights_value_limit}, n:{number_of_inputs_per_neuron}, k:{number_of_neurons_in_hidden_layer}, ber:{qber_value}, ber_type:{ber_type}, rep:{rep}"
+        )
+
+        if number_of_attacker_machines := simulation_parameters.eve:
+            eves_weights = [
+                generate_single_tmp_weights(tmp_parameters)
+                for _ in range(number_of_attacker_machines)
+            ]
+            simulate_tmp_synchronization_with_attacker()
+        else:
+            simulate_tmp_synchronization(
+                initial_weights_alice, initial_weights_bob, tmp_parameters
+            )
+
+
+def simulate_tmp_synchronization(
+    initial_weights_alice, initial_weights_bob, tmp_parameters
+):
+    alice = TPM(
+        tmp_parameters=tmp_parameters,
+        initial_weights=initial_weights_alice,
+    )
+    bob = TPM(
+        tmp_parameters=tmp_parameters,
+        initial_weights=initial_weights_bob,
+    )
+    runs = 0
+    tau_not_hit = 0
+    start_time = time.time()
+    while not np.array_equal(alice.hidden_layer_weights, bob.hidden_layer_weights):
+        runs += 1
+        X = generate_random_input(
+            tmp_parameters.number_of_neurons_in_hidden_layer,
+            tmp_parameters.number_of_inputs_per_neuron,
+        )
+        alice.input_nodes = X
+        bob.input_nodes = X
+        a_tau, a_sigma = alice.calculate_TPM_results()
+        b_tau, b_sigma = bob.calculate_TPM_results()
+        while a_tau != b_tau:
+            tau_not_hit += 1
+            X = generate_random_input(
+                tmp_parameters.number_of_neurons_in_hidden_layer,
+                tmp_parameters.number_of_inputs_per_neuron,
+            )
+            alice.input_nodes = X
+            bob.input_nodes = X
+            a_tau, a_sigma = alice.calculate_TPM_results()
+            b_tau, b_sigma = bob.calculate_TPM_results()
+        alice.result = a_tau
+        alice.result_weights = a_sigma
+        bob.result = a_tau
+        bob.result_weights = a_sigma
+        alice.update_weights()
+        bob.update_weights()
+    execution_time = time.time() - start_time
+    print(execution_time)
+
+
+def simulate_tmp_synchronization_with_attacker():
+    pass
 
 
 if __name__ == "__main__":

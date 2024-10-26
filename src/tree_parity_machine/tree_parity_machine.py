@@ -1,18 +1,28 @@
 import numpy as np
 import numpy.typing as npt
+from dataclasses import dataclass
+
+
+@dataclass
+class TMPBaseParameters:
+    number_of_neurons_in_hidden_layer: int
+    number_of_inputs_per_neuron: int
+    weights_value_limit: int
 
 
 class TPM:
     def __init__(
         self,
-        inputs_per_hidden_layer: int,
-        hidden_layer_nodes: int,
-        weights_range: int,
+        tmp_parameters: TMPBaseParameters,
         initial_weights: npt.ArrayLike,
     ) -> None:
-        self._number_of_inputs_per_hidden_layer: int = inputs_per_hidden_layer
-        self._number_of_hidden_layer_nodes: int = hidden_layer_nodes
-        self._weights_range_value: int = weights_range
+        self._number_of_inputs_per_hidden_layer: int = (
+            tmp_parameters.number_of_inputs_per_neuron
+        )
+        self._number_of_hidden_layer_nodes: int = (
+            tmp_parameters.number_of_neurons_in_hidden_layer
+        )
+        self._weights_range_value: int = tmp_parameters.weights_value_limit
         self.hidden_layer_weights: npt.ArrayLike = initial_weights
         self.result_weights: npt.ArrayLike | None = None
         self.result: int | None = None

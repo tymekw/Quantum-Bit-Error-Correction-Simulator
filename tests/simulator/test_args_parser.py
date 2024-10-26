@@ -7,7 +7,6 @@ import pytest
 from simulator.args_parser import (
     translate_args_to_simulator_parameters,
     SimulatorParameters,
-    Range,
     ArgumentRangeException,
 )
 
@@ -23,7 +22,7 @@ def base_args():
             QBER=[sentinel.qber_1, sentinel.qber_2, sentinel.qber_3],
             number_of_inputs_per_neuron=number_of_inputs_per_neuron,
             number_of_neurons_in_hidden_layer=number_of_neurons_in_hidden_layer,
-            file_path="/path/to/file",
+            filepath="/path/to/file",
             eve=False,
         )
 
@@ -37,15 +36,15 @@ def test_translate_args_to_simulator_parameters(base_args):
     assert isinstance(parameters, SimulatorParameters)
     assert parameters.weights_range == correct_args.weights_range
     assert parameters.qber_values == correct_args.QBER
-    assert parameters.range_of_inputs_per_neuron == Range(10, 100, 1)
-    assert parameters.range_of_neurons_in_hidden_layer == Range(20, 30, 1)
-    assert parameters.file_path == Path(correct_args.file_path)
+    assert parameters.range_of_inputs_per_neuron == range(10, 100, 1)
+    assert parameters.range_of_neurons_in_hidden_layer == range(20, 30, 1)
+    assert parameters.file_path == Path(correct_args.filepath)
     assert parameters.eve == correct_args.eve
 
 
 @pytest.mark.parametrize(
     "number_of_inputs_per_neuron, number_of_neurons_in_hidden_layer",
-    (([ANY, ANY], [ANY, ANY, ANY]), ([ANY, ANY, ANY], [ANY, ANY])),
+    (([1, 2], [1, 2, 1]), ([1, 2, 1], [1, 2])),
 )
 def test_translate_args_to_simulator_parameters_raises(
     number_of_inputs_per_neuron, number_of_neurons_in_hidden_layer, base_args
