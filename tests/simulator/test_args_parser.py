@@ -1,6 +1,6 @@
 from argparse import Namespace
 from pathlib import Path
-from unittest.mock import ANY, sentinel
+from unittest.mock import sentinel
 
 import pytest
 
