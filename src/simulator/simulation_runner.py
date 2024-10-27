@@ -37,10 +37,6 @@ def run_simulation(simulation_parameters: SimulatorParameters) -> None:
             initial_weights_alice, weights_value_limit, qber_value, ber_type
         )
 
-        print(
-            f"l:{weights_value_limit}, n:{num_inputs_per_neuron}, k:{num_hidden_neurons}, ber:{qber_value}, ber_type:{ber_type}, rep:{rep}"
-        )
-
         attacker_data = []
         if (number_of_attacker_machines := simulation_parameters.eve) > 0:
             eves_weights = [
@@ -237,10 +233,10 @@ def synchronization_step_with_attackers(
         )
         alice_result, alice_result_weights = calculate_tpm_result(alice, input_nodes)
         bob_result, bob_result_weights = calculate_tpm_result(bob, input_nodes)
-
         eves_results, eves_result_weights = zip(
             *(calculate_tpm_result(eve, input_nodes) for eve in eves)
         )
+
         if alice_result == bob_result:
             update_weights(
                 alice, bob, alice_result, alice_result_weights, bob_result_weights

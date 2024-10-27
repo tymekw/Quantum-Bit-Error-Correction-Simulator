@@ -5,9 +5,9 @@ from dataclasses import dataclass
 
 @dataclass
 class TPMBaseParameters:
-    number_of_neurons_in_hidden_layer: int  # k
-    number_of_inputs_per_neuron: int  # n
-    weights_value_limit: int  # l
+    number_of_neurons_in_hidden_layer: int
+    number_of_inputs_per_neuron: int
+    weights_value_limit: int
 
 
 class TPM:
