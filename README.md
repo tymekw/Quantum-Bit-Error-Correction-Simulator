@@ -9,7 +9,24 @@ pip install -r requirements.txt
 ~~~~
 
 ## Simulation tool
-Run script main.py inside simulator directory from this project with chosen arguments
+A tool allowing simulation of tree parity machine synchronization for post quantum key distribution error correction.
+
+Base mode allows for simulation error correction for machines of different sizes
+(size is connected with number of bits to correct) as well as other TPM parameters.
+
+Tool allows user to choose desired quantum bit error rates to be tested.
+
+There are two QBER modes that are simulated:
+- random - where errors appear at random places in the key
+- bursty - where errors appear in batches one after another in the key
+
+The tool also allows for simulation with an attacker. User has to choose how many TPM does attacker have.
+Simulation runs as normal between Alice and Bob (legitimate parties that are trying to correct errors).
+At the same time number of Eve (attacker) machines try to synchronize with Alice and Bobs machine but having random values instead ones with given QBER.
+Simulation stops after any of Eves machines are synchronized with Alice and Bob.
+
+
+Run script main.py inside src directory from this project with chosen arguments
 ~~~~
 usage: main.py [-h] [-l WEIGHTS_RANGE [WEIGHTS_RANGE ...]]
                [-n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]]
@@ -35,15 +52,32 @@ optional arguments:
                         name of file to save data to [test iterations.csv]
 ~~~~
 Example usage:
+
+go to `src` directory and run:
 ~~~~
-python main.py --weights_range 1 2 3 4 5 --QBER 10 11 --number_of_inputs_per_neuron 10 140 10 --number_of_neurons_in_hidden_layer 10 140 10 --filename raw_data.csv
+python simulator.main --weights_range 1 2 3 4 5 --QBER 10 11 --number_of_inputs_per_neuron 10 140 10 --number_of_neurons_in_hidden_layer 10 140 10 --filename raw_data.csv
 ~~~~
+
+As a result in the chosen by user file a csv is generated.
+
+- In the classic mode (without an attacker) a cvs has the following headers:
+  - L;N;K;QBER; - TPM parameters for given run
+  - ERRORS - number of different weights between TPMS
+  - QBER_TYPE - bursty or random
+  - REP - 0-5 one of the repetitions for the same set of parameters (different input weights)
+  - TAU_MISSES - number of time that input weights had to be regenerated to get the same result value before updating weights
+  - TIME - time that took to synchronize machines
+  - repetitions - number of loop repetitions required to synchronize TPMs
+- in the mode with the attacker to the classic headers two are added:
+   - EVE_SUCCESS - how many Eve's TPMs successfully synchronized (usually 1)
+   - EVE_REQUIRED - how many loop repetitions it took to synchronize at least one of Eve's TPMs
 
 ## Data processing
 
-# ToDo
-
+# Under construction
+Module for processing result csv
 
 ## Generating plots
 
-# TODo
+# Under construction
+Module for automatic plot generation after result csv is processed
