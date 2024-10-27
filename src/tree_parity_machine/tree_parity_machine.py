@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TMPBaseParameters:
+class TPMBaseParameters:
     number_of_neurons_in_hidden_layer: int  # k
     number_of_inputs_per_neuron: int  # n
     weights_value_limit: int  # l
@@ -13,7 +13,7 @@ class TMPBaseParameters:
 class TPM:
     def __init__(
         self,
-        tmp_parameters: TMPBaseParameters,
+        tmp_parameters: TPMBaseParameters,
         initial_weights: npt.NDArray,
     ) -> None:
         self.hidden_layer_weights: npt.NDArray = initial_weights

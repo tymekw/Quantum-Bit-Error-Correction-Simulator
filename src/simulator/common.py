@@ -9,7 +9,7 @@ from typing import Tuple
 import numpy.typing as npt
 import numpy as np
 
-from tree_parity_machine.tree_parity_machine import TMPBaseParameters
+from tree_parity_machine.tree_parity_machine import TPMBaseParameters
 
 CODING = 4
 REPS_FOR_STATS = 4
@@ -117,7 +117,7 @@ def add_bursty_errors(
     return weights, min_different_weights
 
 
-def generate_single_tmp_weights(tmp_parameters: TMPBaseParameters):
+def generate_single_tmp_weights(tmp_parameters: TPMBaseParameters):
     return np.random.randint(
         low=-tmp_parameters.weights_value_limit,
         high=tmp_parameters.weights_value_limit,
