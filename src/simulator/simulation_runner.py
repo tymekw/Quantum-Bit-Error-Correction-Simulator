@@ -1,4 +1,3 @@
-import asyncio
 import itertools
 import numpy.typing as npt
 import numpy as np
@@ -11,7 +10,7 @@ from simulator.common import (
 )
 from simulator.utils import write_row
 from tree_parity_machine.tree_parity_machine import TPM, TPMBaseParameters
-
+import time
 
 def initialize_machines_for_synchronization(
     tpm_parameters: TPMBaseParameters,
@@ -61,7 +60,7 @@ def update_eve_weights_if_possible(
             eve_updated += 1
     return eve_updated
 
-async def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
+def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
     for parameters in itertools.product(*simulation_parameters.get_iteration_params()):
         (
             weights_value_limit,
@@ -88,7 +87,7 @@ async def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
                 generate_single_tmp_weights(tmp_parameters)
                 for _ in range(number_of_attacker_machines)
             ]
-            execution_time, runs, different_result, success_eve, eve_runs = await simulate_tmp_synchronization_with_attacker(
+            execution_time, runs, different_result, success_eve, eve_runs = simulate_tmp_synchronization_with_attacker(
                 initial_weights_alice,
                 initial_weights_bob,
                 eves_weights,
@@ -96,7 +95,7 @@ async def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
             )
             attacker_data = [success_eve, eve_runs]
         else:
-            execution_time, runs, different_result = await simulate_tmp_synchronization(
+            execution_time, runs, different_result = simulate_tmp_synchronization(
                 initial_weights_alice, initial_weights_bob, tmp_parameters
             )
 
@@ -118,7 +117,7 @@ async def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
 
     return True
 
-async def simulate_tmp_synchronization(
+def simulate_tmp_synchronization(
         initial_weights_alice: npt.NDArray,
         initial_weights_bob: npt.NDArray,
         tpm_parameters: TPMBaseParameters,
@@ -126,20 +125,20 @@ async def simulate_tmp_synchronization(
     alice, bob = initialize_machines_for_synchronization(
         tpm_parameters, initial_weights_alice, initial_weights_bob
     )
-    start_time = asyncio.get_running_loop().time()  # Async compatible timing
-    runs, different_result = await single_synchronization(alice, bob, tpm_parameters)
-    execution_time = asyncio.get_running_loop().time() - start_time
+    start_time = time.time()  # Async compatible timing
+    runs, different_result = single_synchronization(alice, bob, tpm_parameters)
+    execution_time = time.time() - start_time
     print(execution_time)
     return execution_time, runs, different_result
 
 
-async def single_synchronization(
+def single_synchronization(
         alice: TPM, bob: TPM, tpm_parameters: TPMBaseParameters
 ) -> tuple[int, int]:
     runs, different_result = 0, 0
     while not np.array_equal(alice.hidden_layer_weights, bob.hidden_layer_weights):
         runs += 1
-        different_result += await synchronization_step(
+        different_result += synchronization_step(
             alice,
             bob,
             tpm_parameters.number_of_neurons_in_hidden_layer,
@@ -148,7 +147,7 @@ async def single_synchronization(
     return runs, different_result
 
 
-async def synchronization_step(
+def synchronization_step(
         alice: TPM, bob: TPM, num_hidden_neurons: int, num_inputs_per_neuron: int
 ) -> int:
     different_result = 0
@@ -161,12 +160,11 @@ async def synchronization_step(
             break
         else:
             different_result += 1
-        await asyncio.sleep(0)  # Yield control to event loop
 
     return different_result
 
 
-async def simulate_tmp_synchronization_with_attacker(
+def simulate_tmp_synchronization_with_attacker(
         initial_weights_alice: npt.NDArray,
         initial_weights_bob: npt.NDArray,
         eve_weights: list[npt.NDArray],
@@ -182,11 +180,11 @@ async def simulate_tmp_synchronization_with_attacker(
         )
         for eve_weight in eve_weights
     ]
-    start_time = asyncio.get_running_loop().time()
-    runs, different_result, eve_runs = await single_synchronization_with_attacker(
+    start_time = time.time()
+    runs, different_result, eve_runs = single_synchronization_with_attacker(
         alice, bob, eves, tpm_parameters
     )
-    execution_time = asyncio.get_running_loop().time() - start_time
+    execution_time = time.time() - start_time
 
     print(execution_time)
     success_eve = sum(
@@ -197,7 +195,7 @@ async def simulate_tmp_synchronization_with_attacker(
     return execution_time, runs, different_result, success_eve, eve_runs
 
 
-async def single_synchronization_with_attacker(
+def single_synchronization_with_attacker(
         alice: TPM, bob: TPM, eves: list[TPM], tpm_parameters: TPMBaseParameters
 ) -> tuple[int, int, int]:
     runs, different_result, eve_runs = 0, 0, 0
@@ -208,7 +206,7 @@ async def single_synchronization_with_attacker(
         if not np.array_equal(alice.hidden_layer_weights, bob.hidden_layer_weights):
             runs += 1
         eve_runs += 1
-        different_result_in_step, eve_updated_in_step = await synchronization_step_with_attackers(
+        different_result_in_step, eve_updated_in_step = synchronization_step_with_attackers(
             alice,
             bob,
             eves,
@@ -220,7 +218,7 @@ async def single_synchronization_with_attacker(
     return runs, different_result, eve_runs
 
 
-async def synchronization_step_with_attackers(
+def synchronization_step_with_attackers(
         alice: TPM,
         bob: TPM,
         eves: list[TPM],
@@ -242,6 +240,5 @@ async def synchronization_step_with_attackers(
             break
         else:
             different_result += 1
-        await asyncio.sleep(0)
 
     return different_result, eve_updated

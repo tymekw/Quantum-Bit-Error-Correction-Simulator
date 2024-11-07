@@ -1,9 +1,8 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from simulator.common import SimulatorException, SimulatorParameters
+from simulator.common import SimulatorException, SimulatorParameters, RangeModel, DEFAULT_FILENAME
 
-DEFAULT_FILENAME = "tmp_test_result.csv"
 ARGS_RANGE_EXCEPTION = (
     "Each range argument must contain exactly three integers separated by space. "
     "Passed arguments {incorrect_args}"
@@ -82,17 +81,17 @@ def translate_args_to_simulator_parameters(args: Namespace) -> SimulatorParamete
     file_path = Path(args.filepath)
 
     return SimulatorParameters(
-        weights_range,
-        range_of_inputs_per_neuron,
-        qber_values,
-        range_of_neurons_in_hidden_layer,
-        file_path,
-        args.eve,
+        weights_range=weights_range,
+        range_of_inputs_per_neuron=range_of_inputs_per_neuron,
+        qber_values=qber_values,
+        range_of_neurons_in_hidden_layer=range_of_neurons_in_hidden_layer,
+        file_path=file_path,
+        eve=args.eve,
     )
 
 
-def _assign_list_to_range(range_list: list[int]) -> range:
+def _assign_list_to_range(range_list: list[int]) -> RangeModel:
     try:
-        return range(range_list[0], range_list[1], range_list[2])
+        return RangeModel(start=range_list[0], stop=range_list[1], step=range_list[2])
     except IndexError:
         raise ArgumentRangeException(range_list)
