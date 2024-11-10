@@ -1,7 +1,12 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from simulator.common import SimulatorException, SimulatorParameters, RangeModel, DEFAULT_FILENAME
+from simulator.common import (
+    SimulatorException,
+    SimulatorParameters,
+    RangeModel,
+    DEFAULT_FILENAME,
+)
 
 ARGS_RANGE_EXCEPTION = (
     "Each range argument must contain exactly three integers separated by space. "

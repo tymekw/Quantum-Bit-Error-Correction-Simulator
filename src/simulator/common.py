@@ -45,9 +45,8 @@ class SimulatorParameters(BaseModel):
             self.range_of_neurons_in_hidden_layer.to_range(),
             self.qber_values,
             tuple(BerTypes),
-            range(REPS_FOR_STATS)
+            range(REPS_FOR_STATS),
         )
-
 
 
 class SimulatorException(BaseException):
