@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, Field
 from enum import Enum
+
+from pydantic import BaseModel
 
 from simulator.common import SimulatorParameters
 
@@ -11,7 +13,18 @@ class Status(Enum):
     STOPPING = "stopping"
 
 
-@dataclass
-class TaskStatus:
-    status: Status
-    parameters: SimulatorParameters
+class TaskStatus(BaseModel):
+    task_id: int | None
+    status: Status | None
+    parameters: SimulatorParameters | None
+
+
+class ForcedStopResult(Enum):
+    SUCCESS = "success"
+    ALREADY_NOT_RUNNING = "process already not running"
+    ERROR = "error"
+
+
+class ForcedStopStatus(BaseModel):
+    task_id: int
+    forced_stop_result: ForcedStopResult

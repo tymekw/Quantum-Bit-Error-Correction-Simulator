@@ -1,3 +1,6 @@
 import os
 
-MAX_CONCURRENT_PROCESSES = os.cpu_count() - 1
+DEFAULT_NUMBER_OF_CONCURRENT_PROCESSES = 1
+MAX_CONCURRENT_PROCESSES = (
+    cpus - 1 if (cpus := os.cpu_count()) else DEFAULT_NUMBER_OF_CONCURRENT_PROCESSES
+)
