@@ -10,8 +10,6 @@ from simulator.simulation_runner import run_simulation
 
 
 
-
-
 app = FastAPI()
 is_done = False
 app.mount("/static", StaticFiles(directory="src/server/static", html=True), name="static")

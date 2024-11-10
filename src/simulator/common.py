@@ -1,14 +1,13 @@
 import copy
 import math
 import random
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from statistics import mean
 from typing import Tuple
 import numpy.typing as npt
 import numpy as np
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from tree_parity_machine.tree_parity_machine import TPMBaseParameters
 

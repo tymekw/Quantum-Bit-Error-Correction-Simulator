@@ -2,11 +2,10 @@ import itertools
 import numpy.typing as npt
 import numpy as np
 from numpy import signedinteger
-from simulator.args_parser import SimulatorParameters
 from simulator.common import (
     generate_single_tmp_weights,
     get_weights_with_error,
-    generate_random_input,
+    generate_random_input, SimulatorParameters,
 )
 from simulator.utils import write_row
 from tree_parity_machine.tree_parity_machine import TPM, TPMBaseParameters
@@ -61,6 +60,7 @@ def update_eve_weights_if_possible(
     return eve_updated
 
 def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
+    print('RUNNNING')
     for parameters in itertools.product(*simulation_parameters.get_iteration_params()):
         (
             weights_value_limit,
