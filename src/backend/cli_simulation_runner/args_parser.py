@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from simulator.common import (
+from backend.simulator.common import (
     SimulatorException,
     SimulatorParameters,
     RangeModel,

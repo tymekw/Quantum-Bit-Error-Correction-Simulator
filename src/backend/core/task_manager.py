@@ -4,8 +4,8 @@ import time
 
 from backend.core.config import MAX_CONCURRENT_PROCESSES
 from backend.model import TaskStatus, Status, ForcedStopStatus, ForcedStopResult
-from simulator.simulation_runner import run_simulation
-from simulator.common import SimulatorParameters
+from backend.simulator.simulation_runner import run_simulation
+from backend.simulator.common import SimulatorParameters
 
 # Semaphore for limiting concurrent processes
 semaphore = multiprocessing.Semaphore(MAX_CONCURRENT_PROCESSES)
@@ -38,7 +38,9 @@ def start_task(
     task_id: int, parameters: SimulatorParameters, process: multiprocessing.Process
 ) -> None:
     """Start a task, store its process and status."""
-    tasks[task_id] = TaskStatus(task_id=task_id, status=Status.RUNNING, parameters=parameters)
+    tasks[task_id] = TaskStatus(
+        task_id=task_id, status=Status.RUNNING, parameters=parameters
+    )
     running_tasks[task_id] = process
 
 

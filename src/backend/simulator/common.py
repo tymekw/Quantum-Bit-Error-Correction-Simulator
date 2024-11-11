@@ -9,7 +9,7 @@ import numpy.typing as npt
 import numpy as np
 from pydantic import BaseModel
 
-from tree_parity_machine.tree_parity_machine import TPMBaseParameters
+from backend.tree_parity_machine.tree_parity_machine import TPMBaseParameters
 
 CODING = 4
 REPS_FOR_STATS = 4

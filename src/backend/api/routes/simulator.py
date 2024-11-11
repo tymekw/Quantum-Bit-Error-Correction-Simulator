@@ -8,7 +8,7 @@ from backend.core.task_manager import (
     running_tasks,
     task_id_generator,
 )
-from simulator.common import SimulatorParameters
+from backend.simulator.common import SimulatorParameters
 from backend.model import ForcedStopStatus, TaskStatus
 
 router = APIRouter()
@@ -39,4 +39,4 @@ async def cancel_simulation(task_id: int) -> ForcedStopStatus:
 
 @router.get("/simulator/running-simulations")
 async def running_simulations() -> dict[str, list[int]]:
-    return {'running simulations': list(running_tasks.keys())}
+    return {"running simulations": list(running_tasks.keys())}

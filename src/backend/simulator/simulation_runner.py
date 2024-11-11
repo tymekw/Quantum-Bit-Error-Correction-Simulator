@@ -2,14 +2,14 @@ import itertools
 import numpy.typing as npt
 import numpy as np
 from numpy import signedinteger
-from simulator.common import (
+from backend.simulator.common import (
     generate_single_tmp_weights,
     get_weights_with_error,
     generate_random_input,
     SimulatorParameters,
 )
-from simulator.utils import write_row
-from tree_parity_machine.tree_parity_machine import TPM, TPMBaseParameters
+from backend.simulator.utils import write_row
+from backend.tree_parity_machine.tree_parity_machine import TPM, TPMBaseParameters
 import time
 
 

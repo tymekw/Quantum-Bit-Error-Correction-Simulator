@@ -1,9 +1,8 @@
-from dataclasses import dataclass, Field
 from enum import Enum
 
 from pydantic import BaseModel
 
-from simulator.common import SimulatorParameters
+from backend.simulator.common import SimulatorParameters
 
 
 class Status(Enum):
