@@ -1,6 +1,6 @@
 import multiprocessing
 import itertools
-
+import time
 
 from backend.core.config import MAX_CONCURRENT_PROCESSES
 from backend.model import TaskStatus, Status, ForcedStopStatus, ForcedStopResult
@@ -80,9 +80,10 @@ def force_stop_process(task_id: int) -> ForcedStopStatus:
 
     if process.is_alive():
         process.kill()
+        time.sleep(2)
 
     if process.is_alive():
-        update_task_status(task_id, Status.RUNNING)
+        update_task_status(task_id, Status.STOPPING)
         return ForcedStopStatus(
             task_id=task_id, forced_stop_result=ForcedStopResult.ERROR
         )

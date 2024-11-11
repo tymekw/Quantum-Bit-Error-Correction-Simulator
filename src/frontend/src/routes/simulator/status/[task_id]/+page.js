@@ -7,8 +7,6 @@ export const load = async ({ params, fetch }) => {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json();
-        console.log(data);
-        console.log({data, error: null });
         return {data, error: null };
     } catch (error) {
         return {data: null, error: error.message };
