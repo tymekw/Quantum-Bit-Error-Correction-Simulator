@@ -1,6 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks
 
-from backend.core.task_manager import (
+from backend.api.core.task_manager import (
     run_simulation_in_background,
     get_task_status,
     force_stop_process,
@@ -9,7 +9,7 @@ from backend.core.task_manager import (
     task_id_generator,
 )
 from backend.simulator.common import SimulatorParameters
-from backend.model import ForcedStopStatus, TaskStatus
+from backend.api.model import ForcedStopStatus, TaskStatus
 
 router = APIRouter()
 

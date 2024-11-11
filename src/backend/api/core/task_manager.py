@@ -2,8 +2,8 @@ import multiprocessing
 import itertools
 import time
 
-from backend.core.config import MAX_CONCURRENT_PROCESSES
-from backend.model import TaskStatus, Status, ForcedStopStatus, ForcedStopResult
+from backend.api.core.config import MAX_CONCURRENT_PROCESSES
+from backend.api.model import TaskStatus, Status, ForcedStopStatus, ForcedStopResult
 from backend.simulator.simulation_runner import run_simulation
 from backend.simulator.common import SimulatorParameters
 
