@@ -61,6 +61,11 @@
             <label for="qber_values">qber_values (comma-separated integers):</label>
             <input type="text" class="form-control" id="qber_values" name="qber_values" placeholder="e.g., 6,7,8,9,10">
         </div>
+        <!-- path input -->
+        <div class="form-group">
+            <label for="path">result path:</label>
+            <input type="text" class="form-control" id="path" name="path" placeholder="e.g., /home/user/results">
+        </div>
         <!-- Is Eve Checkbox -->
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="isEve" name="isEve" bind:checked={isEve}>

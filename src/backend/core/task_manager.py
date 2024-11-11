@@ -38,7 +38,7 @@ def start_task(
     task_id: int, parameters: SimulatorParameters, process: multiprocessing.Process
 ) -> None:
     """Start a task, store its process and status."""
-    tasks[task_id] = TaskStatus(task_id, Status.RUNNING, parameters)
+    tasks[task_id] = TaskStatus(task_id=task_id, status=Status.RUNNING, parameters=parameters)
     running_tasks[task_id] = process
 
 
@@ -95,4 +95,4 @@ def force_stop_process(task_id: int) -> ForcedStopStatus:
 
 def get_task_status(task_id: int) -> TaskStatus:
     """Return task status from memory."""
-    return tasks.get(task_id, TaskStatus(None, None, None))
+    return tasks.get(task_id, TaskStatus(task_id=None, status=None, parameters=None))

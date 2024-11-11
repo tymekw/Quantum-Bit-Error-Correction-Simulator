@@ -38,5 +38,5 @@ async def cancel_simulation(task_id: int) -> ForcedStopStatus:
 
 
 @router.get("/simulator/running-simulations")
-async def running_simulations() -> list[int]:
-    return list(running_tasks.keys())
+async def running_simulations() -> dict[str, list[int]]:
+    return {'running simulations': list(running_tasks.keys())}
