@@ -1,70 +1,112 @@
 <!-- src/routes/simulation.svelte -->
 
+<!--<script>-->
+<!--    let isEve = false;-->
+<!--    let eveMachines = 0;-->
+
 <script>
+    import { onMount } from 'svelte';
+    import {redirect} from "@sveltejs/kit";
     let isEve = false;
     let eveMachines = 0;
-</script>
 
-<!-- Page-specific head elements -->
-<svelte:head>
-    <title>Simulation Parameters</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+    async function handleSubmit(event) {
+        const url = `http://127.0.0.1:8000/simulator/start-simulation`;
+        event.preventDefault();
+        // let data = event.toString();
+        const formData = new FormData(event.target);
+
+        const data = {
+            range_of_inputs_per_neuron: {
+                start: parseInt(formData.get('range_of_inputs_per_neuron_start')),
+                stop: parseInt(formData.get('range_of_inputs_per_neuron_stop')),
+                step: parseInt(formData.get('range_of_inputs_per_neuron_step'))
+            },
+            range_of_neurons_in_hidden_layer: {
+                start: parseInt(formData.get('range_of_neurons_in_hidden_layer_start')),
+                stop: parseInt(formData.get('range_of_neurons_in_hidden_layer_stop')),
+                step: parseInt(formData.get('range_of_neurons_in_hidden_layer_step'))
+            },
+            weights_range: formData.get('weights_range').split(',').map(Number),
+            qber_values: formData.get('qber_values').split(',').map(Number),
+            file_path: formData.get('path') || null,
+            eve: formData.get('eve_machines') ? parseInt(formData.get('eve_machines')) || 0 : 0
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if ( response.status === 200 ){
+                try {
+                    let returnData = await response.json();
+                    console.log(returnData);
+                    window.location.href= `simulator/status/${returnData.task_id}`;
+                } catch (error) {
+                    alert('Something went wrong please check currently-running simulations, or try again');
+                }
+            } else {
+                alert('Error submitting form. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Error submitting form');
         }
-    </style>
-</svelte:head>
+    }
+</script>
 
 <!-- Page content -->
 <div class="container">
     <h1 class="mt-4">Enter Simulation Parameters</h1>
-    <form id="simulationForm">
+    <form  on:submit={handleSubmit}>
         <!-- First Row of Inputs -->
         <div class="row mb-3">
             <div class="col">
                 <label for="range_of_inputs_per_neuron_start" class="form-label">range_of_inputs_per_neuron_start Start:</label>
-                <input type="number" class="form-control" id="range_of_inputs_per_neuron_start" name="range_of_inputs_per_neuron_start" placeholder="Start">
+                <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_start" name="range_of_inputs_per_neuron_start" placeholder="Start">
             </div>
             <div class="col">
                 <label for="range_of_inputs_per_neuron_stop" class="form-label">range_of_inputs_per_neuron_stop Stop:</label>
-                <input type="number" class="form-control" id="range_of_inputs_per_neuron_stop" name="range_of_inputs_per_neuron_stop" placeholder="Stop">
+                <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_stop" name="range_of_inputs_per_neuron_stop" placeholder="Stop">
             </div>
             <div class="col">
                 <label for="range_of_inputs_per_neuron_step" class="form-label">range_of_inputs_per_neuron_step Step:</label>
-                <input type="number" class="form-control" id="range_of_inputs_per_neuron_step" name="range_of_inputs_per_neuron_step" placeholder="Step">
+                <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_step" name="range_of_inputs_per_neuron_step" placeholder="Step">
             </div>
         </div>
         <!-- Second Row of Inputs -->
         <div class="row mb-3">
             <div class="col">
                 <label for="range_of_neurons_in_hidden_layer_start" class="form-label">range_of_neurons_in_hidden_layer Start:</label>
-                <input type="number" class="form-control" id="range_of_neurons_in_hidden_layer_start" name="range_of_neurons_in_hidden_layer_start" placeholder="Start">
+                <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_start" name="range_of_neurons_in_hidden_layer_start" placeholder="Start">
             </div>
             <div class="col">
                 <label for="range_of_neurons_in_hidden_layer_stop" class="form-label">range_of_neurons_in_hidden_layer Stop:</label>
-                <input type="number" class="form-control" id="range_of_neurons_in_hidden_layer_stop" name="range_of_neurons_in_hidden_layer_stop" placeholder="Stop">
+                <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_stop" name="range_of_neurons_in_hidden_layer_stop" placeholder="Stop">
             </div>
             <div class="col">
                 <label for="range_of_neurons_in_hidden_layer_step" class="form-label">range_of_neurons_in_hidden_layer Step:</label>
-                <input type="number" class="form-control" id="range_of_neurons_in_hidden_layer_step" name="range_of_neurons_in_hidden_layer_step" placeholder="Step">
+                <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_step" name="range_of_neurons_in_hidden_layer_step" placeholder="Step">
             </div>
         </div>
         <!-- Weights Range Input -->
         <div class="form-group">
             <label for="weights_range">weights_range (comma-separated integers):</label>
-            <input type="text" class="form-control" id="weights_range" name="weights_range" placeholder="e.g., 1,2,3,4,5">
+            <input type="text" class="form-control" id="weights_range" name="weights_range" placeholder="1,2,3,4,5">
         </div>
         <!-- QBER Values Input -->
         <div class="form-group">
             <label for="qber_values">qber_values (comma-separated integers):</label>
-            <input type="text" class="form-control" id="qber_values" name="qber_values" placeholder="e.g., 6,7,8,9,10">
+            <input type="text" class="form-control" id="qber_values" name="qber_values" placeholder="6,7,8,9,10">
         </div>
         <!-- path input -->
         <div class="form-group">
             <label for="path">result path:</label>
-            <input type="text" class="form-control" id="path" name="path" placeholder="e.g., /home/user/results">
+            <input type="text" class="form-control" id="path" name="path" placeholder="/home/user/results">
         </div>
         <!-- Is Eve Checkbox -->
         <div class="form-group form-check">
@@ -75,9 +117,9 @@
         {#if isEve}
         <div class="form-group" id="eve_machines_div">
             <label for="eve_machines">Eve TPMs:</label>
-            <input type="number" class="form-control" id="eve_machines" name="eve_machines" placeholder="Number of Eve machines" bind:value={eveMachines}>
+            <input type="number" min="0" class="form-control" id="eve_machines" name="eve_machines" placeholder="Number of Eve machines" bind:value={eveMachines}>
         </div>
         {/if}
-        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

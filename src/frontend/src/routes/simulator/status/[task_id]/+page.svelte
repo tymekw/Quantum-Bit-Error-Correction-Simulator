@@ -60,7 +60,7 @@
 {:else if (simulationData && task_id != null)}
     <pre>{JSON.stringify(simulationData, null, 2)}</pre>
     {#if (simulationData.status === 'running') }
-         <button on:click={cancelTask}>Cancel Task</button>
+         <button class="btn btn-primary" on:click={cancelTask}>Cancel Task</button>
     {/if}
 {:else if (task_id == null)}
     <pre>No simulation with this id: {task_id}!</pre>

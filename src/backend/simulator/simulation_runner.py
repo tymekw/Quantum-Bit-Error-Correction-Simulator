@@ -8,7 +8,7 @@ from backend.simulator.common import (
     generate_random_input,
     SimulatorParameters,
 )
-from backend.simulator.utils import write_row
+from backend.simulator.utils import write_row, write_headers
 from backend.tree_parity_machine.tree_parity_machine import TPM, TPMBaseParameters
 import time
 
@@ -66,6 +66,7 @@ def update_eve_weights_if_possible(
 
 def run_simulation(simulation_parameters: SimulatorParameters) -> bool:
     print("RUNNNING")
+    write_headers(simulation_parameters.file_path, bool(simulation_parameters.eve))
     for parameters in itertools.product(*simulation_parameters.get_iteration_params()):
         (
             weights_value_limit,

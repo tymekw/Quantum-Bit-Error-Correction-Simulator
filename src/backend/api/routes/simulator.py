@@ -9,7 +9,7 @@ from backend.api.core.task_manager import (
     task_id_generator,
 )
 from backend.simulator.common import SimulatorParameters
-from backend.api.model import ForcedStopStatus, TaskStatus
+from backend.api.model import ForcedStopStatus, TaskStatus, Status
 
 router = APIRouter()
 
@@ -17,14 +17,15 @@ router = APIRouter()
 @router.post("/simulator/start-simulation")
 def start_simulation(
     parameters: SimulatorParameters, background_tasks: BackgroundTasks
-) -> int | None:
+) -> TaskStatus:
     task_id = next(task_id_generator)
     if not semaphore.acquire(block=False):
-        return None
+        return TaskStatus(task_id=task_id, status=Status.COULD_NOT_START, parameters=parameters)
 
     background_tasks.add_task(run_simulation_in_background, task_id, parameters)
+    print(task_id)
+    return TaskStatus(task_id=task_id, status=Status.STARTED, parameters=parameters)
 
-    return task_id
 
 
 @router.get("/simulator/status/{task_id}")

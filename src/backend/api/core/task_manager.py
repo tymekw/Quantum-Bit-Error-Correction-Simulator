@@ -23,9 +23,11 @@ def update_task_status(task_id: int, status: Status) -> None:
             Status.STOPPING,
             Status.CANCELED,
         }:
+            print(f"DONE: {task_id}")
             tasks[task_id].status = status
             del running_tasks[task_id]
     elif status == Status.CANCELED:
+        print(f"DONE: {task_id}")
         tasks[task_id].status = status
         del running_tasks[task_id]
     elif status == Status.STOPPING:

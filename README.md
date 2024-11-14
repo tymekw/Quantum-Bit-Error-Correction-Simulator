@@ -1,5 +1,18 @@
 # Simulator and data processing tool for correcting errors arisen during quantum key distribution
 
+# WEB API (under development)
+
+## how to run:
+install all required packages (python and sveltekit), ToDO which exactly?
+
+run backend: `fastapi dev src/backend/api/main.py `
+
+run frontend: go to src/frontend `npm run dev`
+
+follow link from frontend and enjoy!
+
+# CLI version:
+
 
 ## Prerequisites
  - Python 3.10+ installed and added to PATH
@@ -26,7 +39,7 @@ At the same time number of Eve (attacker) machines try to synchronize with Alice
 Simulation stops after any of Eves machines are synchronized with Alice and Bob.
 
 
-Run script main.py inside src directory from this project with chosen arguments
+Run script main.py inside src/backend/cli_simulation_runner directory from this project with chosen arguments
 ~~~~
 usage: main.py [-h] [-l WEIGHTS_RANGE [WEIGHTS_RANGE ...]]
                [-n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]]

@@ -6,10 +6,12 @@ from backend.simulator.common import SimulatorParameters
 
 
 class Status(Enum):
+    STARTED = "started"
     RUNNING = "running"
     FINISHED = "finished"
     CANCELED = "cancelled"
     STOPPING = "stopping"
+    COULD_NOT_START = "not_started"
 
 
 class TaskStatus(BaseModel):
