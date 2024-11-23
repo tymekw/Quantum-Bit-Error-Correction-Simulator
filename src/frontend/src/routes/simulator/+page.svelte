@@ -66,46 +66,46 @@
         <!-- First Row of Inputs -->
         <div class="row mb-3">
             <div class="col">
-                <label for="range_of_inputs_per_neuron_start" class="form-label">range_of_inputs_per_neuron_start Start:</label>
+                <label for="range_of_inputs_per_neuron_start" class="form-label">Range of inputs per neuron (START):</label>
                 <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_start" name="range_of_inputs_per_neuron_start" placeholder="Start">
             </div>
             <div class="col">
-                <label for="range_of_inputs_per_neuron_stop" class="form-label">range_of_inputs_per_neuron_stop Stop:</label>
+                <label for="range_of_inputs_per_neuron_stop" class="form-label">Range of inputs per neuron (STOP):</label>
                 <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_stop" name="range_of_inputs_per_neuron_stop" placeholder="Stop">
             </div>
             <div class="col">
-                <label for="range_of_inputs_per_neuron_step" class="form-label">range_of_inputs_per_neuron_step Step:</label>
+                <label for="range_of_inputs_per_neuron_step" class="form-label">Range of inputs per neuron (STEP):</label>
                 <input type="number" min="1" class="form-control" id="range_of_inputs_per_neuron_step" name="range_of_inputs_per_neuron_step" placeholder="Step">
             </div>
         </div>
         <!-- Second Row of Inputs -->
         <div class="row mb-3">
             <div class="col">
-                <label for="range_of_neurons_in_hidden_layer_start" class="form-label">range_of_neurons_in_hidden_layer Start:</label>
+                <label for="range_of_neurons_in_hidden_layer_start" class="form-label">Range of neurons in hidden layer (START):</label>
                 <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_start" name="range_of_neurons_in_hidden_layer_start" placeholder="Start">
             </div>
             <div class="col">
-                <label for="range_of_neurons_in_hidden_layer_stop" class="form-label">range_of_neurons_in_hidden_layer Stop:</label>
+                <label for="range_of_neurons_in_hidden_layer_stop" class="form-label">Range of neurons in hidden layer (STOP):</label>
                 <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_stop" name="range_of_neurons_in_hidden_layer_stop" placeholder="Stop">
             </div>
             <div class="col">
-                <label for="range_of_neurons_in_hidden_layer_step" class="form-label">range_of_neurons_in_hidden_layer Step:</label>
+                <label for="range_of_neurons_in_hidden_layer_step" class="form-label">Range of neurons in hidden layer (STEP):</label>
                 <input type="number" min="1" class="form-control" id="range_of_neurons_in_hidden_layer_step" name="range_of_neurons_in_hidden_layer_step" placeholder="Step">
             </div>
         </div>
         <!-- Weights Range Input -->
         <div class="form-group">
-            <label for="weights_range">weights_range (comma-separated integers):</label>
+            <label for="weights_range">Range of weights (comma-separated integers):</label>
             <input type="text" class="form-control" id="weights_range" name="weights_range" placeholder="1,2,3,4,5">
         </div>
         <!-- QBER Values Input -->
         <div class="form-group">
-            <label for="qber_values">qber_values (comma-separated integers):</label>
+            <label for="qber_values">QBER values (comma-separated integers):</label>
             <input type="text" class="form-control" id="qber_values" name="qber_values" placeholder="6,7,8,9,10">
         </div>
         <!-- path input -->
         <div class="form-group">
-            <label for="path">result path:</label>
+            <label for="path">Result path:</label>
             <input type="text" class="form-control" id="path" name="path" placeholder="/home/user/results">
         </div>
         <!-- Is Eve Checkbox -->
@@ -120,6 +120,6 @@
             <input type="number" min="0" class="form-control" id="eve_machines" name="eve_machines" placeholder="Number of Eve machines" bind:value={eveMachines}>
         </div>
         {/if}
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Start Simulation</button>
     </form>
 </div>
