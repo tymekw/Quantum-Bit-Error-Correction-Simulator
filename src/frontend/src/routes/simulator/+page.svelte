@@ -60,7 +60,8 @@
 </script>
 
 <!-- Page content -->
-<div class="container">
+<div class="container-fluid">
+    <div class="col-md-8">
     <h1 class="mt-4">Enter Simulation Parameters</h1>
     <form  on:submit={handleSubmit}>
         <!-- First Row of Inputs -->
@@ -122,4 +123,5 @@
         {/if}
         <button type="submit" class="btn btn-primary">Start Simulation</button>
     </form>
+    </div>
 </div>

@@ -21,7 +21,7 @@
             <a class="nav-link" href="/simulator">Simulator</a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="/simulator/status">Currently running simulations</a>
+            <a class="nav-link" href="/simulator/status">All simulations</a>
         </li>
      </ul>
  </div>

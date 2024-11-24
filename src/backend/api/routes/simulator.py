@@ -8,7 +8,7 @@ from backend.api.core.task_manager import (
     semaphore,
     running_tasks,
     task_id_generator,
-    get_download_file,
+    get_download_file, tasks,
 )
 from backend.simulator.common import SimulatorParameters
 from backend.api.model import ForcedStopStatus, TaskStatus, Status
@@ -43,7 +43,11 @@ async def cancel_simulation(task_id: int) -> ForcedStopStatus:
 
 @router.get("/simulator/running-simulations")
 async def running_simulations() -> dict[str, list[int]]:
-    return {"running simulations": list(running_tasks.keys())}
+    return {"simulations": list(running_tasks.keys())}
+
+@router.get("/simulator/all-simulations")
+async def running_simulations() -> dict[str, list[int]]:
+    return {"simulations": list(tasks.keys())}
 
 
 @router.get("/simulator/download/{task_id}")
