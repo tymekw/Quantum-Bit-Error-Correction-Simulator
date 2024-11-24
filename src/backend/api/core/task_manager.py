@@ -1,6 +1,9 @@
 import multiprocessing
 import itertools
+import os
 import time
+
+from starlette.responses import FileResponse
 
 from backend.api.core.config import MAX_CONCURRENT_PROCESSES
 from backend.api.model import TaskStatus, Status, ForcedStopStatus, ForcedStopResult
@@ -101,3 +104,15 @@ def force_stop_process(task_id: int) -> ForcedStopStatus:
 def get_task_status(task_id: int) -> TaskStatus:
     """Return task status from memory."""
     return tasks.get(task_id, TaskStatus(task_id=None, status=None, parameters=None))
+
+
+def get_download_file(task_id: int) -> FileResponse:
+    """Return download file. Throws FileNotFoundError if file does not exist."""
+    if task := tasks.get(task_id):
+        file_path = task.parameters.file_path
+        if os.path.exists(file_path):
+            return FileResponse(file_path, filename=file_path.name)
+        else:
+            raise FileNotFoundError
+    else:
+        raise FileNotFoundError

@@ -7,7 +7,7 @@ from statistics import mean
 from typing import Tuple
 import numpy.typing as npt
 import numpy as np
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 from backend.tree_parity_machine.tree_parity_machine import TPMBaseParameters
 
@@ -37,6 +37,15 @@ class SimulatorParameters(BaseModel):
     range_of_neurons_in_hidden_layer: RangeModel
     file_path: Path = Path(DEFAULT_FILENAME)
     eve: int = 0
+
+    @validator("file_path", pre=True, always=True)
+    def ensure_csv_extension(cls, v):
+        # Convert to Path if not already
+        v = Path(v)
+        # Add .csv extension if it doesn't already end with .csv
+        if not v.suffix == ".csv":
+            v = v.with_suffix(".csv")
+        return v
 
     def get_iteration_params(self):
         return (
