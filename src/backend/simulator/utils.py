@@ -20,6 +20,8 @@ def write_headers(file_path: Path, is_eve: bool) -> None:
 
 
 def write_row(file_path: Path, row_values: list[str]) -> None:
+    if not str(file_path).endswith("csv"):
+        file_path = Path(str(file_path) + ".csv")
     with open(file_path, "a+", newline="") as file:
         w = csv.writer(file, delimiter=";")
         w.writerow(row_values)

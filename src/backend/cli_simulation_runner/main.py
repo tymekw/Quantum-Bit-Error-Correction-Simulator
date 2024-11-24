@@ -1,9 +1,9 @@
-from simulator.args_parser import (
+from backend.cli_simulation_runner.args_parser import (
     parse_input_arguments,
     translate_args_to_simulator_parameters,
 )
-from simulator.simulation_runner import run_simulation
-from simulator.utils import write_headers
+from backend.simulator.simulation_runner import run_simulation
+from backend.simulator.utils import write_headers
 
 
 def main():

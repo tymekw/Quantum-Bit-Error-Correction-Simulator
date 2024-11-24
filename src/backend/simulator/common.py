@@ -1,18 +1,19 @@
 import copy
 import math
 import random
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from statistics import mean
 from typing import Tuple
 import numpy.typing as npt
 import numpy as np
+from pydantic import BaseModel, validator
 
-from tree_parity_machine.tree_parity_machine import TPMBaseParameters
+from backend.tree_parity_machine.tree_parity_machine import TPMBaseParameters
 
 CODING = 4
 REPS_FOR_STATS = 4
+DEFAULT_FILENAME = "tmp_test_result.csv"
 
 
 class BerTypes(Enum):
@@ -20,25 +21,40 @@ class BerTypes(Enum):
     BURSTY = "bursty"
 
 
-@dataclass
-class SimulatorParameters:
+class RangeModel(BaseModel):
+    start: int
+    stop: int
+    step: int
+
+    def to_range(self) -> range:
+        return range(self.start, self.stop, self.step)
+
+
+class SimulatorParameters(BaseModel):
     weights_range: list[int]
-    range_of_inputs_per_neuron: range
+    range_of_inputs_per_neuron: RangeModel
     qber_values: list[int]
-    range_of_neurons_in_hidden_layer: range
-    file_path: Path
-    eve: int
-    repetitions: range = range(REPS_FOR_STATS)
-    ber_types: tuple[BerTypes, ...] = tuple(BerTypes)
+    range_of_neurons_in_hidden_layer: RangeModel
+    file_path: Path = Path(DEFAULT_FILENAME)
+    eve: int = 0
+
+    @validator("file_path", pre=True, always=True)
+    def ensure_csv_extension(cls, v):
+        # Convert to Path if not already
+        v = Path(v)
+        # Add .csv extension if it doesn't already end with .csv
+        if not v.suffix == ".csv":
+            v = v.with_suffix(".csv")
+        return v
 
     def get_iteration_params(self):
         return (
             self.weights_range,
-            self.range_of_inputs_per_neuron,
-            self.range_of_neurons_in_hidden_layer,
+            self.range_of_inputs_per_neuron.to_range(),
+            self.range_of_neurons_in_hidden_layer.to_range(),
             self.qber_values,
-            self.ber_types,
-            self.repetitions,
+            tuple(BerTypes),
+            range(REPS_FOR_STATS),
         )
 
 

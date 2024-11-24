@@ -4,7 +4,7 @@ from unittest.mock import sentinel
 
 import pytest
 
-from simulator.args_parser import (
+from backend.cli_simulation_runner.args_parser import (
     translate_args_to_simulator_parameters,
     SimulatorParameters,
     ArgumentRangeException,
