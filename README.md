@@ -1,8 +1,8 @@
 # Simulator and data processing tool for correcting errors arisen during quantum key distribution
 
-# WEB API (under development)
+## WEB API
 
-## how to run:
+### how to run:
 install all required packages (python and sveltekit)
 
 run backend: `fastapi dev src/backend/api/main.py `
