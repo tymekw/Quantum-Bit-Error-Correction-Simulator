@@ -13,7 +13,6 @@ follow link from frontend and enjoy!
 
 # CLI version:
 
-
 ## Prerequisites
  - Python 3.10+ installed and added to PATH
  - Installed required packages, using pip:
@@ -40,6 +39,7 @@ Simulation stops after any of Eves machines are synchronized with Alice and Bob.
 
 
 Run script main.py inside src/backend/cli_simulation_runner directory from this project with chosen arguments
+setup PYTHON_PATH to this directory.
 ~~~~
 usage: main.py [-h] [-l WEIGHTS_RANGE [WEIGHTS_RANGE ...]]
                [-n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]]
@@ -49,26 +49,40 @@ usage: main.py [-h] [-l WEIGHTS_RANGE [WEIGHTS_RANGE ...]]
 Simulate TPM to correct errors.
 
 optional arguments:
-  -h, --help            
+  -h,
+   --help            
                         show this help message and exit
-  -l WEIGHTS_RANGE [WEIGHTS_RANGE ...], --weights_range WEIGHTS_RANGE [WEIGHTS_RANGE ...]
+                        
+  -l WEIGHTS_RANGE [WEIGHTS_RANGE ...],
+   --weights_range WEIGHTS_RANGE [WEIGHTS_RANGE ...]
                         list of Ls (range of weights {-L,L}) to generate data, separated by SPACE
-  -n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...], --number_of_inputs_per_neuron NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]
+                        
+  -n NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...],
+   --number_of_inputs_per_neuron NUMBER_OF_INPUTS_PER_NEURON [NUMBER_OF_INPUTS_PER_NEURON ...]
                         Ns (numbers of inputs to a single neuron) to generate data, [from to by] separated by SPACE
-  -k NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...], --number_of_neurons_in_hidden_layer NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...]
+                        
+  -k NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...],
+   --number_of_neurons_in_hidden_layer NUMBER_OF_NEURONS_IN_HIDDEN_LAYER [NUMBER_OF_NEURONS_IN_HIDDEN_LAYER ...]
                         Ks (numbers of neurons in hidden layer) to generate data, [from to by] separated by SPACE
-  -b QBER [QBER ...], --QBER QBER [QBER ...]
+  -b QBER [QBER ...],
+   --QBER QBER [QBER ...]
                         set list of QBERs to generate data about, separated by SPACE
-  -e EVE, --eve EVE     
+                        
+  -e EVE,
+   --eve EVE     
                         number of Eve's machines
-  -f FILENAME, --filename FILENAME
+                        
+  -f FILENAME,
+   --filename FILENAME
                         name of file to save data to [test iterations.csv]
 ~~~~
 Example usage:
 
 go to `src` directory and run:
 ~~~~
-python simulator.main --weights_range 1 2 3 4 5 --QBER 10 11 --number_of_inputs_per_neuron 10 140 10 --number_of_neurons_in_hidden_layer 10 140 10 --filename raw_data.csv
+python simulator.main --weights_range 1 2 3 4 5 --QBER 10 11
+ --number_of_inputs_per_neuron 10 140 10 --number_of_neurons_in_hidden_layer 10 140 10
+  --filename raw_data.csv
 ~~~~
 
 As a result in the chosen by user file a csv is generated.
@@ -87,10 +101,10 @@ As a result in the chosen by user file a csv is generated.
 
 ## Data processing
 
-# Under construction
-Module for processing result csv
+### inside src/_wip_data_processor
+Module for processing result csv, currently ongoing refactor
 
 ## Generating plots
 
-# Under construction
-Module for automatic plot generation after result csv is processed
+### inside src/_wip_data_processor
+Module for automatic plot generation after result csv is processed, currently ongoing refactor
