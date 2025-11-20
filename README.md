@@ -3,7 +3,8 @@
 ## WEB API
 
 ### how to run:
-install all required packages (python and sveltekit)
+install all required packages (python and npm)
+frontend: `npm install`
 
 run backend: `fastapi dev src/backend/api/main.py `
 
@@ -15,9 +16,11 @@ follow link from frontend and enjoy!
 
 ## Prerequisites
  - Python 3.10+ installed and added to PATH
- - Installed required packages, using pip:
+ - Installed required packages, using uv:
 ~~~~
-pip install -r requirements.txt
+uv venv
+uv pip install
+
 ~~~~
 
 ## Simulation tool
